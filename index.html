@@ -1,640 +1,594 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>João Magalhães — Front-end Engineer</title>
+
+
+  <title data-i18n="site.title">João Magalhães — Front-end Engineer</title>
+  <link rel="icon" type="image/png" href="https://github.com/joaommagalhaes.png" />
+  <meta name="description" data-i18n-attr="content|site.description"
+    content="Front-end engineer with 10+ years building scalable web and mobile products. Based in Aveiro, Portugal." />
+  <meta property="og:title" data-i18n-attr="content|site.title" content="João Magalhães — Front-end Engineer" />
+  <meta property="og:description" data-i18n-attr="content|site.description"
+    content="Front-end engineer with 10+ years building scalable web and mobile products. Based in Aveiro, Portugal." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://joaommagalhaes.github.io" />
+  <meta property="og:image" content="https://joaommagalhaes.github.io/og-image.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" data-i18n-attr="content|site.title" content="João Magalhães — Front-end Engineer" />
+  <meta name="twitter:description" data-i18n-attr="content|site.description"
+    content="Front-end engineer with 10+ years building scalable web and mobile products." />
+
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500&family=Geist+Mono:wght@300;400&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/simple-icons-font@13/font/simple-icons.min.css" />
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  
+  <!-- Preload & load primary font synchronously to prevent FOUT (flicker) -->
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500&family=Geist+Mono:wght@300;400&display=swap" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500&family=Geist+Mono:wght@300;400&display=swap" />
 
-    :root {
-      --ink:    #111318;
-      --muted:  #52576b;
-      --rule:   #d1d5e0;
-      --bg:     #ffffff;
-      --surface:#f4f5f8;
-      --accent: #2455c8;
-      --sans:   'Geist', system-ui, sans-serif;
-      --mono:   'Geist Mono', monospace;
-    }
-
-    html { font-size: 16px; scroll-behavior: smooth; }
-
-    body {
-      background: var(--bg);
-      color: var(--ink);
-      font-family: var(--sans);
-      font-weight: 300;
-      line-height: 1.7;
-      -webkit-font-smoothing: antialiased;
-      min-height: 100vh;
-    }
-
-    .page {
-      max-width: 860px;
-      margin: 0 auto;
-      padding: 6rem 2.5rem 8rem;
-      opacity: 0;
-      transform: translateY(18px);
-      animation: rise 0.9s cubic-bezier(.22,.8,.36,1) 0.1s forwards;
-    }
-
-    @keyframes rise { to { opacity: 1; transform: none; } }
-
-    /* ── Header ── */
-    header {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      align-items: end;
-      gap: 1rem;
-      padding-bottom: 2.5rem;
-      border-bottom: 1px solid var(--rule);
-      margin-bottom: 3.5rem;
-    }
-
-    .name {
-      font-size: clamp(2.2rem, 5vw, 3.6rem);
-      font-weight: 300;
-      letter-spacing: -0.03em;
-      line-height: 1;
-    }
-
-    .name em { font-style: normal; font-weight: 500; color: var(--accent); }
-
-    .title-tag {
-      font-family: var(--mono);
-      font-size: 0.7rem;
-      font-weight: 300;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-top: 0.8rem;
-    }
-
-    .contacts {
-      text-align: right;
-      font-family: var(--mono);
-      font-size: 0.68rem;
-      font-weight: 300;
-      color: var(--muted);
-      line-height: 2;
-    }
-
-    .contact-row {
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-      gap: 0.45rem;
-    }
-
-    .contact-row a,
-    .contact-row span { color: inherit; text-decoration: none; transition: color 0.2s; }
-    .contact-row a:hover { color: var(--accent); }
-
-    /* ── Icons ── */
-    .icon {
-      display: inline-block;
-      width: 13px;
-      height: 13px;
-      vertical-align: middle;
-      flex-shrink: 0;
-      opacity: 0.55;
-      transition: opacity 0.2s;
-    }
-
-    .contact-row:hover .icon { opacity: 0.9; }
-
-    .section-label {
-      font-family: var(--mono);
-      font-size: 0.62rem;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--muted);
-      padding-top: 0.3rem;
-      display: flex;
-      align-items: flex-start;
-      gap: 0.45rem;
-      align-self: start;
-    }
-
-    .section-label .label-text {
-      font-family: var(--mono) !important;
-      font-size: 0.62rem;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      font-style: normal;
-    }
-
-    .section-label .icon {
-      width: 11px;
-      height: 11px;
-      margin-top: 0.05rem;
-      opacity: 0.4;
-    }
-
-    /* ── Grid ── */
-    .cv-grid {
-      display: grid;
-      grid-template-columns: 160px 1fr;
-      gap: 0 3rem;
-    }
-
-    .section-body {
-      padding-bottom: 3rem;
-      border-bottom: 1px solid var(--rule);
-      margin-bottom: 3rem;
-    }
-
-    .section-body:last-child { border-bottom: none; margin-bottom: 0; }
-
-    /* ── About ── */
-    .about-text {
-      font-size: 1.05rem;
-      font-weight: 400;
-      line-height: 1.75;
-      color: var(--ink);
-      max-width: 58ch;
-    }
-
-    .about-text p + p { margin-top: 0.9rem; }
-
-    /* ── Experience ── */
-    .entry {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 0.2rem 1.5rem;
-      margin-bottom: 2.2rem;
-      padding-bottom: 2.2rem;
-      border-bottom: 1px solid var(--rule);
-      opacity: 0;
-      transform: translateY(10px);
-      animation: rise 0.6s cubic-bezier(.22,.8,.36,1) forwards;
-    }
-
-    .entry:nth-child(1) { animation-delay: 0.3s; }
-    .entry:nth-child(2) { animation-delay: 0.42s; }
-    .entry:nth-child(3) { animation-delay: 0.54s; }
-    .entry:nth-child(4) { animation-delay: 0.66s; }
-    .entry:nth-child(5) { animation-delay: 0.78s; }
-
-    .entry:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
-
-    .entry-role { font-size: 0.95rem; font-weight: 500; letter-spacing: -0.01em; }
-    .entry-company { font-size: 0.9rem; font-style: normal; font-weight: 400; color: var(--accent); }
-
-    .entry-date {
-      font-family: var(--mono);
-      font-size: 0.65rem;
-      font-weight: 300;
-      color: var(--muted);
-      letter-spacing: 0.08em;
-      text-align: right;
-      padding-top: 0.15rem;
-      white-space: nowrap;
-    }
-
-    .entry-desc {
-      grid-column: 1 / -1;
-      font-size: 0.875rem;
-      color: var(--muted);
-      line-height: 1.7;
-      margin-top: 0.4rem;
-      max-width: 62ch;
-    }
-
-    .entry-tags {
-      grid-column: 1 / -1;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.4rem;
-      margin-top: 0.7rem;
-    }
-
-    .tag {
-      font-family: var(--mono);
-      font-size: 0.6rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--muted);
-      border: 1px solid var(--rule);
-      padding: 0.2rem 0.6rem;
-      border-radius: 2px;
-      transition: border-color 0.2s, color 0.2s;
-    }
-
-    .tag:hover { border-color: var(--accent); color: var(--accent); }
-
-    /* ── Skills ── */
-    .skills-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-      gap: 1.6rem 2rem;
-    }
-
-    .skill-group h4 {
-      font-family: var(--mono);
-      font-size: 0.62rem;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 0.75rem;
-      padding-bottom: 0.4rem;
-      border-bottom: 1px solid var(--rule);
-    }
-
-    .skill-list { list-style: none; }
-
-    .skill-list li {
-      font-size: 0.875rem;
-      font-weight: 400;
-      line-height: 1;
-      color: var(--ink);
-      display: flex;
-      align-items: center;
-      gap: 0.6rem;
-      padding: 0.38rem 0;
-    }
-
-    .skill-list li + li {
-      border-top: 1px solid var(--rule);
-    }
-
-    .skill-list li i {
-      font-size: 0.95rem;
-      color: var(--muted);
-      width: 16px;
-      text-align: center;
-      flex-shrink: 0;
-      transition: color 0.2s;
-    }
-
-    .skill-list li:hover i { color: var(--accent); }
-    .skill-list li:hover { color: var(--accent); }
-
-    .cert-list { list-style: none; }
-
-    .cert-list li {
-      font-size: 0.875rem;
-      font-weight: 400;
-      line-height: 1.9;
-      color: var(--ink);
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .cert-list li::before {
-      content: '';
-      display: inline-block;
-      width: 4px;
-      height: 4px;
-      border-radius: 50%;
-      background: var(--accent);
-      opacity: 0.6;
-      flex-shrink: 0;
-    }
-
-    /* ── Education ── */
-    .edu-entry { margin-bottom: 1.8rem; }
-    .edu-entry:last-child { margin-bottom: 0; }
-    .edu-degree { font-size: 0.95rem; font-weight: 500; }
-    .edu-school { font-style: normal; font-weight: 400; color: var(--accent); }
-
-    .edu-meta {
-      font-family: var(--mono);
-      font-size: 0.65rem;
-      color: var(--muted);
-      letter-spacing: 0.08em;
-      margin-top: 0.2rem;
-    }
-
-    /* ── Footer ── */
-    footer {
-      margin-top: 5rem;
-      padding-top: 2rem;
-      border-top: 1px solid var(--rule);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .footer-note {
-      font-family: var(--mono);
-      font-size: 0.62rem;
-      color: var(--muted);
-      letter-spacing: 0.1em;
-    }
-
-    .footer-links { display: flex; gap: 1.5rem; }
-
-    .footer-links a {
-      font-family: var(--mono);
-      font-size: 0.62rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--muted);
-      text-decoration: none;
-      transition: color 0.2s;
-      display: flex;
-      align-items: center;
-      gap: 0.35rem;
-    }
-
-    .footer-links .icon { width: 12px; height: 12px; }
-    .footer-links a:hover { color: var(--accent); }
-    .footer-links a:hover .icon { opacity: 0.9; }
-
-    /* ── Responsive ── */
-    @media (max-width: 640px) {
-      .page { padding: 3rem 1.5rem 5rem; }
-      header { grid-template-columns: 1fr; }
-      .contacts { text-align: left; }
-      .contact-row { justify-content: flex-start; }
-      .cv-grid { grid-template-columns: 1fr; gap: 0; }
-      .section-label {
-        position: static;
-        margin-bottom: 1rem;
-        border-bottom: 1px solid var(--rule);
-        padding-bottom: 0.5rem;
-      }
-      .entry { grid-template-columns: 1fr; }
-      .entry-date { text-align: left; }
-      footer { flex-direction: column; gap: 1rem; text-align: center; }
-    }
-  </style>
+  <!-- Lazy load simple-icons web font (icons popping in doesn't cause layout shift) -->
+  <link rel="preload" as="style" href="https://cdn.jsdelivr.net/npm/simple-icons-font@13/font/simple-icons.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/simple-icons-font@13/font/simple-icons.min.css" media="print" onload="this.media='all'" />
+  <noscript>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/simple-icons-font@13/font/simple-icons.min.css" />
+  </noscript>
+  <link rel="stylesheet" href="style.css" />
 </head>
+
 <body>
-<main class="page">
 
-  <!-- ── HEADER ── -->
-  <header>
-    <div>
+  <!-- Reading Progress -->
+  <div id="progress-bar" class="progress-bar"></div>
+
+
+  <div class="tldr-overlay" id="tldr" aria-hidden="true" role="dialog" aria-modal="true">
+    <div class="tldr-inner">
+      <div class="tldr-header">
+        <div>
+          <p class="tldr-kicker" data-i18n="tldr.kicker">TL;DR — the short version</p>
+          <h2 class="tldr-name" data-i18n-html="true">João <em>Magalhães</em></h2>
+          <p class="tldr-role" data-i18n="tldr.role">Front-end Engineer · Aveiro, Portugal</p>
+        </div>
+        <button class="tldr-close-btn" id="btn-close-tldr" aria-label="Close TL;DR">
+          <i data-lucide="x" class="lucide-icon"></i>
+          <span data-i18n="btn.close">close</span>
+        </button>
+      </div>
+      <div class="tldr-grid">
+        <div class="tldr-block">
+          <h3 data-i18n="tldr.who_title">Who I am</h3>
+          <p data-i18n="tldr.who_desc">A frontend engineer with over a decade spent building products at scale. From Telco and IoT to energy and cloud—I don't just ship features; I take ownership of the systems behind them.</p>
+        </div>
+        <div class="tldr-block">
+          <h3 data-i18n="tldr.where_title">Where I am now</h3>
+          <p data-i18n-html="true" data-i18n="tldr.where_desc"><strong>Intermedia Cloud Communications</strong>, crafting the real-time frontends that power global cloud communication infrastructure using Angular.</p>
+        </div>
+        <div class="tldr-block">
+          <h3 data-i18n="tldr.been_title">Where I’ve been</h3>
+          <p data-i18n-html="true" data-i18n="tldr.been_desc">Six formative years at <strong>WIT Software</strong> (embedded in Vodafone Portugal) scaling self-care apps to 1.5M+ active users, and architectural roles shaping everything from IoT platforms to critical energy market systems.</p>
+        </div>
+        <div class="tldr-block">
+          <h3 data-i18n="tldr.stack_title">Stack</h3>
+          <div class="tldr-tags">
+            <span class="tag">Angular</span>
+            <span class="tag">React</span>
+            <span class="tag">React Native</span>
+            <span class="tag">TypeScript</span>
+            <span class="tag">Node.js</span>
+          </div>
+        </div>
+        <div class="tldr-block">
+          <h3 data-i18n="tldr.edge_title">My edge</h3>
+          <p data-i18n="tldr.edge_desc">Building with AI at a production level. Think LLMs, agent orchestration, and RAG architectures that actually scale. I vibe code, but always with strict engineering criteria.</p>
+        </div>
+        <div class="tldr-block tldr-contact">
+          <h3 data-i18n="tldr.contact_title">Contact</h3>
+          <a href="mailto:argento.literal.0j@icloud.com">argento.literal.0j@icloud.com</a>
+          <a href="https://linkedin.com/in/joaommagalhaes" target="_blank">linkedin.com/in/joaommagalhaes</a>
+          <a href="https://github.com/joaommagalhaes" target="_blank">github.com/joaommagalhaes</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <main class="page">
+
+
+    <!-- Toolbar (fixed top-right utility controls) -->
+    <div class="toolbar">
+      <button class="ctrl-btn" id="btn-tldr" data-i18n-attr="title|toolbar.tldr_title" title="TL;DR — short version" aria-expanded="false" aria-controls="tldr">
+        <i data-lucide="file-text" class="lucide-icon"></i>
+      </button>
+      <div class="ctrl-sep"></div>
+      <button class="ctrl-btn" id="btn-font-down" data-i18n-attr="title|toolbar.font_down_title" title="Decrease font size">
+        <i data-lucide="minus-circle" class="lucide-icon"></i>
+      </button>
+      <button class="ctrl-btn" id="btn-font-up" data-i18n-attr="title|toolbar.font_up_title" title="Increase font size">
+        <i data-lucide="plus-circle" class="lucide-icon"></i>
+      </button>
+      <div class="ctrl-sep"></div>
+      <button class="ctrl-btn" id="btn-theme" data-i18n-attr="title|toolbar.theme_title" title="Toggle dark mode" aria-live="polite">
+        <i data-lucide="moon" id="icon-light" class="lucide-icon"></i>
+        <i data-lucide="sun" id="icon-dark" class="lucide-icon" style="display:none"></i>
+      </button>
+      <div class="ctrl-sep"></div>
+      <button class="ctrl-btn" id="btn-lang" data-i18n-attr="title|toolbar.lang_title" title="Toggle language" aria-live="polite">
+        <span class="lang-text pt">PT</span>
+        <span class="lang-text en" style="display:none">EN</span>
+      </button>
+    </div>
+
+    <header class="hero">
+      <div class="avatar">
+        <img src="https://github.com/joaommagalhaes.png" alt="João Magalhães" />
+      </div>
       <h1 class="name">João <em>Magalhães</em></h1>
-      <p class="title-tag">Front-end Engineer · Aveiro, Portugal</p>
-    </div>
-    <div class="contacts">
-      <div class="contact-row">
-        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="2,4 12,13 22,4"/></svg>
-        <a href="mailto:argento.literal.0j@icloud.com"><span class="__cf_email__" data-cfemail="f3928194969d879cdd9f9a879681929fddc399b39a909f9c8697dd909c9e">[email&#160;protected]</span></a>
+      <p class="hero-role" data-i18n="hero.role">Frontend Engineer</p>
+      <p class="hero-meta"><span data-i18n="hero.meta_location">Aveiro, Portugal</span> <span class="hero-meta-sep">·</span> <span id="local-time" aria-live="polite"></span></p>
+      <div class="header-links">
+        <a href="mailto:argento.literal.0j@icloud.com" class="header-link" title="Email">
+          <i class="si si-gmail"></i>
+        </a>
+        <a href="https://linkedin.com/in/joaommagalhaes" target="_blank" class="header-link" title="LinkedIn">
+          <i class="si si-linkedin"></i>
+        </a>
+        <a href="https://github.com/joaommagalhaes" target="_blank" class="header-link" title="GitHub">
+          <i class="si si-github"></i>
+        </a>
       </div>
-      <div class="contact-row">
-        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
-        <a href="https://linkedin.com/in/joaommagalhaes" target="_blank">linkedin.com/in/joaommagalhaes</a>
-      </div>
-    </div>
-  </header>
+    </header>
 
-  <div class="cv-grid">
-
-    <!-- ── ABOUT ── -->
-    <span class="section-label">
-      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
-      <span class="label-text">About</span>
-    </span>
-    <div class="section-body">
-      <div class="about-text">
-        <p>Building large-scale, real-time data systems in international environments. Designing high-performance Angular applications using reactive architectures, with a strong focus on scalability, performance, and long-term maintainability.</p>
-        <p>Specialising in modern web and cross-platform technologies since 2018 — shifted from feature delivery to system-level architecture and distributed integration. Continuous learner from foundational languages to enterprise-grade real-time systems.</p>
-      </div>
-    </div>
-
-    <!-- ── EXPERIENCE ── -->
-    <span class="section-label">
-      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg>
-      <span class="label-text">Experience</span>
-    </span>
-    <div class="section-body">
-
-      <div class="entry">
-        <div>
-          <div class="entry-role">Software Engineer</div>
-          <div class="entry-company">Intermedia Cloud Communications</div>
-        </div>
-        <div class="entry-date">Dec 2024 — present</div>
-        <p class="entry-desc">
-          Working in a US-based product company building enterprise-grade cloud communications infrastructure.
-          Designing and delivering high-performance Angular front-ends that integrate with large-scale,
-          real-time data pipelines — operating across international teams and high-availability production environments.
-        </p>
-        <div class="entry-tags">
-          <span class="tag">Angular</span>
-          <span class="tag">TypeScript</span>
-          <span class="tag">Real-time Systems</span>
-          <span class="tag">Cloud Communications</span>
-        </div>
-      </div>
-
-      <div class="entry">
-        <div>
-          <div class="entry-role">Software Engineer → Senior Software Engineer</div>
-          <div class="entry-company">WIT Software · Vodafone Portugal</div>
-        </div>
-        <div class="entry-date">Nov 2018 — Dec 2024</div>
-        <p class="entry-desc">
-          Six years embedded across multiple client projects in the telecommunications sector,
-          progressively moving from feature delivery to system-level ownership. Grew into a Senior
-          role while working directly inside Vodafone Portugal's engineering team.<br><br>
-          Built and scaled a React Native self-care app with 1.5M+ monthly active users and over
-          10M data entries — owning critical user journeys end-to-end: eSIM activation, Plan Swaps,
-          and targeted marketing campaigns. Contributed to a mobile payments project focused on
-          delivering a seamless, secure front-end experience with ReactJS.<br><br>
-          Architected and led the build of a modular campaign engine in ReactJS that enabled
-          non-technical teams to deploy plug-and-play mobile campaigns independently, significantly
-          cutting campaign time-to-market. Across the full tenure, drove the shift from writing
-          code to thinking in systems — taking ownership of architecture choices, cross-team
-          coordination, and the transition toward reactive, scalable patterns.
-        </p>
-        <div class="entry-tags">
-          <span class="tag">React Native</span>
-          <span class="tag">ReactJS</span>
-          <span class="tag">Angular</span>
-          <span class="tag">TypeScript</span>
-          <span class="tag">Node.js</span>
-          <span class="tag">Campaign Engine</span>
-          <span class="tag">Vodafone</span>
-        </div>
-      </div>
-
-      <div class="entry">
-        <div>
-          <div class="entry-role">Full Stack Engineer</div>
-          <div class="entry-company">Talents &amp; Treasures</div>
-        </div>
-        <div class="entry-date">Dec 2016 — Nov 2018</div>
-        <p class="entry-desc">
-          Full-stack development across IoT and Smart Cities projects, working closer to hardware
-          and infrastructure than most front-end roles allow. Built Gesluce — an urban streetlight
-          management system used by municipalities — using PHP, MySQL, RabbitMQ and Python.
-          Developed an industrial hardware test portal with Angular and a BI layer for data
-          analysis, plus a real-time incident management platform with Angular, NodeJS, Ionic
-          and MySQL. A formative period that shaped a systems-first mindset.
-        </p>
-        <div class="entry-tags">
-          <span class="tag">Angular</span>
-          <span class="tag">PHP</span>
-          <span class="tag">MySQL</span>
-          <span class="tag">RabbitMQ</span>
-          <span class="tag">Python</span>
-          <span class="tag">Ionic</span>
-          <span class="tag">IoT</span>
-        </div>
-      </div>
-
-      <div class="entry">
-        <div>
-          <div class="entry-role">Business Analyst &amp; Software Engineer</div>
-          <div class="entry-company">Galp Energia</div>
-        </div>
-        <div class="entry-date">Dec 2012 — Aug 2016</div>
-        <p class="entry-desc">
-          Started the professional career at one of Portugal's largest energy companies,
-          working at the intersection of business analysis and software engineering. Played
-          a key role as analyst on SGA, the internal Asset Management System for gas distribution
-          infrastructure, and contributed to M&amp;S — the Messaging &amp; Switching platform used
-          across the entire Portuguese energy market. Built a BI reporting system to generate
-          regulatory reports for ERSE (Energy Services Regulatory Authority) and authored the
-          technical documentation for a Distribution Portal managing customer contracts for new
-          gas connections. An early lesson in the weight of software in critical infrastructure.
-        </p>
-        <div class="entry-tags">
-          <span class="tag">Java</span>
-          <span class="tag">SQL</span>
-          <span class="tag">Business Analysis</span>
-          <span class="tag">BI / Reporting</span>
-          <span class="tag">Energy Sector</span>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- ── SKILLS ── -->
-    <span class="section-label">
-      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
-      <span class="label-text">Skills</span>
-    </span>
-    <div class="section-body">
-      <div class="skills-grid">
-
-        <div class="skill-group">
-          <h4>Frontend</h4>
-          <ul class="skill-list">
-            <li><i class="si si-angular"></i> Angular</li>
-            <li><i class="si si-react"></i> React / React Native</li>
-            <li><i class="si si-typescript"></i> TypeScript</li>
-            <li><i class="si si-javascript"></i> JavaScript</li>
-            <li><i class="si si-html5"></i> HTML &amp; CSS</li>
-          </ul>
-        </div>
-
-        <div class="skill-group">
-          <h4>Backend &amp; Data</h4>
-          <ul class="skill-list">
-            <li><i class="si si-nodedotjs"></i> Node.js</li>
-            <li><i class="si si-php"></i> PHP</li>
-            <li><i class="si si-python"></i> Python</li>
-            <li><i class="si si-mysql"></i> MySQL / SQL</li>
-            <li><i class="si si-rabbitmq"></i> RabbitMQ</li>
-          </ul>
-        </div>
-
-        <div class="skill-group">
-          <h4>Architecture</h4>
-          <ul class="skill-list">
-            <li><i class="si si-apachekafka"></i> Reactive Architecture</li>
-            <li><i class="si si-kubernetes"></i> Microservices</li>
-            <li><i class="si si-socketdotio"></i> Real-time Systems</li>
-            <li><i class="si si-blueprint"></i> System Design</li>
-            <li><i class="si si-githubactions"></i> Code Review</li>
-          </ul>
-        </div>
-
-        <div class="skill-group">
-          <h4>Tools</h4>
-          <ul class="skill-list">
-            <li><i class="si si-git"></i> Git</li>
-            <li><i class="si si-docker"></i> Docker</li>
-            <li><i class="si si-githubactions"></i> CI/CD</li>
-            <li><i class="si si-ionic"></i> Ionic</li>
-            <li><i class="si si-grafana"></i> BI / Reporting</li>
-          </ul>
-        </div>
-
-      </div>
-    </div>
-
-    <!-- ── CERTIFICATIONS ── -->
-    <span class="section-label">
-      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>
-      <span class="label-text">Certifications</span>
-    </span>
-    <div class="section-body">
-      <ul class="cert-list">
-        <li>React</li>
-        <li>Introduction to C# Programming</li>
-        <li>Certificate of Completion: Java Course</li>
-        <li>Certificate of Completion: JavaScript Course</li>
-        <li>Certificate of Completion: PHP Course</li>
-      </ul>
-    </div>
-
-    <!-- ── EDUCATION ── -->
-    <span class="section-label">
-      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c0 1.1 2.7 2 6 2s6-.9 6-2v-5"/></svg>
-      <span class="label-text">Education</span>
-    </span>
-    <div class="section-body">
-      <div class="edu-entry">
-        <div class="edu-degree">Post-Grad in Communication and Multimedia</div>
-        <div class="edu-school">Universidade de Aveiro</div>
-        <div class="edu-meta">2012 — 2016</div>
-      </div>
-      <div class="edu-entry">
-        <div class="edu-degree">Erasmus — Computer Software Engineering</div>
-        <div class="edu-school">Poznan University of Technology</div>
-        <div class="edu-meta">2011 — 2012</div>
-      </div>
-      <div class="edu-entry">
-        <div class="edu-degree">B.Sc. in Informatics and Management</div>
-        <div class="edu-school">Instituto Politécnico de Bragança</div>
-        <div class="edu-meta">2009 — 2012</div>
-      </div>
-      <div class="edu-entry">
-        <div class="edu-degree">CET — Multimedia Product Development</div>
-        <div class="edu-school">Instituto Politécnico de Bragança</div>
-        <div class="edu-meta">2008 — 2009</div>
-      </div>
-    </div>
-
-    <!-- ── LANGUAGES ── -->
-    <span class="section-label">
-      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-      <span class="label-text">Languages</span>
-    </span>
-    <div class="section-body">
-      <div class="skills-grid">
-        <div class="skill-group">
-          <h4>Proficiency</h4>
-          <ul class="skill-list">
-            <li>Portuguese — native</li>
-            <li>English — Professional Working</li>
-            <li>Spanish — elementary</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-
-  </div><!-- /cv-grid -->
-
-  <!-- ── FOOTER ── -->
-  <footer>
-    <span class="footer-note">Updated 2026</span>
-    <div class="footer-links">
-      <a href="https://linkedin.com/in/joaommagalhaes" target="_blank">
-        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
-        LinkedIn
+    <nav class="section-nav" id="section-nav" aria-label="Page sections">
+      <a href="#about" class="section-nav-link active">
+        <i data-lucide="user" class="lucide-icon"></i>
+        <span data-i18n="nav.about">About</span>
       </a>
-      <a href="/cdn-cgi/l/email-protection#e48e8b858b89858
+      <a href="#experience" class="section-nav-link">
+        <i data-lucide="briefcase" class="lucide-icon"></i>
+        <span data-i18n="nav.experience">Experience</span>
+      </a>
+      <a href="#ai" class="section-nav-link">
+        <i data-lucide="lightbulb" class="lucide-icon"></i>
+        <span data-i18n="nav.ai">AI</span>
+      </a>
+      <a href="#skills" class="section-nav-link">
+        <i data-lucide="code" class="lucide-icon"></i>
+        <span data-i18n="nav.skills">Skills</span>
+      </a>
+      <a href="#education" class="section-nav-link">
+        <i data-lucide="graduation-cap" class="lucide-icon"></i>
+        <span data-i18n="nav.education">Education</span>
+      </a>
+      <a href="#languages" class="section-nav-link">
+        <i data-lucide="globe" class="lucide-icon"></i>
+        <span data-i18n="nav.languages">Languages</span>
+      </a>
+      <a href="#offscreen" class="section-nav-link">
+        <i data-lucide="headphones" class="lucide-icon"></i>
+        <span data-i18n="nav.offscreen">Beyond the Screen</span>
+      </a>
+    </nav>
+
+    <div class="cv-grid">
+
+
+      <span class="section-label" id="about">
+        <i data-lucide="user" class="lucide-icon"></i>
+        <span class="label-text" data-i18n="about.title">About</span>
+      </span>
+      <div class="section-body reveal">
+        <div class="about-text">
+          <p data-i18n="about.p1">I’m a frontend engineer with over ten years of experience breathing life into products people actually rely on. My journey has taken me through IoT platforms, critical energy infrastructure, mobile apps operating at Telco scale, and real-time cloud communications.</p>
+          <p data-i18n="about.p2">I thrive at the intersection of product vision and engineering craft. For me, it isn't just about making things look good—it's about how those systems hold up under intense pressure in production. Over the years, I've grown from writing individual features to shaping entire architectures, and the small details that make an interface feel intuitive are what keep me going.</p>
+          <p data-i18n="about.p3">Lately, I've been deeply focused on AI—not as a weekend curiosity, but as applied production knowledge. I build systems leveraging LLMs, agent orchestration, RAG, and skill design, shipping real-world applications that solve complex problems at scale.</p>
+        </div>
+      </div>
+
+
+      <span class="section-label" id="experience">
+        <i data-lucide="briefcase" class="lucide-icon"></i>
+        <span class="label-text" data-i18n="exp.title">Experience</span>
+      </span>
+      <div class="section-body">
+
+        <div class="entry reveal">
+          <div>
+            <div class="entry-role" data-i18n="exp.intermedia.role">Software Engineer</div>
+            <div class="entry-company">Intermedia Cloud Communications</div>
+          </div>
+          <div class="entry-date" data-i18n="exp.intermedia.date">Dec 2024 — present</div>
+          <p class="entry-desc" data-i18n-html="true" data-i18n="exp.intermedia.desc">
+            Currently, I'm part of a US-based product company, building the enterprise-grade infrastructure that powers modern cloud communications. I design and deliver high-performance Angular frontends deeply integrated with massive, real-time data pipelines. It’s high-stakes, high-availability work alongside a brilliant international team.
+          </p>
+          <div class="entry-stats">
+            <span class="entry-stat" data-i18n="exp.intermedia.stat1">99.999% Uptime</span>
+            <span class="entry-stat" data-i18n="exp.intermedia.stat2">UCaaS Platform</span>
+            <span class="entry-stat" data-i18n="exp.intermedia.stat3">Real-time · Cloud</span>
+          </div>
+          <div class="entry-tags">
+            <span class="tag">Angular</span>
+            <span class="tag">TypeScript</span>
+            <span class="tag">Real-time</span>
+            <span class="tag">Cloud</span>
+          </div>
+        </div>
+
+        <div class="entry reveal">
+          <div>
+            <div class="entry-role" data-i18n="exp.wit.role">Software Engineer → Senior Software Engineer</div>
+            <div class="entry-company">WIT Software · Vodafone Portugal</div>
+          </div>
+          <div class="entry-date" data-i18n="exp.wit.date">Nov 2018 — Dec 2024</div>
+          <p class="entry-desc" data-i18n="exp.wit.desc">
+            I spent six years embedded within Vodafone Portugal's engineering team, tackling multiple client projects across the telecommunications sector. Here, my role naturally evolved from feature delivery to full system-level ownership. I ended up owning critical, high-impact user journeys end-to-end, such as eSIM activations, Plan Swaps, and dynamic marketing campaigns. One of my proudest achievements was architecting a modular campaign engine in React that gave non-technical teams the power to deploy plug-and-play campaigns independently—drastically cutting down our time-to-market.
+          </p>
+          <div class="entry-stats">
+            <span class="entry-stat">1.5M+ MAU</span>
+            <span class="entry-stat">10M+ data entries</span>
+            <span class="entry-stat">eSIM · Plan Swaps · Campaigns</span>
+          </div>
+          <div class="entry-tags">
+            <span class="tag">React Native</span>
+            <span class="tag">ReactJS</span>
+            <span class="tag">Angular</span>
+            <span class="tag">TypeScript</span>
+            <span class="tag">Node.js</span>
+          </div>
+        </div>
+
+        <div class="entry reveal">
+          <div>
+            <div class="entry-role" data-i18n="exp.talents.role">Full Stack Engineer</div>
+            <div class="entry-company">Talents &amp; Treasures</div>
+          </div>
+          <div class="entry-date" data-i18n="exp.talents.date">Dec 2016 — Nov 2018</div>
+          <p class="entry-desc" data-i18n="exp.talents.desc">
+            This role took me much closer to the metal than most frontend positions usually do. Working across IoT and Smart Cities, I built Gesluce—an urban streetlight management system adopted by various municipalities. I also developed real-time incident management platforms and web portals for testing industrial hardware. It was an incredibly formative period that instilled a systems-first mindset I still carry with me today.
+          </p>
+          <div class="entry-stats">
+            <span class="entry-stat" data-i18n="exp.talents.stat1">Smart Cities (Gesluce)</span>
+            <span class="entry-stat" data-i18n="exp.talents.stat2">Industrial IoT · Real-time</span>
+            <span class="entry-stat" data-i18n="exp.talents.stat3">Hardware Testing Portals</span>
+          </div>
+          <div class="entry-tags">
+            <span class="tag">Angular</span>
+            <span class="tag">PHP</span>
+            <span class="tag">MySQL</span>
+            <span class="tag">RabbitMQ</span>
+            <span class="tag">Python</span>
+            <span class="tag">Ionic</span>
+          </div>
+        </div>
+
+        <div class="entry reveal">
+          <div>
+            <div class="entry-role" data-i18n="exp.galp.role">Business Analyst</div>
+            <div class="entry-company">Galp Energia</div>
+          </div>
+          <div class="entry-date" data-i18n="exp.galp.date">Dec 2012 — Aug 2016</div>
+          <p class="entry-desc" data-i18n="exp.galp.desc">
+            My roots trace back to one of Portugal's largest energy companies. Working as a Business Analyst, I conducted in-depth analysis and validation of business needs. I played a key role in systems like SGA for asset management and M&S for messaging, which underpinned the entire Portuguese energy market. I also conducted BI analysis to create compliance reporting systems and contributed to the technical documentation of the Distribution Portal.
+          </p>
+          <div class="entry-stats">
+            <span class="entry-stat" data-i18n="exp.galp.stat1">ERSE Regulatory Compliance</span>
+            <span class="entry-stat" data-i18n="exp.galp.stat2">Critical Infrastructure (SGA/MS)</span>
+            <span class="entry-stat" data-i18n="exp.galp.stat3">BI · Technical Documentation</span>
+          </div>
+          <div class="entry-tags">
+            <span class="tag" data-i18n="exp.galp.tags.ba">Business Analysis</span>
+            <span class="tag" data-i18n="exp.galp.tags.bi">BI / Reporting</span>
+            <span class="tag" data-i18n="exp.galp.tags.am">Asset Management</span>
+            <span class="tag" data-i18n="exp.galp.tags.energy">Energy Sector</span>
+          </div>
+        </div>
+
+      </div>
+
+
+      <span class="section-label" id="ai">
+        <i data-lucide="lightbulb" class="lucide-icon"></i>
+        <span class="label-text" data-i18n="ai.title">AI Knowledge</span>
+      </span>
+      <div class="section-body reveal">
+        <div class="skills-grid">
+
+          <div class="skill-group">
+            <h4 data-i18n="ai.concepts">Concepts</h4>
+            <div class="ik-grid">
+              <div class="ik-item" data-i18n-attr="data-tooltip|ai.tt.llms" data-tooltip="LLMs & prompt engineering"><i class="si si-openai"></i></div>
+              <div class="ik-item" data-i18n-attr="data-tooltip|ai.tt.agent" data-tooltip="Agent orchestration"><i class="si si-anthropic"></i></div>
+              <div class="ik-item" data-i18n-attr="data-tooltip|ai.tt.rag" data-tooltip="RAG patterns"><i class="si si-amazondynamodb"></i></div>
+              <div class="ik-item" data-i18n-attr="data-tooltip|ai.tt.multi_agent" data-tooltip="Multi-agent pipelines"><i class="si si-apacheairflow"></i></div>
+            </div>
+          </div>
+
+          <div class="skill-group">
+            <h4>&nbsp;</h4>
+            <div class="ik-grid">
+              <div class="ik-item" data-i18n-attr="data-tooltip|ai.tt.skill" data-tooltip="Skill & tool design"><i class="si si-blueprint"></i></div>
+              <div class="ik-item" data-i18n-attr="data-tooltip|ai.tt.context" data-tooltip="Context & memory management"><i class="si si-databricks"></i></div>
+              <div class="ik-item" data-i18n-attr="data-tooltip|ai.tt.ai_assist" data-tooltip="AI-assisted workflows"><i class="si si-githubactions"></i></div>
+              <div class="ik-item" data-i18n-attr="data-tooltip|ai.tt.eval" data-tooltip="Evaluation & output ownership"><i class="si si-vercel"></i></div>
+            </div>
+          </div>
+
+          <div class="skill-group col-span-2" style="margin-top: 0.5rem;">
+            <h4 data-i18n="ai.approach">My Approach</h4>
+            <p style="font-size:0.875rem;color:var(--muted);line-height:1.75;padding-top:0.38rem;max-width:62ch;" data-i18n="ai.approach.desc">
+              I use AI as a core production methodology, not just an experimental toy. I understand how language models reason, where their context inevitably degrades, and how to design agent flows that remain cohesive across tool sequences and memory boundaries. When I design skills and prompts, I ensure they hold up under genuine user load. The philosophy is simple: remain fast by design, but deliberate by discipline.
+            </p>
+          </div>
+
+        </div>
+      </div>
+
+
+      <span class="section-label" id="skills">
+        <i data-lucide="code" class="lucide-icon"></i>
+        <span class="label-text" data-i18n="skills.title">Skills</span>
+      </span>
+      <div class="section-body reveal">
+        <div class="skills-grid">
+          <div class="skill-group">
+            <h4 data-i18n="skills.frontend">Frontend</h4>
+            <div class="ik-grid">
+              <div class="ik-item" data-tooltip="Angular"><i class="si si-angular"></i></div>
+              <div class="ik-item" data-tooltip="React / React Native"><i class="si si-react"></i></div>
+              <div class="ik-item" data-tooltip="TypeScript"><i class="si si-typescript"></i></div>
+              <div class="ik-item" data-tooltip="JavaScript"><i class="si si-javascript"></i></div>
+              <div class="ik-item" data-tooltip="HTML & CSS"><i class="si si-html5"></i></div>
+            </div>
+          </div>
+          <div class="skill-group">
+            <h4 data-i18n="skills.backend">Backend &amp; Data</h4>
+            <div class="ik-grid">
+              <div class="ik-item" data-tooltip="Node.js"><i class="si si-nodedotjs"></i></div>
+              <div class="ik-item" data-tooltip="PHP"><i class="si si-php"></i></div>
+              <div class="ik-item" data-tooltip="Python"><i class="si si-python"></i></div>
+              <div class="ik-item" data-tooltip="MySQL / SQL"><i class="si si-mysql"></i></div>
+              <div class="ik-item" data-tooltip="RabbitMQ"><i class="si si-rabbitmq"></i></div>
+            </div>
+          </div>
+          <div class="skill-group">
+            <h4 data-i18n="skills.arch">Architecture</h4>
+            <div class="ik-grid">
+              <div class="ik-item" data-i18n-attr="data-tooltip|skills.arch.react" data-tooltip="Reactive Architecture"><i class="si si-apachekafka"></i></div>
+              <div class="ik-item" data-i18n-attr="data-tooltip|skills.arch.micro" data-tooltip="Microservices"><i class="si si-kubernetes"></i></div>
+              <div class="ik-item" data-i18n-attr="data-tooltip|skills.arch.realtime" data-tooltip="Real-time Systems"><i class="si si-socketdotio"></i></div>
+              <div class="ik-item" data-i18n-attr="data-tooltip|skills.arch.design" data-tooltip="System Design"><i class="si si-blueprint"></i></div>
+              <div class="ik-item" data-i18n-attr="data-tooltip|skills.arch.review" data-tooltip="Code Review"><i class="si si-githubactions"></i></div>
+            </div>
+          </div>
+          <div class="skill-group">
+            <h4 data-i18n="skills.tools">Tools</h4>
+            <div class="ik-grid">
+              <div class="ik-item" data-tooltip="Git"><i class="si si-git"></i></div>
+              <div class="ik-item" data-tooltip="Docker"><i class="si si-docker"></i></div>
+              <div class="ik-item" data-tooltip="CI/CD"><i class="si si-githubactions"></i></div>
+              <div class="ik-item" data-tooltip="Ionic"><i class="si si-ionic"></i></div>
+              <div class="ik-item" data-i18n-attr="data-tooltip|skills.tools.bi" data-tooltip="Analytics/BI"><i class="si si-grafana"></i></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <span class="section-label" id="education">
+        <i data-lucide="graduation-cap" class="lucide-icon"></i>
+        <span class="label-text" data-i18n="edu.title">Education</span>
+      </span>
+      <div class="section-body reveal">
+
+        <div class="edu-entry">
+          <div class="edu-header">
+            <div>
+              <div class="edu-degree" data-i18n="edu.pg.degree">Post-Grad in Communication and Multimedia</div>
+              <div class="edu-school">Universidade de Aveiro</div>
+            </div>
+            <div class="edu-grade">16<span>/20</span></div>
+          </div>
+          <div class="edu-meta">2012 — 2016</div>
+          <p class="edu-desc" data-i18n="edu.pg.desc">A deep dive into interactive media, digital systems design, and human-computer interaction. It taught me how to bridge the gap between rigorous technical development and empathetic, user-centered design.</p>
+        </div>
+
+        <div class="edu-entry">
+          <div class="edu-header">
+            <div>
+              <div class="edu-degree" data-i18n="edu.erasmus.degree">Erasmus — Computer Software Engineering</div>
+              <div class="edu-school">Poznan University of Technology</div>
+            </div>
+          </div>
+          <div class="edu-meta" data-i18n="edu.erasmus.meta">2011 — 2012 · Poland</div>
+          <p class="edu-desc" data-i18n="edu.erasmus.desc">An international exchange year that cemented my grasp of software engineering fundamentals, algorithms, and distributed systems. Culturally and technically, it remains one of my most formative experiences.</p>
+        </div>
+
+        <div class="edu-entry">
+          <div class="edu-header">
+            <div>
+              <div class="edu-degree" data-i18n="edu.bsc.degree">B.Sc. in Informatics and Management</div>
+              <div class="edu-school">Instituto Politécnico de Bragança</div>
+            </div>
+            <div class="edu-grade">15<span>/20</span></div>
+          </div>
+          <div class="edu-meta">2009 — 2012</div>
+          <p class="edu-desc" data-i18n="edu.bsc.desc">Where I built my foundation in computer science and business management, developing an early appreciation for ensuring that technological decisions always drive real business value.</p>
+        </div>
+
+        <div class="edu-entry">
+          <div class="edu-header">
+            <div>
+              <div class="edu-degree" data-i18n="edu.cet.degree">CET — Multimedia Product Development</div>
+              <div class="edu-school">Instituto Politécnico de Bragança</div>
+            </div>
+            <div class="edu-grade">17<span>/20</span></div>
+          </div>
+          <div class="edu-meta">2008 — 2009</div>
+          <p class="edu-desc" data-i18n="edu.cet.desc">My first formal exposure to the world of programming, web development, and digital content creation.</p>
+        </div>
+
+      </div>
+
+
+      <span class="section-label" id="languages">
+        <i data-lucide="globe" class="lucide-icon"></i>
+        <span class="label-text" data-i18n="lang.title">Languages</span>
+      </span>
+      <div class="section-body reveal">
+        <div class="skills-grid">
+          <div class="skill-group">
+            <h4 data-i18n="lang.prof">Proficiency</h4>
+            <div class="flag-grid">
+              <span class="flag-item" data-i18n-attr="data-country|lang.pt">
+                <span class="flag">🇵🇹</span>
+              </span>
+              <span class="flag-item" data-i18n-attr="data-country|lang.en">
+                <span class="flag">🇬🇧</span>
+              </span>
+              <span class="flag-item" data-i18n-attr="data-country|lang.fr">
+                <span class="flag">🇫🇷</span>
+              </span>
+              <span class="flag-item" data-i18n-attr="data-country|lang.es">
+                <span class="flag">🇪🇸</span>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <span class="section-label" id="offscreen">
+        <i data-lucide="headphones" class="lucide-icon"></i>
+        <span class="label-text" data-i18n="offscreen.title">Beyond the Screen</span>
+      </span>
+      <div class="section-body reveal">
+        <div class="interests-container">
+          <!-- Currently Dashboard -->
+          <div class="currently-dashboard">
+            <div class="interests-label">
+        <span data-i18n="offscreen.rn">Right Now</span>
+            </div>
+            <ul class="currently-list">
+              <li>
+                <span class="currently-lbl" data-i18n="offscreen.rn.building.lbl">Building</span>
+                <span class="currently-val" data-i18n="offscreen.rn.building.val">A self-hosted project for family budget and wealth management, covering yearly budgets, loans, financial and physical assets, and contract management.</span>
+              </li>
+              <li>
+                <span class="currently-lbl" data-i18n="offscreen.rn.reading.lbl">Reading</span>
+                <span class="currently-val" data-i18n-html="true" data-i18n="offscreen.rn.reading.val">About Artificial Intelligence — not from a technical standpoint, but as a transformative force.</span>
+              </li>
+              <li>
+                <span class="currently-lbl" data-i18n="offscreen.rn.listening.lbl">Listening</span>
+                <span class="currently-val" data-i18n="offscreen.rn.listening.val">Portuguese hip-hop and classic national bands like Xutos, GNR, and UHF.</span>
+              </li>
+              <li>
+                <span class="currently-lbl" data-i18n="offscreen.rn.tuning.lbl">Crafting</span>
+                <span class="currently-val" data-i18n="offscreen.rn.tuning.val">Practical woodwork solutions in my free time, like building a treehouse bedroom for my kids.</span>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Icebreakers -->
+
+        </div>
+        <div class="icebreakers">
+          <div class="interests-label mb-1">
+        <span data-i18n="offscreen.ask">Ask me about...</span>
+          </div>
+          <div class="interests-grid">
+
+            <div class="interest-card" tabindex="0">
+              <div class="interest-card-header">
+                <i data-lucide="map" class="lucide-icon"></i>
+                <h4 data-i18n="offscreen.ask.camino.lbl">Camino de Santiago</h4>
+              </div>
+              <p class="interest-card-desc" data-i18n="offscreen.ask.camino.val">I've walked it three times. It’s a transformative experience of nature, overcoming limits, and connecting with people from all over the world.</p>
+            </div>
+
+            <div class="interest-card" tabindex="0">
+              <div class="interest-card-header">
+                <i data-lucide="wine" class="lucide-icon"></i>
+                <h4 data-i18n="offscreen.ask.wine.lbl">Port Wine</h4>
+              </div>
+              <p class="interest-card-desc" data-i18n="offscreen.ask.wine.val">I was born in the demarcated region and grew up involved in the entire process—from pruning the vines to producing this unique wine.</p>
+            </div>
+
+            <div class="interest-card" tabindex="0">
+              <div class="interest-card-header">
+                <i data-lucide="globe-2" class="lucide-icon"></i>
+                <h4 data-i18n="offscreen.ask.history.lbl">20th Century History</h4>
+              </div>
+              <p class="interest-card-desc" data-i18n="offscreen.ask.history.val">I’m a passionate reader of 20th-century European and world history, fascinated by the transformations that shaped our modern world.</p>
+            </div>
+
+            <div class="interest-card" tabindex="0">
+              <div class="interest-card-header">
+                <i data-lucide="archive" class="lucide-icon"></i>
+                <h4 data-i18n="offscreen.ask.collecting.lbl">Collecting</h4>
+              </div>
+              <p class="interest-card-desc" data-i18n="offscreen.ask.collecting.val">I’m a natural collector. My collections range from Pokémon cards and Hot Wheels to stamps, sugar packets, and news clippings.</p>
+            </div>
+
+          </div>
+        </div>
+        <div class="flag-grid-section">
+          <div class="interests-label mb-1" style="margin-bottom: 2rem;">
+        <span data-i18n="offscreen.travel">Travelled — 19 countries</span>
+          </div>
+          <div class="flag-grid">
+            <div class="flag-item" data-country="Portugal"><span class="flag">🇵🇹</span></div>
+            <div class="flag-item" data-country="Spain"><span class="flag">🇪🇸</span></div>
+            <div class="flag-item" data-country="France"><span class="flag">🇫🇷</span></div>
+            <div class="flag-item" data-country="UK"><span class="flag">🇬🇧</span></div>
+            <div class="flag-item" data-country="Italy"><span class="flag">🇮🇹</span></div>
+            <div class="flag-item" data-country="Germany"><span class="flag">🇩🇪</span></div>
+            <div class="flag-item" data-country="Poland"><span class="flag">🇵🇱</span></div>
+            <div class="flag-item" data-country="Netherlands"><span class="flag">🇳🇱</span></div>
+            <div class="flag-item" data-country="Belgium"><span class="flag">🇧🇪</span></div>
+            <div class="flag-item" data-country="Norway"><span class="flag">🇳🇴</span></div>
+            <div class="flag-item" data-country="Romania"><span class="flag">🇷🇴</span></div>
+            <div class="flag-item" data-country="São Tomé"><span class="flag">🇸🇹</span></div>
+            <div class="flag-item" data-country="Czechia"><span class="flag">🇨🇿</span></div>
+            <div class="flag-item" data-country="Croatia"><span class="flag">🇭🇷</span></div>
+            <div class="flag-item" data-country="Slovenia"><span class="flag">🇸🇮</span></div>
+            <div class="flag-item" data-country="Hungary"><span class="flag">🇭🇺</span></div>
+            <div class="flag-item" data-country="Slovakia"><span class="flag">🇸🇰</span></div>
+            <div class="flag-item" data-country="Luxembourg"><span class="flag">🇱🇺</span></div>
+            <div class="flag-item" data-country="Switzerland"><span class="flag">🇨🇭</span></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+
+    <footer class="reveal">
+      <span class="footer-note" data-i18n="footer.updated">Updated 2026</span>
+      <div class="footer-links">
+        <a href="https://linkedin.com/in/joaommagalhaes" target="_blank">
+        LinkedIn
+        </a>
+        <a href="mailto:argento.literal.0j@icloud.com">
+        Email
+        </a>
+        <a href="https://github.com/joaommagalhaes" target="_blank">
+        GitHub
+        </a>
+      </div>
+    </footer>
+  </main>
+
+  <!-- Back to top button -->
+  <button id="btn-back-to-top" class="btn-back-to-top" data-i18n-attr="title|footer.back_to_top" data-i18n-attr="aria-label|footer.back_to_top" title="Back to top" aria-label="Back to top">
+    <i data-lucide="arrow-up" class="lucide-icon"></i>
+  </button>
+
+  <script src="locales.js"></script>
+  <script src="script.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    lucide.createIcons();
+  </script>
+</body>
+
+</html>
