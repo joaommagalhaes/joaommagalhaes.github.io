@@ -2,24 +2,9 @@ const locales = {
   en: {
     "site.title": "João Magalhães — Front-end Engineer",
     "site.description": "Front-end engineer with 10+ years building scalable web and mobile products. Based in Aveiro, Portugal.",
-    "tldr.kicker": "TL;DR — the short version",
-    "tldr.role": "Front-end Engineer · Aveiro, Portugal",
-    "tldr.who_title": "Who I am",
-    "tldr.who_desc": "Front-end engineer with 10+ years building scalable products across telco, IoT, energy, and cloud.",
-    "tldr.where_title": "Where I am now",
-    "tldr.where_desc": "<strong>Intermedia Cloud Communications</strong>, building real-time Angular frontends for cloud communication systems at scale.",
-    "tldr.been_title": "Where I’ve been",
-    "tldr.been_desc": "Previously at <strong>WIT Software</strong> and Vodafone Portugal, scaling self-care products to 1.5M+ active users and working across IoT and critical energy platforms.",
-    "tldr.stack_title": "Stack",
-    "tldr.edge_title": "My edge",
-    "tldr.edge_desc": "Strong product sense, systems thinking, and hands-on AI work in production — from LLM workflows to agent orchestration and RAG.",
-    "tldr.contact_title": "Contact",
 
-    "toolbar.tldr_title": "TL;DR — short version",
-    "toolbar.font_down_title": "Decrease font size",
-    "toolbar.font_up_title": "Increase font size",
-    "toolbar.theme_title": "Toggle dark mode",
     "toolbar.lang_title": "Toggle language",
+    "globe.hint": "drag to spin · pinch or ctrl+scroll to zoom · hover a lit country",
 
     "hero.role": "Front-end Engineer",
     "hero.meta_location": "Aveiro, Portugal",
@@ -113,7 +98,6 @@ const locales = {
     "edu.cet.desc": "My first formal step into programming, web development, and digital product creation.",
 
     "lang.title": "Languages",
-    "lang.prof": "Proficiency",
     "lang.pt": "Portuguese — Native",
     "lang.en": "English — B2 / Professional working proficiency",
     "lang.fr": "French — Basic",
@@ -145,30 +129,14 @@ const locales = {
     "footer.updated": "Updated 2026",
     "footer.back_to_top": "Back to top",
 
-    "btn.close": "close"
   },
 
   pt: {
     "site.title": "João Magalhães — Front-end Engineer",
     "site.description": "Front-end engineer com mais de 10 anos de experiência a criar produtos web e mobile à escala. A viver em Aveiro, Portugal.",
-    "tldr.kicker": "TL;DR — versão curta",
-    "tldr.role": "Front-end Engineer · Aveiro, Portugal",
-    "tldr.who_title": "Quem sou",
-    "tldr.who_desc": "Front-end engineer com mais de 10 anos de experiência a construir produtos à escala em telecomunicações, IoT, energia e cloud.",
-    "tldr.where_title": "Onde estou agora",
-    "tldr.where_desc": "<strong>Intermedia Cloud Communications</strong>, a desenvolver frontends Angular em tempo real para sistemas de cloud communications à escala global.",
-    "tldr.been_title": "Por onde passei",
-    "tldr.been_desc": "Antes disso, passei pela <strong>WIT Software</strong> e Vodafone Portugal, a escalar produtos de self-care para mais de 1,5 milhões de utilizadores ativos e a trabalhar em plataformas IoT e sistemas críticos no setor da energia.",
-    "tldr.stack_title": "Stack",
-    "tldr.edge_title": "O meu diferencial",
-    "tldr.edge_desc": "Combino visão de produto, pensamento sistémico e experiência prática com IA em produção — de workflows com LLMs a orquestração de agentes e RAG.",
-    "tldr.contact_title": "Contacto",
 
-    "toolbar.tldr_title": "TL;DR — versão curta",
-    "toolbar.font_down_title": "Diminuir tamanho da letra",
-    "toolbar.font_up_title": "Aumentar tamanho da letra",
-    "toolbar.theme_title": "Alternar modo escuro",
     "toolbar.lang_title": "Alternar idioma",
+    "globe.hint": "arrasta para rodar · pinch ou ctrl+scroll para zoom · passa o cursor num país iluminado",
 
     "hero.role": "Front-end Engineer",
     "hero.meta_location": "Aveiro, Portugal",
@@ -262,7 +230,6 @@ const locales = {
     "edu.cet.desc": "O meu primeiro contacto formal com programação, desenvolvimento web e criação de produtos digitais.",
 
     "lang.title": "Idiomas",
-    "lang.prof": "Proficiência",
     "lang.pt": "Português — Nativo",
     "lang.en": "Inglês — B2 / Proficiência profissional",
     "lang.fr": "Francês — Básico",
@@ -294,6 +261,5 @@ const locales = {
     "footer.updated": "Atualizado em 2026",
     "footer.back_to_top": "Voltar ao topo",
 
-    "btn.close": "fechar"
   }
 };

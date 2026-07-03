@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en">
 
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
+  <meta name="color-scheme" content="dark" />
 
   <title data-i18n="site.title">João Magalhães — Front-end Engineer</title>
   <link rel="icon" type="image/png" href="https://github.com/joaommagalhaes.png" />
@@ -23,159 +23,67 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  
-  <!-- Preload & load primary font synchronously to prevent FOUT (flicker) -->
-  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500&family=Geist+Mono:wght@300;400&display=swap" />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500&family=Geist+Mono:wght@300;400&display=swap" />
-
-  <!-- Lazy load simple-icons web font (icons popping in doesn't cause layout shift) -->
-  <link rel="preload" as="style" href="https://cdn.jsdelivr.net/npm/simple-icons-font@13/font/simple-icons.min.css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/simple-icons-font@13/font/simple-icons.min.css" media="print" onload="this.media='all'" />
-  <noscript>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/simple-icons-font@13/font/simple-icons.min.css" />
-  </noscript>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@300;400;500&display=swap" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@300;400;500&display=swap" />
   <link rel="stylesheet" href="style.css" />
+  <noscript>
+    <style>
+      .reveal, .reveal > *, .reveal .skills-grid > * {
+        opacity: 1; transform: none; filter: none;
+      }
+    </style>
+  </noscript>
+
+  <script type="importmap">
+    { "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js" } }
+  </script>
 </head>
 
 <body>
 
-  <!-- Reading Progress -->
+  <canvas id="bg-canvas" aria-hidden="true"></canvas>
+
   <div id="progress-bar" class="progress-bar"></div>
 
-
-  <div class="tldr-overlay" id="tldr" aria-hidden="true" role="dialog" aria-modal="true">
-    <div class="tldr-inner">
-      <div class="tldr-header">
-        <div>
-          <p class="tldr-kicker" data-i18n="tldr.kicker">TL;DR — the short version</p>
-          <h2 class="tldr-name" data-i18n-html="true">João <em>Magalhães</em></h2>
-          <p class="tldr-role" data-i18n="tldr.role">Front-end Engineer · Aveiro, Portugal</p>
-        </div>
-        <button class="tldr-close-btn" id="btn-close-tldr" aria-label="Close TL;DR">
-          <i data-lucide="x" class="lucide-icon"></i>
-          <span data-i18n="btn.close">close</span>
-        </button>
-      </div>
-      <div class="tldr-grid">
-        <div class="tldr-block">
-          <h3 data-i18n="tldr.who_title">Who I am</h3>
-          <p data-i18n="tldr.who_desc">A frontend engineer with over a decade spent building products at scale. From Telco and IoT to energy and cloud—I don't just ship features; I take ownership of the systems behind them.</p>
-        </div>
-        <div class="tldr-block">
-          <h3 data-i18n="tldr.where_title">Where I am now</h3>
-          <p data-i18n-html="true" data-i18n="tldr.where_desc"><strong>Intermedia Cloud Communications</strong>, crafting the real-time frontends that power global cloud communication infrastructure using Angular.</p>
-        </div>
-        <div class="tldr-block">
-          <h3 data-i18n="tldr.been_title">Where I’ve been</h3>
-          <p data-i18n-html="true" data-i18n="tldr.been_desc">Six formative years at <strong>WIT Software</strong> (embedded in Vodafone Portugal) scaling self-care apps to 1.5M+ active users, and architectural roles shaping everything from IoT platforms to critical energy market systems.</p>
-        </div>
-        <div class="tldr-block">
-          <h3 data-i18n="tldr.stack_title">Stack</h3>
-          <div class="tldr-tags">
-            <span class="tag">Angular</span>
-            <span class="tag">React</span>
-            <span class="tag">React Native</span>
-            <span class="tag">TypeScript</span>
-            <span class="tag">Node.js</span>
-          </div>
-        </div>
-        <div class="tldr-block">
-          <h3 data-i18n="tldr.edge_title">My edge</h3>
-          <p data-i18n="tldr.edge_desc">Building with AI at a production level. Think LLMs, agent orchestration, and RAG architectures that actually scale. I vibe code, but always with strict engineering criteria.</p>
-        </div>
-        <div class="tldr-block tldr-contact">
-          <h3 data-i18n="tldr.contact_title">Contact</h3>
-          <a href="mailto:argento.literal.0j@icloud.com">argento.literal.0j@icloud.com</a>
-          <a href="https://linkedin.com/in/joaommagalhaes" target="_blank">linkedin.com/in/joaommagalhaes</a>
-          <a href="https://github.com/joaommagalhaes" target="_blank">github.com/joaommagalhaes</a>
-        </div>
-      </div>
-    </div>
-  </div>
+  <button class="btn-lang" id="btn-lang" data-i18n-attr="title|toolbar.lang_title" title="Toggle language" aria-live="polite">
+    <span class="lang-text pt">PT</span>
+    <span class="lang-text en" style="display:none">EN</span>
+  </button>
 
   <main class="page">
 
-
-    <!-- Toolbar (fixed top-right utility controls) -->
-    <div class="toolbar">
-      <button class="ctrl-btn" id="btn-tldr" data-i18n-attr="title|toolbar.tldr_title" title="TL;DR — short version" aria-expanded="false" aria-controls="tldr">
-        <i data-lucide="file-text" class="lucide-icon"></i>
-      </button>
-      <div class="ctrl-sep"></div>
-      <button class="ctrl-btn" id="btn-font-down" data-i18n-attr="title|toolbar.font_down_title" title="Decrease font size">
-        <i data-lucide="minus-circle" class="lucide-icon"></i>
-      </button>
-      <button class="ctrl-btn" id="btn-font-up" data-i18n-attr="title|toolbar.font_up_title" title="Increase font size">
-        <i data-lucide="plus-circle" class="lucide-icon"></i>
-      </button>
-      <div class="ctrl-sep"></div>
-      <button class="ctrl-btn" id="btn-theme" data-i18n-attr="title|toolbar.theme_title" title="Toggle dark mode" aria-live="polite">
-        <i data-lucide="moon" id="icon-light" class="lucide-icon"></i>
-        <i data-lucide="sun" id="icon-dark" class="lucide-icon" style="display:none"></i>
-      </button>
-      <div class="ctrl-sep"></div>
-      <button class="ctrl-btn" id="btn-lang" data-i18n-attr="title|toolbar.lang_title" title="Toggle language" aria-live="polite">
-        <span class="lang-text pt">PT</span>
-        <span class="lang-text en" style="display:none">EN</span>
-      </button>
-    </div>
-
-    <header class="hero">
-      <div class="avatar">
-        <img src="https://github.com/joaommagalhaes.png" alt="João Magalhães" />
+    <header class="hero" data-scene="name">
+      <div class="hero-inner">
+        <p class="hero-kicker">
+          <span data-i18n="hero.meta_location">Aveiro, Portugal</span>
+          <span class="hero-kicker-sep">/</span>
+          <span id="local-time" aria-live="polite"></span>
+        </p>
+        <h1 class="name">João <em>Magalhães</em></h1>
+        <p class="hero-role" data-i18n="hero.role">Front-end Engineer</p>
+        <div class="header-links">
+          <a href="mailto:argento.literal.0j@icloud.com" class="header-link">Email</a>
+          <a href="https://linkedin.com/in/joaommagalhaes" target="_blank" rel="noopener" class="header-link">LinkedIn</a>
+          <a href="https://github.com/joaommagalhaes" target="_blank" rel="noopener" class="header-link">GitHub</a>
+        </div>
       </div>
-      <h1 class="name">João <em>Magalhães</em></h1>
-      <p class="hero-role" data-i18n="hero.role">Frontend Engineer</p>
-      <p class="hero-meta"><span data-i18n="hero.meta_location">Aveiro, Portugal</span> <span class="hero-meta-sep">·</span> <span id="local-time" aria-live="polite"></span></p>
-      <div class="header-links">
-        <a href="mailto:argento.literal.0j@icloud.com" class="header-link" title="Email">
-          <i class="si si-gmail"></i>
-        </a>
-        <a href="https://linkedin.com/in/joaommagalhaes" target="_blank" class="header-link" title="LinkedIn">
-          <i class="si si-linkedin"></i>
-        </a>
-        <a href="https://github.com/joaommagalhaes" target="_blank" class="header-link" title="GitHub">
-          <i class="si si-github"></i>
-        </a>
-      </div>
+      <div class="hero-scroll" aria-hidden="true">↓</div>
     </header>
 
     <nav class="section-nav" id="section-nav" aria-label="Page sections">
-      <a href="#about" class="section-nav-link active">
-        <i data-lucide="user" class="lucide-icon"></i>
-        <span data-i18n="nav.about">About</span>
-      </a>
-      <a href="#experience" class="section-nav-link">
-        <i data-lucide="briefcase" class="lucide-icon"></i>
-        <span data-i18n="nav.experience">Experience</span>
-      </a>
-      <a href="#ai" class="section-nav-link">
-        <i data-lucide="lightbulb" class="lucide-icon"></i>
-        <span data-i18n="nav.ai">AI</span>
-      </a>
-      <a href="#skills" class="section-nav-link">
-        <i data-lucide="code" class="lucide-icon"></i>
-        <span data-i18n="nav.skills">Skills</span>
-      </a>
-      <a href="#education" class="section-nav-link">
-        <i data-lucide="graduation-cap" class="lucide-icon"></i>
-        <span data-i18n="nav.education">Education</span>
-      </a>
-      <a href="#languages" class="section-nav-link">
-        <i data-lucide="globe" class="lucide-icon"></i>
-        <span data-i18n="nav.languages">Languages</span>
-      </a>
-      <a href="#offscreen" class="section-nav-link">
-        <i data-lucide="headphones" class="lucide-icon"></i>
-        <span data-i18n="nav.offscreen">Beyond the Screen</span>
-      </a>
+      <a href="#about" class="section-nav-link active"><span data-i18n="nav.about">About</span></a>
+      <a href="#experience" class="section-nav-link"><span data-i18n="nav.experience">Experience</span></a>
+      <a href="#ai" class="section-nav-link"><span data-i18n="nav.ai">AI</span></a>
+      <a href="#skills" class="section-nav-link"><span data-i18n="nav.skills">Skills</span></a>
+      <a href="#education" class="section-nav-link"><span data-i18n="nav.education">Education</span></a>
+      <a href="#languages" class="section-nav-link"><span data-i18n="nav.languages">Languages</span></a>
+      <a href="#offscreen" class="section-nav-link"><span data-i18n="nav.offscreen">Beyond the Screen</span></a>
     </nav>
 
     <div class="cv-grid">
 
-
-      <span class="section-label" id="about">
-        <i data-lucide="user" class="lucide-icon"></i>
+      <span class="section-label" id="about" data-scene="core">
+        <span class="label-index">01</span>
         <span class="label-text" data-i18n="about.title">About</span>
       </span>
       <div class="section-body reveal">
@@ -186,19 +94,20 @@
         </div>
       </div>
 
-
-      <span class="section-label" id="experience">
-        <i data-lucide="briefcase" class="lucide-icon"></i>
+      <span class="section-label" id="experience" data-scene="stream" data-stage-side="left">
+        <span class="label-index">02</span>
         <span class="label-text" data-i18n="exp.title">Experience</span>
       </span>
       <div class="section-body">
 
         <div class="entry reveal">
-          <div>
-            <div class="entry-role" data-i18n="exp.intermedia.role">Software Engineer</div>
-            <div class="entry-company">Intermedia Cloud Communications</div>
+          <div class="entry-header">
+            <div>
+              <div class="entry-role" data-i18n="exp.intermedia.role">Software Engineer</div>
+              <div class="entry-company">Intermedia Cloud Communications</div>
+            </div>
+            <div class="entry-date" data-i18n="exp.intermedia.date">Dec 2024 — present</div>
           </div>
-          <div class="entry-date" data-i18n="exp.intermedia.date">Dec 2024 — present</div>
           <p class="entry-desc" data-i18n-html="true" data-i18n="exp.intermedia.desc">
             Currently, I'm part of a US-based product company, building the enterprise-grade infrastructure that powers modern cloud communications. I design and deliver high-performance Angular frontends deeply integrated with massive, real-time data pipelines. It’s high-stakes, high-availability work alongside a brilliant international team.
           </p>
@@ -216,11 +125,13 @@
         </div>
 
         <div class="entry reveal">
-          <div>
-            <div class="entry-role" data-i18n="exp.wit.role">Software Engineer → Senior Software Engineer</div>
-            <div class="entry-company">WIT Software · Vodafone Portugal</div>
+          <div class="entry-header">
+            <div>
+              <div class="entry-role" data-i18n="exp.wit.role">Software Engineer → Senior Software Engineer</div>
+              <div class="entry-company">WIT Software · Vodafone Portugal</div>
+            </div>
+            <div class="entry-date" data-i18n="exp.wit.date">Nov 2018 — Dec 2024</div>
           </div>
-          <div class="entry-date" data-i18n="exp.wit.date">Nov 2018 — Dec 2024</div>
           <p class="entry-desc" data-i18n="exp.wit.desc">
             I spent six years embedded within Vodafone Portugal's engineering team, tackling multiple client projects across the telecommunications sector. Here, my role naturally evolved from feature delivery to full system-level ownership. I ended up owning critical, high-impact user journeys end-to-end, such as eSIM activations, Plan Swaps, and dynamic marketing campaigns. One of my proudest achievements was architecting a modular campaign engine in React that gave non-technical teams the power to deploy plug-and-play campaigns independently—drastically cutting down our time-to-market.
           </p>
@@ -239,11 +150,13 @@
         </div>
 
         <div class="entry reveal">
-          <div>
-            <div class="entry-role" data-i18n="exp.talents.role">Full Stack Engineer</div>
-            <div class="entry-company">Talents &amp; Treasures</div>
+          <div class="entry-header">
+            <div>
+              <div class="entry-role" data-i18n="exp.talents.role">Full Stack Engineer</div>
+              <div class="entry-company">Talents &amp; Treasures</div>
+            </div>
+            <div class="entry-date" data-i18n="exp.talents.date">Dec 2016 — Nov 2018</div>
           </div>
-          <div class="entry-date" data-i18n="exp.talents.date">Dec 2016 — Nov 2018</div>
           <p class="entry-desc" data-i18n="exp.talents.desc">
             This role took me much closer to the metal than most frontend positions usually do. Working across IoT and Smart Cities, I built Gesluce—an urban streetlight management system adopted by various municipalities. I also developed real-time incident management platforms and web portals for testing industrial hardware. It was an incredibly formative period that instilled a systems-first mindset I still carry with me today.
           </p>
@@ -263,11 +176,13 @@
         </div>
 
         <div class="entry reveal">
-          <div>
-            <div class="entry-role" data-i18n="exp.galp.role">Business Analyst</div>
-            <div class="entry-company">Galp Energia</div>
+          <div class="entry-header">
+            <div>
+              <div class="entry-role" data-i18n="exp.galp.role">Business Analyst</div>
+              <div class="entry-company">Galp Energia</div>
+            </div>
+            <div class="entry-date" data-i18n="exp.galp.date">Dec 2012 — Aug 2016</div>
           </div>
-          <div class="entry-date" data-i18n="exp.galp.date">Dec 2012 — Aug 2016</div>
           <p class="entry-desc" data-i18n="exp.galp.desc">
             My roots trace back to one of Portugal's largest energy companies. Working as a Business Analyst, I conducted in-depth analysis and validation of business needs. I played a key role in systems like SGA for asset management and M&S for messaging, which underpinned the entire Portuguese energy market. I also conducted BI analysis to create compliance reporting systems and contributed to the technical documentation of the Distribution Portal.
           </p>
@@ -286,37 +201,30 @@
 
       </div>
 
-
-      <span class="section-label" id="ai">
-        <i data-lucide="lightbulb" class="lucide-icon"></i>
+      <span class="section-label" id="ai" data-scene="neural">
+        <span class="label-index">03</span>
         <span class="label-text" data-i18n="ai.title">AI Knowledge</span>
       </span>
       <div class="section-body reveal">
         <div class="skills-grid">
 
-          <div class="skill-group">
+          <div class="skill-group col-span-2">
             <h4 data-i18n="ai.concepts">Concepts</h4>
-            <div class="ik-grid">
-              <div class="ik-item" data-i18n-attr="data-tooltip|ai.tt.llms" data-tooltip="LLMs & prompt engineering"><i class="si si-openai"></i></div>
-              <div class="ik-item" data-i18n-attr="data-tooltip|ai.tt.agent" data-tooltip="Agent orchestration"><i class="si si-anthropic"></i></div>
-              <div class="ik-item" data-i18n-attr="data-tooltip|ai.tt.rag" data-tooltip="RAG patterns"><i class="si si-amazondynamodb"></i></div>
-              <div class="ik-item" data-i18n-attr="data-tooltip|ai.tt.multi_agent" data-tooltip="Multi-agent pipelines"><i class="si si-apacheairflow"></i></div>
-            </div>
+            <ul class="tag-list">
+              <li class="tag" data-i18n="ai.tt.llms">LLMs &amp; prompt engineering</li>
+              <li class="tag" data-i18n="ai.tt.agent">Agent orchestration</li>
+              <li class="tag" data-i18n="ai.tt.rag">RAG patterns</li>
+              <li class="tag" data-i18n="ai.tt.multi_agent">Multi-agent pipelines</li>
+              <li class="tag" data-i18n="ai.tt.skill">Skill &amp; tool design</li>
+              <li class="tag" data-i18n="ai.tt.context">Context &amp; memory management</li>
+              <li class="tag" data-i18n="ai.tt.ai_assist">AI-assisted workflows</li>
+              <li class="tag" data-i18n="ai.tt.eval">Evaluation &amp; output ownership</li>
+            </ul>
           </div>
 
-          <div class="skill-group">
-            <h4>&nbsp;</h4>
-            <div class="ik-grid">
-              <div class="ik-item" data-i18n-attr="data-tooltip|ai.tt.skill" data-tooltip="Skill & tool design"><i class="si si-blueprint"></i></div>
-              <div class="ik-item" data-i18n-attr="data-tooltip|ai.tt.context" data-tooltip="Context & memory management"><i class="si si-databricks"></i></div>
-              <div class="ik-item" data-i18n-attr="data-tooltip|ai.tt.ai_assist" data-tooltip="AI-assisted workflows"><i class="si si-githubactions"></i></div>
-              <div class="ik-item" data-i18n-attr="data-tooltip|ai.tt.eval" data-tooltip="Evaluation & output ownership"><i class="si si-vercel"></i></div>
-            </div>
-          </div>
-
-          <div class="skill-group col-span-2" style="margin-top: 0.5rem;">
+          <div class="skill-group col-span-2">
             <h4 data-i18n="ai.approach">My Approach</h4>
-            <p style="font-size:0.875rem;color:var(--muted);line-height:1.75;padding-top:0.38rem;max-width:62ch;" data-i18n="ai.approach.desc">
+            <p class="approach-desc" data-i18n="ai.approach.desc">
               I use AI as a core production methodology, not just an experimental toy. I understand how language models reason, where their context inevitably degrades, and how to design agent flows that remain cohesive across tool sequences and memory boundaries. When I design skills and prompts, I ensure they hold up under genuine user load. The philosophy is simple: remain fast by design, but deliberate by discipline.
             </p>
           </div>
@@ -324,59 +232,57 @@
         </div>
       </div>
 
-
-      <span class="section-label" id="skills">
-        <i data-lucide="code" class="lucide-icon"></i>
+      <span class="section-label" id="skills" data-scene="constellation" data-stage-side="left">
+        <span class="label-index">04</span>
         <span class="label-text" data-i18n="skills.title">Skills</span>
       </span>
       <div class="section-body reveal">
         <div class="skills-grid">
           <div class="skill-group">
             <h4 data-i18n="skills.frontend">Frontend</h4>
-            <div class="ik-grid">
-              <div class="ik-item" data-tooltip="Angular"><i class="si si-angular"></i></div>
-              <div class="ik-item" data-tooltip="React / React Native"><i class="si si-react"></i></div>
-              <div class="ik-item" data-tooltip="TypeScript"><i class="si si-typescript"></i></div>
-              <div class="ik-item" data-tooltip="JavaScript"><i class="si si-javascript"></i></div>
-              <div class="ik-item" data-tooltip="HTML & CSS"><i class="si si-html5"></i></div>
-            </div>
+            <ul class="tag-list">
+              <li class="tag">Angular</li>
+              <li class="tag">React / React Native</li>
+              <li class="tag">TypeScript</li>
+              <li class="tag">JavaScript</li>
+              <li class="tag">HTML &amp; CSS</li>
+            </ul>
           </div>
           <div class="skill-group">
             <h4 data-i18n="skills.backend">Backend &amp; Data</h4>
-            <div class="ik-grid">
-              <div class="ik-item" data-tooltip="Node.js"><i class="si si-nodedotjs"></i></div>
-              <div class="ik-item" data-tooltip="PHP"><i class="si si-php"></i></div>
-              <div class="ik-item" data-tooltip="Python"><i class="si si-python"></i></div>
-              <div class="ik-item" data-tooltip="MySQL / SQL"><i class="si si-mysql"></i></div>
-              <div class="ik-item" data-tooltip="RabbitMQ"><i class="si si-rabbitmq"></i></div>
-            </div>
+            <ul class="tag-list">
+              <li class="tag">Node.js</li>
+              <li class="tag">PHP</li>
+              <li class="tag">Python</li>
+              <li class="tag">MySQL / SQL</li>
+              <li class="tag">RabbitMQ</li>
+            </ul>
           </div>
           <div class="skill-group">
             <h4 data-i18n="skills.arch">Architecture</h4>
-            <div class="ik-grid">
-              <div class="ik-item" data-i18n-attr="data-tooltip|skills.arch.react" data-tooltip="Reactive Architecture"><i class="si si-apachekafka"></i></div>
-              <div class="ik-item" data-i18n-attr="data-tooltip|skills.arch.micro" data-tooltip="Microservices"><i class="si si-kubernetes"></i></div>
-              <div class="ik-item" data-i18n-attr="data-tooltip|skills.arch.realtime" data-tooltip="Real-time Systems"><i class="si si-socketdotio"></i></div>
-              <div class="ik-item" data-i18n-attr="data-tooltip|skills.arch.design" data-tooltip="System Design"><i class="si si-blueprint"></i></div>
-              <div class="ik-item" data-i18n-attr="data-tooltip|skills.arch.review" data-tooltip="Code Review"><i class="si si-githubactions"></i></div>
-            </div>
+            <ul class="tag-list">
+              <li class="tag" data-i18n="skills.arch.react">Reactive Architecture</li>
+              <li class="tag" data-i18n="skills.arch.micro">Microservices</li>
+              <li class="tag" data-i18n="skills.arch.realtime">Real-time Systems</li>
+              <li class="tag" data-i18n="skills.arch.design">System Design</li>
+              <li class="tag" data-i18n="skills.arch.review">Code Review</li>
+            </ul>
           </div>
           <div class="skill-group">
             <h4 data-i18n="skills.tools">Tools</h4>
-            <div class="ik-grid">
-              <div class="ik-item" data-tooltip="Git"><i class="si si-git"></i></div>
-              <div class="ik-item" data-tooltip="Docker"><i class="si si-docker"></i></div>
-              <div class="ik-item" data-tooltip="CI/CD"><i class="si si-githubactions"></i></div>
-              <div class="ik-item" data-tooltip="Ionic"><i class="si si-ionic"></i></div>
-              <div class="ik-item" data-i18n-attr="data-tooltip|skills.tools.bi" data-tooltip="Analytics/BI"><i class="si si-grafana"></i></div>
-            </div>
+            <ul class="tag-list">
+              <li class="tag">Git</li>
+              <li class="tag">Docker</li>
+              <li class="tag">CI/CD</li>
+              <li class="tag">Ionic</li>
+              <li class="tag" data-i18n="skills.tools.bi">Analytics/BI</li>
+            </ul>
           </div>
         </div>
       </div>
 
-
-      <span class="section-label" id="education">
-        <i data-lucide="graduation-cap" class="lucide-icon"></i>
+      <span class="section-label" id="education" data-scene="rings">
+        <span class="label-index">05</span>
         <span class="label-text" data-i18n="edu.title">Education</span>
       </span>
       <div class="section-body reveal">
@@ -430,165 +336,120 @@
 
       </div>
 
-
-      <span class="section-label" id="languages">
-        <i data-lucide="globe" class="lucide-icon"></i>
+      <span class="section-label" id="languages" data-scene="nebula">
+        <span class="label-index">06</span>
         <span class="label-text" data-i18n="lang.title">Languages</span>
       </span>
       <div class="section-body reveal">
-        <div class="skills-grid">
-          <div class="skill-group">
-            <h4 data-i18n="lang.prof">Proficiency</h4>
-            <div class="flag-grid">
-              <span class="flag-item" data-i18n-attr="data-country|lang.pt">
-                <span class="flag">🇵🇹</span>
-              </span>
-              <span class="flag-item" data-i18n-attr="data-country|lang.en">
-                <span class="flag">🇬🇧</span>
-              </span>
-              <span class="flag-item" data-i18n-attr="data-country|lang.fr">
-                <span class="flag">🇫🇷</span>
-              </span>
-              <span class="flag-item" data-i18n-attr="data-country|lang.es">
-                <span class="flag">🇪🇸</span>
-              </span>
-            </div>
-          </div>
-        </div>
+        <ul class="lang-list">
+          <li><span class="flag">🇵🇹</span><span data-i18n="lang.pt">Portuguese — Native</span></li>
+          <li><span class="flag">🇬🇧</span><span data-i18n="lang.en">English — B2 / Professional working proficiency</span></li>
+          <li><span class="flag">🇫🇷</span><span data-i18n="lang.fr">French — Basic</span></li>
+          <li><span class="flag">🇪🇸</span><span data-i18n="lang.es">Spanish — Basic</span></li>
+        </ul>
       </div>
 
       <span class="section-label" id="offscreen">
-        <i data-lucide="headphones" class="lucide-icon"></i>
+        <span class="label-index">07</span>
         <span class="label-text" data-i18n="offscreen.title">Beyond the Screen</span>
       </span>
       <div class="section-body reveal">
-        <div class="interests-container">
-          <!-- Currently Dashboard -->
-          <div class="currently-dashboard">
-            <div class="interests-label">
-        <span data-i18n="offscreen.rn">Right Now</span>
-            </div>
-            <ul class="currently-list">
-              <li>
-                <span class="currently-lbl" data-i18n="offscreen.rn.building.lbl">Building</span>
-                <span class="currently-val" data-i18n="offscreen.rn.building.val">A self-hosted project for family budget and wealth management, covering yearly budgets, loans, financial and physical assets, and contract management.</span>
-              </li>
-              <li>
-                <span class="currently-lbl" data-i18n="offscreen.rn.reading.lbl">Reading</span>
-                <span class="currently-val" data-i18n-html="true" data-i18n="offscreen.rn.reading.val">About Artificial Intelligence — not from a technical standpoint, but as a transformative force.</span>
-              </li>
-              <li>
-                <span class="currently-lbl" data-i18n="offscreen.rn.listening.lbl">Listening</span>
-                <span class="currently-val" data-i18n="offscreen.rn.listening.val">Portuguese hip-hop and classic national bands like Xutos, GNR, and UHF.</span>
-              </li>
-              <li>
-                <span class="currently-lbl" data-i18n="offscreen.rn.tuning.lbl">Crafting</span>
-                <span class="currently-val" data-i18n="offscreen.rn.tuning.val">Practical woodwork solutions in my free time, like building a treehouse bedroom for my kids.</span>
-              </li>
-            </ul>
-          </div>
 
-          <!-- Icebreakers -->
-
+        <div class="currently-dashboard">
+          <div class="interests-label" data-i18n="offscreen.rn">Right Now</div>
+          <ul class="currently-list">
+            <li>
+              <span class="currently-lbl" data-i18n="offscreen.rn.building.lbl">Building</span>
+              <span class="currently-val" data-i18n="offscreen.rn.building.val">A self-hosted project for family budget and wealth management, covering yearly budgets, loans, financial and physical assets, and contract management.</span>
+            </li>
+            <li>
+              <span class="currently-lbl" data-i18n="offscreen.rn.reading.lbl">Reading</span>
+              <span class="currently-val" data-i18n-html="true" data-i18n="offscreen.rn.reading.val">About Artificial Intelligence — not from a technical standpoint, but as a transformative force.</span>
+            </li>
+            <li>
+              <span class="currently-lbl" data-i18n="offscreen.rn.listening.lbl">Listening</span>
+              <span class="currently-val" data-i18n="offscreen.rn.listening.val">Portuguese hip-hop and classic national bands like Xutos, GNR, and UHF.</span>
+            </li>
+            <li>
+              <span class="currently-lbl" data-i18n="offscreen.rn.tuning.lbl">Crafting</span>
+              <span class="currently-val" data-i18n="offscreen.rn.tuning.val">Practical woodwork solutions in my free time, like building a treehouse bedroom for my kids.</span>
+            </li>
+          </ul>
         </div>
-        <div class="icebreakers">
-          <div class="interests-label mb-1">
-        <span data-i18n="offscreen.ask">Ask me about...</span>
-          </div>
-          <div class="interests-grid">
 
+        <div class="icebreakers">
+          <div class="interests-label" data-i18n="offscreen.ask">Ask me about...</div>
+          <div class="interests-grid">
             <div class="interest-card" tabindex="0">
-              <div class="interest-card-header">
-                <i data-lucide="map" class="lucide-icon"></i>
-                <h4 data-i18n="offscreen.ask.camino.lbl">Camino de Santiago</h4>
-              </div>
+              <h4 data-i18n="offscreen.ask.camino.lbl">Camino de Santiago</h4>
               <p class="interest-card-desc" data-i18n="offscreen.ask.camino.val">I've walked it three times. It’s a transformative experience of nature, overcoming limits, and connecting with people from all over the world.</p>
             </div>
-
             <div class="interest-card" tabindex="0">
-              <div class="interest-card-header">
-                <i data-lucide="wine" class="lucide-icon"></i>
-                <h4 data-i18n="offscreen.ask.wine.lbl">Port Wine</h4>
-              </div>
+              <h4 data-i18n="offscreen.ask.wine.lbl">Port Wine</h4>
               <p class="interest-card-desc" data-i18n="offscreen.ask.wine.val">I was born in the demarcated region and grew up involved in the entire process—from pruning the vines to producing this unique wine.</p>
             </div>
-
             <div class="interest-card" tabindex="0">
-              <div class="interest-card-header">
-                <i data-lucide="globe-2" class="lucide-icon"></i>
-                <h4 data-i18n="offscreen.ask.history.lbl">20th Century History</h4>
-              </div>
+              <h4 data-i18n="offscreen.ask.history.lbl">20th Century History</h4>
               <p class="interest-card-desc" data-i18n="offscreen.ask.history.val">I’m a passionate reader of 20th-century European and world history, fascinated by the transformations that shaped our modern world.</p>
             </div>
-
             <div class="interest-card" tabindex="0">
-              <div class="interest-card-header">
-                <i data-lucide="archive" class="lucide-icon"></i>
-                <h4 data-i18n="offscreen.ask.collecting.lbl">Collecting</h4>
-              </div>
+              <h4 data-i18n="offscreen.ask.collecting.lbl">Collecting</h4>
               <p class="interest-card-desc" data-i18n="offscreen.ask.collecting.val">I’m a natural collector. My collections range from Pokémon cards and Hot Wheels to stamps, sugar packets, and news clippings.</p>
             </div>
+          </div>
+        </div>
 
-          </div>
-        </div>
-        <div class="flag-grid-section">
-          <div class="interests-label mb-1" style="margin-bottom: 2rem;">
-        <span data-i18n="offscreen.travel">Travelled — 19 countries</span>
-          </div>
-          <div class="flag-grid">
-            <div class="flag-item" data-country="Portugal"><span class="flag">🇵🇹</span></div>
-            <div class="flag-item" data-country="Spain"><span class="flag">🇪🇸</span></div>
-            <div class="flag-item" data-country="France"><span class="flag">🇫🇷</span></div>
-            <div class="flag-item" data-country="UK"><span class="flag">🇬🇧</span></div>
-            <div class="flag-item" data-country="Italy"><span class="flag">🇮🇹</span></div>
-            <div class="flag-item" data-country="Germany"><span class="flag">🇩🇪</span></div>
-            <div class="flag-item" data-country="Poland"><span class="flag">🇵🇱</span></div>
-            <div class="flag-item" data-country="Netherlands"><span class="flag">🇳🇱</span></div>
-            <div class="flag-item" data-country="Belgium"><span class="flag">🇧🇪</span></div>
-            <div class="flag-item" data-country="Norway"><span class="flag">🇳🇴</span></div>
-            <div class="flag-item" data-country="Romania"><span class="flag">🇷🇴</span></div>
-            <div class="flag-item" data-country="São Tomé"><span class="flag">🇸🇹</span></div>
-            <div class="flag-item" data-country="Czechia"><span class="flag">🇨🇿</span></div>
-            <div class="flag-item" data-country="Croatia"><span class="flag">🇭🇷</span></div>
-            <div class="flag-item" data-country="Slovenia"><span class="flag">🇸🇮</span></div>
-            <div class="flag-item" data-country="Hungary"><span class="flag">🇭🇺</span></div>
-            <div class="flag-item" data-country="Slovakia"><span class="flag">🇸🇰</span></div>
-            <div class="flag-item" data-country="Luxembourg"><span class="flag">🇱🇺</span></div>
-            <div class="flag-item" data-country="Switzerland"><span class="flag">🇨🇭</span></div>
-          </div>
-        </div>
       </div>
 
     </div>
 
+    <section class="globe-stage" id="travel" data-scene="globe" aria-label="Countries travelled">
+      <div class="globe-caption">
+        <div class="interests-label" data-i18n="offscreen.travel">Travelled — 19 countries</div>
+        <div class="globe-hint" data-i18n="globe.hint">drag to spin · hover a lit country</div>
+      </div>
+      <div class="globe-list">
+          <div class="flag-grid">
+            <div class="flag-item"><span class="flag">🇵🇹</span><span class="flag-name">Portugal</span></div>
+            <div class="flag-item"><span class="flag">🇪🇸</span><span class="flag-name">Spain</span></div>
+            <div class="flag-item"><span class="flag">🇫🇷</span><span class="flag-name">France</span></div>
+            <div class="flag-item"><span class="flag">🇬🇧</span><span class="flag-name">UK</span></div>
+            <div class="flag-item"><span class="flag">🇮🇹</span><span class="flag-name">Italy</span></div>
+            <div class="flag-item"><span class="flag">🇩🇪</span><span class="flag-name">Germany</span></div>
+            <div class="flag-item"><span class="flag">🇵🇱</span><span class="flag-name">Poland</span></div>
+            <div class="flag-item"><span class="flag">🇳🇱</span><span class="flag-name">Netherlands</span></div>
+            <div class="flag-item"><span class="flag">🇧🇪</span><span class="flag-name">Belgium</span></div>
+            <div class="flag-item"><span class="flag">🇳🇴</span><span class="flag-name">Norway</span></div>
+            <div class="flag-item"><span class="flag">🇷🇴</span><span class="flag-name">Romania</span></div>
+            <div class="flag-item"><span class="flag">🇸🇹</span><span class="flag-name">São Tomé</span></div>
+            <div class="flag-item"><span class="flag">🇨🇿</span><span class="flag-name">Czechia</span></div>
+            <div class="flag-item"><span class="flag">🇭🇷</span><span class="flag-name">Croatia</span></div>
+            <div class="flag-item"><span class="flag">🇸🇮</span><span class="flag-name">Slovenia</span></div>
+            <div class="flag-item"><span class="flag">🇭🇺</span><span class="flag-name">Hungary</span></div>
+            <div class="flag-item"><span class="flag">🇸🇰</span><span class="flag-name">Slovakia</span></div>
+            <div class="flag-item"><span class="flag">🇱🇺</span><span class="flag-name">Luxembourg</span></div>
+            <div class="flag-item"><span class="flag">🇨🇭</span><span class="flag-name">Switzerland</span></div>
+          </div>
+      </div>
+    </section>
 
     <footer class="reveal">
       <span class="footer-note" data-i18n="footer.updated">Updated 2026</span>
       <div class="footer-links">
-        <a href="https://linkedin.com/in/joaommagalhaes" target="_blank">
-        LinkedIn
-        </a>
-        <a href="mailto:argento.literal.0j@icloud.com">
-        Email
-        </a>
-        <a href="https://github.com/joaommagalhaes" target="_blank">
-        GitHub
-        </a>
+        <a href="https://linkedin.com/in/joaommagalhaes" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="mailto:argento.literal.0j@icloud.com">Email</a>
+        <a href="https://github.com/joaommagalhaes" target="_blank" rel="noopener">GitHub</a>
       </div>
     </footer>
   </main>
 
-  <!-- Back to top button -->
-  <button id="btn-back-to-top" class="btn-back-to-top" data-i18n-attr="title|footer.back_to_top" data-i18n-attr="aria-label|footer.back_to_top" title="Back to top" aria-label="Back to top">
-    <i data-lucide="arrow-up" class="lucide-icon"></i>
-  </button>
+  <button id="btn-back-to-top" class="btn-back-to-top" data-i18n-attr="title|footer.back_to_top" title="Back to top" aria-label="Back to top">↑</button>
+
+  <div id="scene-tip" aria-hidden="true"></div>
 
   <script src="locales.js"></script>
   <script src="script.js"></script>
-  <script src="https://unpkg.com/lucide@latest"></script>
-  <script>
-    lucide.createIcons();
-  </script>
+  <script type="module" src="scene.js"></script>
 </body>
 
 </html>
