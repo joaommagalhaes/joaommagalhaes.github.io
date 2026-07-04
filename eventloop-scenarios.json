@@ -1,0 +1,967 @@
+[
+  {
+    "id": "sync-timeout",
+    "title": "sync vs setTimeout",
+    "code": [
+      "console.log('1: start')",
+      "setTimeout(() => console.log('2: timeout'), 0)",
+      "console.log('3: end')"
+    ],
+    "steps": [
+      {
+        "line": -1,
+        "stack": [],
+        "micro": [],
+        "macro": [],
+        "log": [],
+        "note": "Script starts running."
+      },
+      {
+        "line": 0,
+        "stack": [
+          "console.log"
+        ],
+        "micro": [],
+        "macro": [],
+        "log": [],
+        "note": "Call console.log('1: start') — push a frame onto the call stack."
+      },
+      {
+        "line": 0,
+        "stack": [],
+        "micro": [],
+        "macro": [],
+        "log": [
+          "1: start"
+        ],
+        "note": "Logged. Frame popped."
+      },
+      {
+        "line": 1,
+        "stack": [
+          "setTimeout"
+        ],
+        "micro": [],
+        "macro": [],
+        "log": [
+          "1: start"
+        ],
+        "note": "Call setTimeout — registers a timer with the browser and returns immediately."
+      },
+      {
+        "line": 1,
+        "stack": [],
+        "micro": [],
+        "macro": [
+          "() => log('2: timeout')"
+        ],
+        "log": [
+          "1: start"
+        ],
+        "note": "Timer fires instantly (delay 0), so its callback is queued as a macrotask — but it still waits its turn."
+      },
+      {
+        "line": 2,
+        "stack": [
+          "console.log"
+        ],
+        "micro": [],
+        "macro": [
+          "() => log('2: timeout')"
+        ],
+        "log": [
+          "1: start"
+        ],
+        "note": "Call console.log('3: end')."
+      },
+      {
+        "line": 2,
+        "stack": [],
+        "micro": [],
+        "macro": [
+          "() => log('2: timeout')"
+        ],
+        "log": [
+          "1: start",
+          "3: end"
+        ],
+        "note": "Logged. The script has finished — call stack is empty."
+      },
+      {
+        "line": -1,
+        "stack": [],
+        "micro": [],
+        "macro": [
+          "() => log('2: timeout')"
+        ],
+        "log": [
+          "1: start",
+          "3: end"
+        ],
+        "note": "Event loop: stack empty, microtask queue empty — take the next macrotask."
+      },
+      {
+        "line": 1,
+        "stack": [
+          "(timeout callback)"
+        ],
+        "micro": [],
+        "macro": [],
+        "log": [
+          "1: start",
+          "3: end"
+        ],
+        "note": "Macrotask dequeued and run."
+      },
+      {
+        "line": 1,
+        "stack": [],
+        "micro": [],
+        "macro": [],
+        "log": [
+          "1: start",
+          "3: end",
+          "2: timeout"
+        ],
+        "note": "Logged '2: timeout'. Final order: 1, 3, 2 — sync code always finishes before a timer, even a 0ms one."
+      }
+    ]
+  },
+  {
+    "id": "microtask-macrotask",
+    "title": "microtask vs macrotask",
+    "code": [
+      "console.log('1')",
+      "setTimeout(() => console.log('2'), 0)",
+      "Promise.resolve().then(() => console.log('3'))",
+      "console.log('4')"
+    ],
+    "steps": [
+      {
+        "line": -1,
+        "stack": [],
+        "micro": [],
+        "macro": [],
+        "log": [],
+        "note": "Script starts running."
+      },
+      {
+        "line": 0,
+        "stack": [
+          "console.log"
+        ],
+        "micro": [],
+        "macro": [],
+        "log": [],
+        "note": "Call console.log('1')."
+      },
+      {
+        "line": 0,
+        "stack": [],
+        "micro": [],
+        "macro": [],
+        "log": [
+          "1"
+        ],
+        "note": "Logged."
+      },
+      {
+        "line": 1,
+        "stack": [
+          "setTimeout"
+        ],
+        "micro": [],
+        "macro": [],
+        "log": [
+          "1"
+        ],
+        "note": "Call setTimeout — registers the timer."
+      },
+      {
+        "line": 1,
+        "stack": [],
+        "micro": [],
+        "macro": [
+          "() => log('2')"
+        ],
+        "log": [
+          "1"
+        ],
+        "note": "Timer fires instantly, callback queued as a macrotask."
+      },
+      {
+        "line": 2,
+        "stack": [
+          "Promise.then"
+        ],
+        "micro": [],
+        "macro": [
+          "() => log('2')"
+        ],
+        "log": [
+          "1"
+        ],
+        "note": "Call .then — registers the callback on an already-resolved promise."
+      },
+      {
+        "line": 2,
+        "stack": [],
+        "micro": [
+          "() => log('3')"
+        ],
+        "macro": [
+          "() => log('2')"
+        ],
+        "log": [
+          "1"
+        ],
+        "note": "Queued as a microtask — microtasks always outrank macrotasks."
+      },
+      {
+        "line": 3,
+        "stack": [
+          "console.log"
+        ],
+        "micro": [
+          "() => log('3')"
+        ],
+        "macro": [
+          "() => log('2')"
+        ],
+        "log": [
+          "1"
+        ],
+        "note": "Call console.log('4')."
+      },
+      {
+        "line": 3,
+        "stack": [],
+        "micro": [
+          "() => log('3')"
+        ],
+        "macro": [
+          "() => log('2')"
+        ],
+        "log": [
+          "1",
+          "4"
+        ],
+        "note": "Logged. Script finished — call stack empty."
+      },
+      {
+        "line": -1,
+        "stack": [],
+        "micro": [
+          "() => log('3')"
+        ],
+        "macro": [
+          "() => log('2')"
+        ],
+        "log": [
+          "1",
+          "4"
+        ],
+        "note": "Event loop: stack empty → drain the ENTIRE microtask queue before touching the macrotask queue."
+      },
+      {
+        "line": 2,
+        "stack": [
+          "(then callback)"
+        ],
+        "micro": [],
+        "macro": [
+          "() => log('2')"
+        ],
+        "log": [
+          "1",
+          "4"
+        ],
+        "note": "Microtask dequeued and run."
+      },
+      {
+        "line": 2,
+        "stack": [],
+        "micro": [],
+        "macro": [
+          "() => log('2')"
+        ],
+        "log": [
+          "1",
+          "4",
+          "3"
+        ],
+        "note": "Logged '3'. Microtask queue now empty."
+      },
+      {
+        "line": -1,
+        "stack": [],
+        "micro": [],
+        "macro": [
+          "() => log('2')"
+        ],
+        "log": [
+          "1",
+          "4",
+          "3"
+        ],
+        "note": "Microtask queue empty — now take the next macrotask."
+      },
+      {
+        "line": 1,
+        "stack": [
+          "(timeout callback)"
+        ],
+        "micro": [],
+        "macro": [],
+        "log": [
+          "1",
+          "4",
+          "3"
+        ],
+        "note": "Macrotask dequeued and run."
+      },
+      {
+        "line": 1,
+        "stack": [],
+        "micro": [],
+        "macro": [],
+        "log": [
+          "1",
+          "4",
+          "3",
+          "2"
+        ],
+        "note": "Logged '2'. Final order: 1, 4, 3, 2 — microtasks always drain fully before the next macrotask."
+      }
+    ]
+  },
+  {
+    "id": "promise-chaining",
+    "title": "promise chaining",
+    "code": [
+      "console.log('1')",
+      "Promise.resolve().then(() => {",
+      "  console.log('2')",
+      "  return Promise.resolve()",
+      "}).then(() => console.log('3'))",
+      "Promise.resolve().then(() => console.log('4'))",
+      "console.log('5')"
+    ],
+    "steps": [
+      {
+        "line": -1,
+        "stack": [],
+        "micro": [],
+        "macro": [],
+        "log": [],
+        "note": "Script starts running."
+      },
+      {
+        "line": 0,
+        "stack": [
+          "console.log"
+        ],
+        "micro": [],
+        "macro": [],
+        "log": [],
+        "note": "Call console.log('1')."
+      },
+      {
+        "line": 0,
+        "stack": [],
+        "micro": [],
+        "macro": [],
+        "log": [
+          "1"
+        ],
+        "note": "Logged."
+      },
+      {
+        "line": 1,
+        "stack": [
+          "Promise chain A"
+        ],
+        "micro": [],
+        "macro": [],
+        "log": [
+          "1"
+        ],
+        "note": "Evaluate the chain: .then(cbA) registers on the resolved promise; .then(cbC) registers on the promise that .then(cbA) returns."
+      },
+      {
+        "line": 1,
+        "stack": [],
+        "micro": [
+          "cbA"
+        ],
+        "macro": [],
+        "log": [
+          "1"
+        ],
+        "note": "cbA is scheduled as a microtask immediately. cbC is NOT queued yet — it’s waiting on cbA’s chain to settle."
+      },
+      {
+        "line": 5,
+        "stack": [
+          "Promise chain B"
+        ],
+        "micro": [
+          "cbA"
+        ],
+        "macro": [],
+        "log": [
+          "1"
+        ],
+        "note": "Evaluate the second, independent chain."
+      },
+      {
+        "line": 5,
+        "stack": [],
+        "micro": [
+          "cbA",
+          "cbB"
+        ],
+        "macro": [],
+        "log": [
+          "1"
+        ],
+        "note": "cbB scheduled as a microtask too — queued behind cbA."
+      },
+      {
+        "line": 6,
+        "stack": [
+          "console.log"
+        ],
+        "micro": [
+          "cbA",
+          "cbB"
+        ],
+        "macro": [],
+        "log": [
+          "1"
+        ],
+        "note": "Call console.log('5')."
+      },
+      {
+        "line": 6,
+        "stack": [],
+        "micro": [
+          "cbA",
+          "cbB"
+        ],
+        "macro": [],
+        "log": [
+          "1",
+          "5"
+        ],
+        "note": "Logged. Script finished — call stack empty."
+      },
+      {
+        "line": -1,
+        "stack": [],
+        "micro": [
+          "cbA",
+          "cbB"
+        ],
+        "macro": [],
+        "log": [
+          "1",
+          "5"
+        ],
+        "note": "Event loop: drain the microtask queue, oldest first."
+      },
+      {
+        "line": 2,
+        "stack": [
+          "(cbA)"
+        ],
+        "micro": [
+          "cbB"
+        ],
+        "macro": [],
+        "log": [
+          "1",
+          "5"
+        ],
+        "note": "Dequeue cbA and run it."
+      },
+      {
+        "line": 3,
+        "stack": [
+          "(cbA)"
+        ],
+        "micro": [
+          "cbB"
+        ],
+        "macro": [],
+        "log": [
+          "1",
+          "5",
+          "2"
+        ],
+        "note": "Logged '2'. cbA now returns a brand-new promise — resolving it takes one more microtask hop before the second .then can fire."
+      },
+      {
+        "line": -1,
+        "stack": [],
+        "micro": [
+          "cbB",
+          "(resolving cbA’s promise)"
+        ],
+        "macro": [],
+        "log": [
+          "1",
+          "5",
+          "2"
+        ],
+        "note": "cbA finished. Its chain isn’t done yet — a hop is queued behind cbB, which was already waiting."
+      },
+      {
+        "line": -1,
+        "stack": [
+          "(cbB)"
+        ],
+        "micro": [
+          "(resolving cbA’s promise)"
+        ],
+        "macro": [],
+        "log": [
+          "1",
+          "5",
+          "2"
+        ],
+        "note": "Dequeue cbB and run it."
+      },
+      {
+        "line": -1,
+        "stack": [],
+        "micro": [
+          "(resolving cbA’s promise)"
+        ],
+        "macro": [],
+        "log": [
+          "1",
+          "5",
+          "2",
+          "4"
+        ],
+        "note": "Logged '4'. cbB’s chain is done."
+      },
+      {
+        "line": -1,
+        "stack": [
+          "(resolving cbA’s promise)"
+        ],
+        "micro": [],
+        "macro": [],
+        "log": [
+          "1",
+          "5",
+          "2",
+          "4"
+        ],
+        "note": "Dequeue the pending hop."
+      },
+      {
+        "line": -1,
+        "stack": [],
+        "micro": [
+          "cbC"
+        ],
+        "macro": [],
+        "log": [
+          "1",
+          "5",
+          "2",
+          "4"
+        ],
+        "note": "Now cbA’s chain is settled — cbC is finally scheduled."
+      },
+      {
+        "line": 4,
+        "stack": [
+          "(cbC)"
+        ],
+        "micro": [],
+        "macro": [],
+        "log": [
+          "1",
+          "5",
+          "2",
+          "4"
+        ],
+        "note": "Dequeue cbC and run it."
+      },
+      {
+        "line": 4,
+        "stack": [],
+        "micro": [],
+        "macro": [],
+        "log": [
+          "1",
+          "5",
+          "2",
+          "4",
+          "3"
+        ],
+        "note": "Logged '3'. Final order: 1, 5, 2, 4, 3 — an independent .then can overtake a chain that returns a promise."
+      }
+    ]
+  },
+  {
+    "id": "async-await",
+    "title": "async/await",
+    "code": [
+      "console.log('1')",
+      "async function run() {",
+      "  console.log('2')",
+      "  await null",
+      "  console.log('3')",
+      "}",
+      "run()",
+      "console.log('4')"
+    ],
+    "steps": [
+      {
+        "line": -1,
+        "stack": [],
+        "micro": [],
+        "macro": [],
+        "log": [],
+        "note": "Script starts running."
+      },
+      {
+        "line": 0,
+        "stack": [
+          "console.log"
+        ],
+        "micro": [],
+        "macro": [],
+        "log": [],
+        "note": "Call console.log('1')."
+      },
+      {
+        "line": 0,
+        "stack": [],
+        "micro": [],
+        "macro": [],
+        "log": [
+          "1"
+        ],
+        "note": "Logged."
+      },
+      {
+        "line": 6,
+        "stack": [
+          "run()"
+        ],
+        "micro": [],
+        "macro": [],
+        "log": [
+          "1"
+        ],
+        "note": "Call run() — an async function body starts executing synchronously, just like any other function, until it hits an await."
+      },
+      {
+        "line": 2,
+        "stack": [
+          "run()",
+          "console.log"
+        ],
+        "micro": [],
+        "macro": [],
+        "log": [
+          "1"
+        ],
+        "note": "Inside run(): call console.log('2')."
+      },
+      {
+        "line": 2,
+        "stack": [
+          "run()"
+        ],
+        "micro": [],
+        "macro": [],
+        "log": [
+          "1",
+          "2"
+        ],
+        "note": "Logged."
+      },
+      {
+        "line": 3,
+        "stack": [
+          "run()"
+        ],
+        "micro": [],
+        "macro": [],
+        "log": [
+          "1",
+          "2"
+        ],
+        "note": "Hit \"await null\". The rest of run() is suspended and scheduled as a microtask continuation; run() returns a pending promise right away."
+      },
+      {
+        "line": 3,
+        "stack": [],
+        "micro": [
+          "(continue run() after await)"
+        ],
+        "macro": [],
+        "log": [
+          "1",
+          "2"
+        ],
+        "note": "run() has returned control to the caller — the call stack unwinds here, even though run() isn’t finished."
+      },
+      {
+        "line": 7,
+        "stack": [
+          "console.log"
+        ],
+        "micro": [
+          "(continue run() after await)"
+        ],
+        "macro": [],
+        "log": [
+          "1",
+          "2"
+        ],
+        "note": "Back in the main script: call console.log('4')."
+      },
+      {
+        "line": 7,
+        "stack": [],
+        "micro": [
+          "(continue run() after await)"
+        ],
+        "macro": [],
+        "log": [
+          "1",
+          "2",
+          "4"
+        ],
+        "note": "Logged. Script finished — call stack empty."
+      },
+      {
+        "line": -1,
+        "stack": [],
+        "micro": [
+          "(continue run() after await)"
+        ],
+        "macro": [],
+        "log": [
+          "1",
+          "2",
+          "4"
+        ],
+        "note": "Event loop: drain microtasks."
+      },
+      {
+        "line": 4,
+        "stack": [
+          "(run() resumes)"
+        ],
+        "micro": [],
+        "macro": [],
+        "log": [
+          "1",
+          "2",
+          "4"
+        ],
+        "note": "Dequeue the continuation — run() picks back up right after the await."
+      },
+      {
+        "line": 4,
+        "stack": [],
+        "micro": [],
+        "macro": [],
+        "log": [
+          "1",
+          "2",
+          "4",
+          "3"
+        ],
+        "note": "Logged '3'. Final order: 1, 2, 4, 3 — await doesn’t block; it yields to the event loop exactly like a .then() would."
+      }
+    ]
+  },
+  {
+    "id": "event-coalescing",
+    "title": "from my work: event coalescing",
+    "code": [
+      "let dirty = false",
+      "function onEvent(e) {",
+      "  state.apply(e)",
+      "  if (!dirty) { dirty = true; queueMicrotask(flush) }",
+      "}",
+      "function flush() { dirty = false; render() }",
+      "for (const e of burst) onEvent(e)  // 5 events arrive together"
+    ],
+    "steps": [
+      {
+        "line": -1,
+        "stack": [],
+        "micro": [],
+        "macro": [],
+        "log": [],
+        "note": "A burst of 5 real-time events arrives together — think a socket message batch."
+      },
+      {
+        "line": 6,
+        "stack": [
+          "for (e of burst)"
+        ],
+        "micro": [],
+        "macro": [],
+        "log": [],
+        "note": "Loop starts."
+      },
+      {
+        "line": 1,
+        "stack": [
+          "for (e of burst)",
+          "onEvent(e1)"
+        ],
+        "micro": [],
+        "macro": [],
+        "log": [
+          "apply e1"
+        ],
+        "note": "Event 1: apply it to state."
+      },
+      {
+        "line": 3,
+        "stack": [
+          "for (e of burst)",
+          "onEvent(e1)"
+        ],
+        "micro": [
+          "flush"
+        ],
+        "macro": [],
+        "log": [
+          "apply e1"
+        ],
+        "note": "dirty was false → schedule flush() as a microtask. This guard is the whole trick: only the FIRST event in a burst schedules a flush."
+      },
+      {
+        "line": 1,
+        "stack": [
+          "for (e of burst)",
+          "onEvent(e2)"
+        ],
+        "micro": [
+          "flush"
+        ],
+        "macro": [],
+        "log": [
+          "apply e1",
+          "apply e2"
+        ],
+        "note": "Event 2: apply it. dirty is already true, so no second flush is scheduled — it rides the pending one."
+      },
+      {
+        "line": 1,
+        "stack": [
+          "for (e of burst)",
+          "onEvent(e3)"
+        ],
+        "micro": [
+          "flush"
+        ],
+        "macro": [],
+        "log": [
+          "apply e1",
+          "apply e2",
+          "apply e3"
+        ],
+        "note": "Event 3: same — applied, no new flush."
+      },
+      {
+        "line": 1,
+        "stack": [
+          "for (e of burst)",
+          "onEvent(e4)"
+        ],
+        "micro": [
+          "flush"
+        ],
+        "macro": [],
+        "log": [
+          "apply e1",
+          "apply e2",
+          "apply e3",
+          "apply e4"
+        ],
+        "note": "Event 4."
+      },
+      {
+        "line": 1,
+        "stack": [
+          "for (e of burst)",
+          "onEvent(e5)"
+        ],
+        "micro": [
+          "flush"
+        ],
+        "macro": [],
+        "log": [
+          "apply e1",
+          "apply e2",
+          "apply e3",
+          "apply e4",
+          "apply e5"
+        ],
+        "note": "Event 5, last in the burst."
+      },
+      {
+        "line": -1,
+        "stack": [],
+        "micro": [
+          "flush"
+        ],
+        "macro": [],
+        "log": [
+          "apply e1",
+          "apply e2",
+          "apply e3",
+          "apply e4",
+          "apply e5"
+        ],
+        "note": "Loop finished, call stack empty — all 5 events applied, exactly one flush pending."
+      },
+      {
+        "line": 5,
+        "stack": [
+          "flush()"
+        ],
+        "micro": [],
+        "macro": [],
+        "log": [
+          "apply e1",
+          "apply e2",
+          "apply e3",
+          "apply e4",
+          "apply e5"
+        ],
+        "note": "Event loop drains the microtask queue: flush() runs once."
+      },
+      {
+        "line": 5,
+        "stack": [],
+        "micro": [],
+        "macro": [],
+        "log": [
+          "apply e1",
+          "apply e2",
+          "apply e3",
+          "apply e4",
+          "apply e5",
+          "render()"
+        ],
+        "note": "render() called exactly once for the whole burst — the same back-pressure technique from the Intermedia case study above: coalesce before you ever reach the render loop."
+      }
+    ]
+  }
+]

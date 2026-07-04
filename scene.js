@@ -429,12 +429,41 @@ function buildRings(f, side) {
   fillAmbient(f, idx, 0.4);
 }
 
-/* 07 — LANGUAGES: proto-globe nebula */
+/* 07 — LANGUAGES: proto-globe nebula. Also the resting formation behind
+   "Beyond the Screen" (that section has no data-scene of its own) — so it
+   doubles as a home for 4 icebreaker topic clusters, hover-lit below. */
+const WINE = new THREE.Color(0x8a3a52);
+const nebulaState = { highlight: -1, clusters: [] }; // [{start, count}] per topic
 function buildNebula(f, side) {
   const cx = side * halfW() * 0.45;
   const R = Math.min(halfW(), halfH) * 0.5;
   const n = Math.floor(N * 0.5);
-  for (let i = 0; i < n; i++) {
+
+  /* one tight cluster per icebreaker card, in DOM order: camino, wine, history, collecting */
+  const topics = [
+    { u: 0.55, th: 0.6, color: CAMINO },
+    { u: 0.05, th: 2.6, color: WINE },
+    { u: -0.35, th: 4.3, color: INK },
+    { u: -0.6, th: 5.7, color: ACCENT }
+  ];
+  const perTopic = Math.floor(n * 0.05);
+  nebulaState.clusters = [];
+  let idx = 0;
+  for (const topic of topics) {
+    nebulaState.clusters.push({ start: idx, count: perTopic });
+    for (let k = 0; k < perTopic; k++, idx++) {
+      const i3 = idx * 3;
+      const u = Math.max(-1, Math.min(1, topic.u + (Math.random() - 0.5) * 0.22));
+      const th = topic.th + (Math.random() - 0.5) * 0.5;
+      const s = Math.sqrt(1 - u * u);
+      const r = R * (0.85 + Math.random() * 0.3);
+      f.pos[i3] = cx + r * s * Math.cos(th);
+      f.pos[i3 + 1] = r * u;
+      f.pos[i3 + 2] = r * s * Math.sin(th);
+      topic.color.toArray(f.col, i3);
+    }
+  }
+  for (let i = idx; i < n; i++) {
     const i3 = i * 3;
     const u = Math.random() * 2 - 1, th = Math.random() * Math.PI * 2, s = Math.sqrt(1 - u * u);
     const r = R * (0.85 + Math.random() * 0.3);
@@ -452,29 +481,53 @@ const globe = {
   dots: [], names: [], rot: -1.83, rotVel: 0, rotTarget: null,
   pitch: 0, pitchVel: 0, pitchTarget: null,
   zoom: 1, zoomTarget: 1,
-  dragging: false, highlight: -1, R: 1
+  dragging: false, highlight: -1, caminoLit: false, R: 1
 };
+
+/* Camino Português, Valença → Santiago (walked ×3) — [lon, lat] waypoints,
+   drawn as an amber arc slightly above the surface. c = -2 marks a route dot. */
+const CAMINO = new THREE.Color(0xffc46b);
+const CAMINOS = [
+  [[-8.64, 41.90], [-8.64, 42.05], [-8.61, 42.28], [-8.64, 42.43], [-8.66, 42.74], [-8.55, 42.88]]
+];
+
+function lonLatToV(lon, lat, R) {
+  const lo = lon * Math.PI / 180, la = lat * Math.PI / 180;
+  return new THREE.Vector3(
+    R * Math.cos(la) * Math.cos(lo),
+    R * Math.sin(la),
+    -R * Math.cos(la) * Math.sin(lo));
+}
+
 function buildGlobe(f, data) {
   globe.names = data.names;
   let dots = data.dots;
   if (isMobile) dots = dots.filter((d, i) => d[2] >= 0 || i % 2 === 0);
   globe.R = Math.min(halfW(), halfH) * (isMobile ? 0.62 : 0.72);
-  globe.dots = dots.map(d => {
-    const lon = d[0] * Math.PI / 180, lat = d[1] * Math.PI / 180;
-    return {
-      v: new THREE.Vector3(
-        globe.R * Math.cos(lat) * Math.cos(lon),
-        globe.R * Math.sin(lat),
-        -globe.R * Math.cos(lat) * Math.sin(lon)),
-      c: d[2]
-    };
-  });
+  globe.dots = dots.map(d => ({ v: lonLatToV(d[0], d[1], globe.R), c: d[2] }));
+
+  /* interpolate route waypoints into dense dot trails */
+  for (const route of CAMINOS) {
+    for (let s = 0; s < route.length - 1; s++) {
+      const [lon1, lat1] = route[s], [lon2, lat2] = route[s + 1];
+      const segN = Math.max(2, Math.round(Math.hypot(lon2 - lon1, lat2 - lat1) * 6));
+      for (let k = 0; k < segN; k++) {
+        const t = k / segN;
+        globe.dots.push({
+          v: lonLatToV(lon1 + (lon2 - lon1) * t, lat1 + (lat2 - lat1) * t, globe.R * 1.012),
+          c: -2
+        });
+      }
+    }
+  }
+
   const count = Math.min(globe.dots.length, N - 300);
   for (let i = 0; i < count; i++) {
     const i3 = i * 3;
+    const c = globe.dots[i].c;
     globe.dots[i].v.toArray(f.pos, i3);
-    (globe.dots[i].c >= 0 ? ACCENT : DIM).toArray(f.col, i3);
-    if (globe.dots[i].c >= 0) {
+    (c >= 0 ? ACCENT : c === -2 ? CAMINO : DIM).toArray(f.col, i3);
+    if (c >= 0) {
       f.col[i3] *= 1.25; f.col[i3 + 1] *= 1.25; f.col[i3 + 2] *= 1.25;
     }
   }
@@ -509,6 +562,7 @@ function updateGlobe(out, colOut) {
     // depth shading: back-side dots fade so the globe reads as a solid sphere
     let s = 0.18 + 0.82 * Math.max(0, Math.min(1, (zr / Rz + 1) / 2 * 1.4));
     if (globe.highlight >= 0 && globe.dots[i].c === globe.highlight) s *= 2.4;
+    else if (globe.caminoLit && globe.dots[i].c === -2) s *= 2.4;
     colOut[i3] = src.col[i3] * s;
     colOut[i3 + 1] = src.col[i3 + 1] * s;
     colOut[i3 + 2] = src.col[i3 + 2] * s;
@@ -702,6 +756,18 @@ function bindDom() {
     });
   });
 
+  const caminoEl = document.getElementById('globe-camino');
+  if (caminoEl) {
+    caminoEl.addEventListener('mouseenter', () => {
+      globe.caminoLit = true;
+      if (reducedMotion) renderStatic();
+    });
+    caminoEl.addEventListener('mouseleave', () => {
+      globe.caminoLit = false;
+      if (reducedMotion) renderStatic();
+    });
+  }
+
   document.querySelectorAll('[data-scene="stream"] + .section-body .entry').forEach((el, i) => {
     el.addEventListener('mouseenter', () => { streamState.highlight = i; });
     el.addEventListener('mouseleave', () => { streamState.highlight = -1; });
@@ -710,6 +776,14 @@ function bindDom() {
   document.querySelectorAll('[data-scene="rings"] + .section-body .edu-entry').forEach((el, i) => {
     el.addEventListener('mouseenter', () => { ringsState.highlight = i; });
     el.addEventListener('mouseleave', () => { ringsState.highlight = -1; });
+  });
+
+  // icebreaker cards → nebula topic clusters (DOM order matches buildNebula's topics[])
+  document.querySelectorAll('.interest-card').forEach((el, i) => {
+    el.addEventListener('mouseenter', () => { nebulaState.highlight = i; });
+    el.addEventListener('mouseleave', () => { nebulaState.highlight = -1; });
+    el.addEventListener('focus', () => { nebulaState.highlight = i; });
+    el.addEventListener('blur', () => { nebulaState.highlight = -1; });
   });
 
   // skill tags → constellation nodes (i18n-safe via data-i18n key aliases)
@@ -743,6 +817,9 @@ const scratch = new Float32Array(N * 3);
 const scratchCol = new Float32Array(N * 3);
 const clock = new THREE.Clock();
 let rafId = null;
+
+/* live-tunable via the dev HUD (lab.js) */
+const tune = { k: 0.075 };
 
 function computeTargets(time) {
   const p = stageProgress();
@@ -815,6 +892,10 @@ function computeTargets(time) {
   if (active.has('neural') && burstK > 0 && neural.pulseCount) {
     boostCol(neural.pulseStart, neural.pulseCount, 1 + burstK * 1.8);
   }
+  if (active.has('nebula') && nebulaState.highlight >= 0) {
+    const c = nebulaState.clusters[nebulaState.highlight];
+    if (c) boostCol(c.start, c.count, 2.4);
+  }
 
   // hero cursor repulsion (only once the pointer is real — default (0,0) would blast a hole)
   const heroW = 1 - Math.min(p, 1);
@@ -830,6 +911,27 @@ function computeTargets(time) {
         const d = Math.sqrt(d2);
         target[i3] += (dx / d) * push;
         target[i3 + 1] += (dy / d) * push;
+      }
+    }
+  }
+
+  // starship repulsion (easter egg) — same idea as the hero cursor repulsion
+  // above, extended to 3D and keyed to the ship's world position instead of
+  // the 2D pointer. Inert unless starship.js sets window.__scene.shipPos.
+  if (window.__scene && window.__scene.shipPos) {
+    const sp = window.__scene.shipPos, r2 = 2.4;
+    for (let k = 0; k < N; k++) {
+      const i3 = k * 3;
+      const dx = target[i3] - sp.x;
+      const dy = target[i3 + 1] - sp.y;
+      const dz = target[i3 + 2] - sp.z;
+      const d2 = dx * dx + dy * dy + dz * dz;
+      if (d2 < r2 && d2 > 0.0001) {
+        const push = (1 - d2 / r2) * 1.1;
+        const d = Math.sqrt(d2);
+        target[i3] += (dx / d) * push;
+        target[i3 + 1] += (dy / d) * push;
+        target[i3 + 2] += (dz / d) * push;
       }
     }
   }
@@ -880,7 +982,7 @@ function frame() {
 
   const posAttr = geometry.attributes.position.array;
   const colAttr = geometry.attributes.color.array;
-  const k = 0.075;
+  const k = tune.k;
   for (let j = 0; j < N * 3; j++) {
     posAttr[j] += (target[j] - posAttr[j]) * k;
     colAttr[j] += (targetCol[j] - colAttr[j]) * 0.06;
@@ -942,10 +1044,22 @@ build().then(() => {
   canvas.remove();
 });
 
-if (location.hostname === 'localhost') {
-  window.__scene = {
-    constel, streamState, ringsState, neural, globe, frames: 0,
-    get stageF() { return stageF; },
-    snap() { renderer.render(scene, camera); return renderer.domElement.toDataURL(); }
-  };
-}
+/* Introspection surface — the dev HUD (lab.js) and the command palette read
+   from here. Inert until something reads it. */
+window.__scene = {
+  constel, streamState, ringsState, nebulaState, neural, globe, frames: 0,
+  N, order, tune, points,
+  spriteCv,
+  /* starship easter egg (starship.js) sets this while flying; the particle
+     repulsion block in computeTargets reads it. Inert while null. */
+  shipPos: null,
+  get stageF() { return stageF; },
+  /* scatter every particle; the morph loop pulls them home */
+  party() {
+    const p = geometry.attributes.position.array;
+    for (let i = 0; i < p.length; i++) p[i] += (Math.random() - 0.5) * 4;
+    geometry.attributes.position.needsUpdate = true;
+    if (reducedMotion) renderStatic();
+  },
+  snap() { renderer.render(scene, camera); return renderer.domElement.toDataURL(); }
+};

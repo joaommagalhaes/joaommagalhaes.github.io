@@ -121,6 +121,90 @@ a {
   white-space: nowrap; /* wrap before the time, never inside it */
 }
 
+.btn-palette {
+  right: 4.9rem;
+}
+
+/* ── Command palette ── */
+.palette {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: rgba(5, 6, 9, 0.55);
+  backdrop-filter: blur(4px);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 18vh 1rem 0;
+}
+
+.palette[hidden] {
+  display: none;
+}
+
+.palette-box {
+  width: min(34rem, 100%);
+  background: rgba(13, 16, 23, 0.97);
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.5);
+}
+
+#palette-input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--rule);
+  outline: none;
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 0.95rem;
+  padding: 1rem 1.2rem;
+}
+
+#palette-input::placeholder {
+  color: var(--muted);
+  opacity: 0.7;
+}
+
+#palette-list {
+  list-style: none;
+  max-height: 46vh;
+  overflow-y: auto;
+  padding: 0.4rem;
+}
+
+#palette-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  color: var(--muted);
+  padding: 0.55rem 0.8rem;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+#palette-list li[aria-selected="true"] {
+  background: rgba(108, 155, 255, 0.12);
+  color: var(--ink);
+}
+
+#palette-list li em {
+  font-style: normal;
+  font-size: 0.72rem;
+  color: var(--accent);
+  opacity: 0.8;
+}
+
+#palette-list .palette-empty {
+  cursor: default;
+  opacity: 0.6;
+}
+
 /* ── Hero ── */
 .hero {
   min-height: 100svh;
@@ -410,6 +494,72 @@ a {
   gap: 0.5rem;
 }
 
+/* ── Case studies ── */
+.case-study {
+  margin-top: 1.2rem;
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  background: rgba(16, 20, 28, 0.5);
+}
+
+.case-study summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  list-style: none;
+  cursor: pointer;
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  color: var(--accent);
+  padding: 0.65rem 0.95rem;
+}
+
+.case-study summary::-webkit-details-marker {
+  display: none;
+}
+
+.case-study .cs-arrow {
+  transition: transform 0.25s var(--ease);
+}
+
+.case-study[open] .cs-arrow {
+  transform: rotate(90deg);
+}
+
+.case-study[open] summary {
+  border-bottom: 1px solid var(--rule);
+}
+
+.cs-body {
+  padding: 1.1rem 1.1rem 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.cs-row {
+  display: grid;
+  grid-template-columns: 7rem 1fr;
+  gap: 1.25rem;
+}
+
+.cs-lbl {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink);
+  padding-top: 0.15rem;
+}
+
+.cs-row p {
+  color: var(--muted);
+  font-size: 0.88rem;
+  line-height: 1.65;
+}
+
 /* ── Tags ── */
 .tag {
   font-family: var(--mono);
@@ -578,6 +728,20 @@ a {
   font-size: 0.92rem;
 }
 
+.currently-updated {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+  opacity: 0.75;
+  margin-top: 0.75rem;
+}
+
+.currently-updated b {
+  color: var(--muted);
+  font-weight: 500;
+}
+
 .icebreakers {
   margin-bottom: 3rem;
 }
@@ -617,6 +781,344 @@ a {
   line-height: 1.65;
 }
 
+.interest-card .entry-stats {
+  margin-top: 0.9rem;
+}
+
+/* ── The Lab ── */
+.section-body.lab-body {
+  max-width: none;
+}
+
+.lab-kicker {
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  color: var(--muted);
+  max-width: 62ch;
+  margin-bottom: 2rem;
+}
+
+.lab-card {
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  padding: 1.4rem 1.5rem 1.2rem;
+}
+
+.lab-card + .lab-card {
+  margin-top: 2rem;
+}
+
+.lab-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.6rem;
+}
+
+.lab-head h4 {
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+.lab-src {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+  white-space: nowrap;
+  border-bottom: 1px solid transparent;
+  transition: color 0.2s, border-color 0.2s;
+}
+
+.lab-src:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.lab-note {
+  color: var(--muted);
+  font-size: 0.88rem;
+  line-height: 1.65;
+  max-width: 70ch;
+  margin-bottom: 1.1rem;
+}
+
+.lab-bar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.25rem;
+  margin-top: 0.9rem;
+}
+
+.lab-seg {
+  display: inline-flex;
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.lab-seg .lab-btn {
+  border: none;
+  border-radius: 0;
+}
+
+.lab-seg .lab-btn + .lab-btn {
+  border-left: 1px solid var(--rule);
+}
+
+.lab-btn {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+  background: transparent;
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  padding: 0.4rem 0.85rem;
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s, background 0.2s;
+}
+
+.lab-btn:hover {
+  color: var(--ink);
+  border-color: var(--muted);
+}
+
+.lab-btn.active,
+.lab-btn.primary {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.lab-seg .lab-btn.active {
+  background: rgba(108, 155, 255, 0.12);
+}
+
+.lab-hint {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+  opacity: 0.8;
+}
+
+/* ── Event loop simulator ── */
+.el-tabs {
+  flex-wrap: wrap;
+  height: auto;
+  margin-bottom: 1.1rem;
+}
+
+.el-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 1rem;
+}
+
+.el-code {
+  font-family: var(--mono);
+  font-size: 0.82rem;
+  line-height: 1.7;
+  color: var(--muted);
+  background: #0b0e15;
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  padding: 0.9rem 1rem;
+  white-space: pre;
+  overflow-x: auto;
+  margin: 0;
+}
+
+.el-code-line {
+  padding: 0.05rem 0.5rem;
+  margin: 0 -0.5rem;
+  border-radius: 3px;
+}
+
+.el-code-line.active {
+  color: var(--ink);
+  background: rgba(108, 155, 255, 0.14);
+  box-shadow: inset 2px 0 0 var(--accent);
+}
+
+.el-panels {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.el-panel-lbl {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 0.35rem;
+}
+
+.el-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  min-height: 1.9rem;
+}
+
+.el-chip {
+  font-family: var(--mono);
+  font-size: 0.74rem;
+  color: var(--ink);
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  padding: 0.25rem 0.6rem;
+}
+
+/* lane color-coding: stack stays neutral (current point of execution),
+   microtasks and macrotasks each get a distinct, consistent accent so
+   you can track which mechanism a chip belongs to at a glance */
+.el-chip-micro {
+  border-color: var(--accent);
+  background: rgba(108, 155, 255, 0.14);
+}
+
+.el-chip-macro {
+  border-color: #ffc46b;
+  background: rgba(255, 196, 107, 0.14);
+}
+
+.el-chip-empty {
+  color: var(--muted);
+  opacity: 0.6;
+  font-family: var(--mono);
+  font-size: 0.74rem;
+}
+
+@keyframes el-pop {
+  0% { transform: scale(0.82); opacity: 0; }
+  60% { transform: scale(1.06); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.el-pop {
+  animation: el-pop 0.35s ease-out;
+}
+
+.el-console {
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  background: #0b0e15;
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  padding: 0.5rem 0.7rem;
+  max-height: 6.5rem;
+  overflow-y: auto;
+}
+
+.el-log-line {
+  color: #5fd39a;
+}
+
+.el-note {
+  color: var(--muted);
+  font-size: 0.88rem;
+  line-height: 1.6;
+  margin-top: 1rem;
+  min-height: 2.8rem;
+}
+
+.el-note.el-note-error {
+  color: #ffc46b;
+}
+
+.hood-diagram {
+  display: block;
+  width: 100%;
+  max-width: 640px;
+  height: auto;
+  color: var(--muted);
+  margin: 0.25rem 0 1rem;
+}
+
+/* ── Dev HUD ── */
+#dev-hud {
+  position: fixed;
+  bottom: 2rem;
+  left: 1.25rem;
+  z-index: 95;
+  width: 252px;
+  background: rgba(11, 14, 21, 0.92);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  padding: 0.8rem 1rem;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  display: none;
+}
+
+#dev-hud.on {
+  display: block;
+}
+
+#dev-hud canvas {
+  display: block;
+  width: 100%;
+  margin: 0.5rem 0;
+}
+
+.hud-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.18rem 0;
+}
+
+.hud-row b {
+  color: var(--ink);
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.hud-row input[type="range"] {
+  width: 130px;
+  accent-color: var(--accent);
+}
+
+.hud-title {
+  color: var(--ink);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-size: 0.68rem;
+}
+
+.hud-title button {
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 0 0.2rem;
+}
+
+.hud-title button:hover {
+  color: var(--accent);
+}
+
+@media (max-width: 700px) {
+  #dev-hud {
+    left: 0.75rem;
+    bottom: 1rem;
+  }
+}
+
 /* ── Globe stage ── */
 .globe-stage {
   position: relative;
@@ -639,6 +1141,31 @@ a {
   letter-spacing: 0.08em;
   color: var(--muted);
   opacity: 0.8;
+}
+
+.globe-camino {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.globe-camino:hover {
+  color: var(--accent);
+}
+
+.camino-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #ffc46b;
+  flex: none;
 }
 
 /* Legend: quiet text, not buttons — it drives the globe on hover */
@@ -782,6 +1309,117 @@ footer {
   border-color: var(--accent);
 }
 
+/* ── Starship easter egg ──
+   The ship flies OVER the page on its own transparent canvas; the flight
+   loop drives window scroll per-frame, so smooth-scroll must be off. */
+html.starship-mode {
+  scroll-behavior: auto;
+}
+
+/* the ship replaces the pointer as the focus — quiet the hover tooltip */
+.starship-mode #scene-tip {
+  opacity: 0 !important;
+}
+
+#ship-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 240;
+  pointer-events: none;
+  display: none;
+}
+
+.starship-mode #ship-canvas {
+  display: block;
+}
+
+#ship-hint {
+  position: fixed;
+  top: 18vh;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 300;
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  letter-spacing: 0.05em;
+  color: var(--ink);
+  background: rgba(13, 16, 23, 0.88);
+  border: 1px solid var(--accent);
+  border-radius: 6px;
+  padding: 0.6rem 1.1rem;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.6s ease;
+}
+
+#ship-hint.on {
+  opacity: 1;
+}
+
+#ship-hud {
+  position: fixed;
+  bottom: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 300;
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  background: rgba(13, 16, 23, 0.85);
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  padding: 0.45rem 1rem;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+
+#ship-hud b {
+  color: var(--accent);
+  font-weight: 500;
+}
+
+#ship-hud.on {
+  opacity: 1;
+}
+
+#ship-compass {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 300;
+  font-size: 1.4rem;
+  color: var(--accent);
+  text-shadow: 0 0 12px rgba(108, 155, 255, 0.8);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  will-change: transform;
+}
+
+#ship-compass.on {
+  opacity: 1;
+  animation: compass-pulse 1.1s ease-in-out infinite;
+}
+
+@keyframes compass-pulse {
+  0%, 100% { filter: brightness(1); }
+  50% { filter: brightness(1.6); }
+}
+
+/* section flash when the ship collects its beacon */
+.beacon-hit .label-text,
+.beacon-hit .interests-label {
+  color: var(--accent);
+  text-shadow: 0 0 18px rgba(108, 155, 255, 0.9);
+  transition: color 0.2s, text-shadow 0.2s;
+}
+
 /* ── Reduced motion ── */
 @media (prefers-reduced-motion: reduce) {
   html {
@@ -799,6 +1437,17 @@ footer {
 
   .hero-scroll {
     animation: none;
+  }
+}
+
+/* stacked demo panels (must agree with the <560px canvas-width check in lab.js) */
+@media (max-width: 700px) {
+  .el-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .lab-card {
+    padding: 1.1rem 1rem 1rem;
   }
 }
 
@@ -835,9 +1484,9 @@ footer {
     gap: 0.3rem 1rem;
   }
 
-  /* nav scrolls sideways; fade the edge + clear the fixed EN button */
+  /* nav scrolls sideways; fade the edge + clear the fixed EN/⌘K buttons */
   .section-nav {
-    padding-right: 5.5rem;
+    padding-right: 9.5rem;
     -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 2.5rem), transparent);
     mask-image: linear-gradient(90deg, #000 calc(100% - 2.5rem), transparent);
   }
@@ -868,6 +1517,11 @@ footer {
   }
 
   .currently-list li {
+    grid-template-columns: 1fr;
+    gap: 0.3rem;
+  }
+
+  .cs-row {
     grid-template-columns: 1fr;
     gap: 0.3rem;
   }

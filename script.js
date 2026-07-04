@@ -53,6 +53,7 @@ document.addEventListener('DOMContentLoaded', function () {
       currentLocale = currentLocale === 'en' ? 'pt' : 'en';
       try { localStorage.setItem('locale', currentLocale); } catch (e) {}
       loadTranslations(currentLocale);
+      updateRnStamp();
     });
   }
 
@@ -70,7 +71,20 @@ document.addEventListener('DOMContentLoaded', function () {
   }
   setInterval(updateTime, 60000);
 
+  /* ── "Right Now" last-updated stamp ──
+     One constant, bump it by hand whenever the Right Now list changes —
+     an honesty signal beats a fake auto-timestamp. */
+  var RN_UPDATED = new Date('2026-07-01');
+  function updateRnStamp() {
+    var el = document.getElementById('rn-updated');
+    if (!el) return;
+    el.textContent = new Intl.DateTimeFormat(currentLocale === 'pt' ? 'pt-PT' : 'en-GB', {
+      year: 'numeric', month: 'short'
+    }).format(RN_UPDATED);
+  }
+
   loadTranslations(currentLocale);
+  updateRnStamp();
 
   /* ── Reveal on Scroll ── */
   var observer = new IntersectionObserver(function (entries) {
@@ -109,7 +123,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   /* ── Section Nav: Scroll-spy ── */
   var navLinks = document.querySelectorAll('.section-nav-link');
-  var sectionIds = ['about', 'experience', 'ai', 'skills', 'education', 'languages', 'offscreen'];
+  var sectionIds = ['about', 'experience', 'ai', 'skills', 'education', 'languages', 'offscreen', 'lab'];
   // observe each section's body (labels are tiny); remember the id it belongs to
   var spyTargets = sectionIds.map(function (id) {
     var label = document.getElementById(id);

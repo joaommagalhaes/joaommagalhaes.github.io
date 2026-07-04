@@ -50,6 +50,15 @@
     <span class="lang-text en" style="display:none">EN</span>
   </button>
 
+  <button class="btn-lang btn-palette" id="btn-palette" data-i18n-attr="title|palette.open_title" title="Command palette (⌘K)">⌘K</button>
+
+  <div id="palette" class="palette" role="dialog" aria-modal="true" data-i18n-attr="aria-label|palette.open_title" aria-label="Command palette (⌘K)" hidden>
+    <div class="palette-box">
+      <input id="palette-input" type="text" role="combobox" aria-expanded="true" aria-controls="palette-list" aria-autocomplete="list" data-i18n-attr="placeholder|palette.placeholder" placeholder="Type a command or search sections…" autocomplete="off" spellcheck="false">
+      <ul id="palette-list" role="listbox" data-i18n-attr="aria-label|palette.open_title" aria-label="Command palette (⌘K)"></ul>
+    </div>
+  </div>
+
   <main class="page">
 
     <header class="hero" data-scene="name">
@@ -78,6 +87,7 @@
       <a href="#education" class="section-nav-link"><span data-i18n="nav.education">Education</span></a>
       <a href="#languages" class="section-nav-link"><span data-i18n="nav.languages">Languages</span></a>
       <a href="#offscreen" class="section-nav-link"><span data-i18n="nav.offscreen">Beyond the Screen</span></a>
+      <a href="#lab" class="section-nav-link"><span data-i18n="nav.lab">The Lab</span></a>
     </nav>
 
     <div class="cv-grid">
@@ -122,6 +132,28 @@
             <span class="tag">Real-time</span>
             <span class="tag">Cloud</span>
           </div>
+          <!-- TODO(joao): confirm the specifics in exp.intermedia.cs.* before claiming numbers -->
+          <details class="case-study">
+            <summary><span data-i18n="cs.toggle">Read the case study</span><span class="cs-arrow" aria-hidden="true">→</span></summary>
+            <div class="cs-body">
+              <div class="cs-row">
+                <span class="cs-lbl" data-i18n="cs.problem">Problem</span>
+                <p data-i18n="exp.intermedia.cs.problem">Cloud-communications dashboards live on real-time data — presence, calls, queues, analytics. Thousands of events per minute, and every one of them wants to repaint the screen.</p>
+              </div>
+              <div class="cs-row">
+                <span class="cs-lbl" data-i18n="cs.constraints">Constraints</span>
+                <p data-i18n="exp.intermedia.cs.constraints">An enterprise UCaaS platform with a 99.999% uptime culture: the frontend must stay responsive under sustained event load, on long-lived sessions that are never refreshed.</p>
+              </div>
+              <div class="cs-row">
+                <span class="cs-lbl" data-i18n="cs.decision">Decision</span>
+                <p data-i18n="exp.intermedia.cs.decision">Discipline at the subscription boundary: centralised socket subscription management, OnPush change detection with explicit update paths, virtualised lists for high-churn views, and back-pressure — coalescing event bursts before they ever reach the render loop.</p>
+              </div>
+              <div class="cs-row">
+                <span class="cs-lbl" data-i18n="cs.outcome">Outcome</span>
+                <p data-i18n="exp.intermedia.cs.outcome">Interfaces that stay smooth while the data never stops. The habits it enforced — measure first, render less, trust the profiler — now shape how I review every frontend change.</p>
+              </div>
+            </div>
+          </details>
         </div>
 
         <div class="entry reveal">
@@ -143,10 +175,47 @@
           <div class="entry-tags">
             <span class="tag">React Native</span>
             <span class="tag">ReactJS</span>
-            <span class="tag">Angular</span>
             <span class="tag">TypeScript</span>
             <span class="tag">Node.js</span>
           </div>
+          <details class="case-study">
+            <summary><span data-i18n="cs.toggle">Read the case study</span><span class="cs-arrow" aria-hidden="true">→</span></summary>
+            <div class="cs-body">
+              <div class="cs-row">
+                <span class="cs-lbl" data-i18n="cs.problem">Problem</span>
+                <p data-i18n="exp.wit.cs.problem">Every marketing campaign shipped as app code. Each one needed engineering time, a release cycle and app-store review — marketing moved at the speed of the slowest deploy.</p>
+              </div>
+              <div class="cs-row">
+                <span class="cs-lbl" data-i18n="cs.constraints">Constraints</span>
+                <p data-i18n="exp.wit.cs.constraints">1.5M+ monthly active users, release cadence measured in weeks, campaign authors with no engineering background, and zero room for regressions in critical purchase journeys.</p>
+              </div>
+              <div class="cs-row">
+                <span class="cs-lbl" data-i18n="cs.decision">Decision</span>
+                <p data-i18n="exp.wit.cs.decision">A modular campaign engine in React: a campaign became a declarative configuration, rendered by a registry of plug-and-play blocks — banners, flows, forms, rewards. A new campaign meant a new config, validated and delivered server-side. Not a new app.</p>
+              </div>
+              <svg class="hood-diagram" viewBox="0 0 660 76" role="img" aria-hidden="true">
+                <g fill="none" stroke="currentColor" stroke-opacity="0.45">
+                  <rect x="6" y="14" width="172" height="48" rx="6"/>
+                  <rect x="240" y="14" width="164" height="48" rx="6"/>
+                  <rect x="466" y="14" width="188" height="48" rx="6"/>
+                  <path d="M178 38h58m-10 -5 10 5-10 5"/>
+                  <path d="M404 38h58m-10 -5 10 5-10 5"/>
+                </g>
+                <g font-family="Geist Mono, monospace" font-size="12" fill="currentColor">
+                  <text x="92" y="35" text-anchor="middle">campaign config</text>
+                  <text x="92" y="52" text-anchor="middle" fill-opacity="0.6" font-size="10">authored by marketing</text>
+                  <text x="322" y="35" text-anchor="middle">block registry</text>
+                  <text x="322" y="52" text-anchor="middle" fill-opacity="0.6" font-size="10">plug-and-play React</text>
+                  <text x="560" y="35" text-anchor="middle">app · 1.5M MAU</text>
+                  <text x="560" y="52" text-anchor="middle" fill-opacity="0.6" font-size="10">no release needed</text>
+                </g>
+              </svg>
+              <div class="cs-row">
+                <span class="cs-lbl" data-i18n="cs.outcome">Outcome</span>
+                <p data-i18n="exp.wit.cs.outcome">Non-technical teams launched campaigns autonomously. Time-to-market dropped from release-cycle weeks to same-day, and the engine outlived my time on the team as the campaign platform.</p>
+              </div>
+            </div>
+          </details>
         </div>
 
         <div class="entry reveal">
@@ -171,8 +240,30 @@
             <span class="tag">MySQL</span>
             <span class="tag">RabbitMQ</span>
             <span class="tag">Python</span>
+            <span class="tag">Node.js</span>
             <span class="tag">Ionic</span>
           </div>
+          <details class="case-study">
+            <summary><span data-i18n="cs.toggle">Read the case study</span><span class="cs-arrow" aria-hidden="true">→</span></summary>
+            <div class="cs-body">
+              <div class="cs-row">
+                <span class="cs-lbl" data-i18n="cs.problem">Problem</span>
+                <p data-i18n="exp.talents.cs.problem">Streetlight networks, industrial test benches and operational incidents all lived off any digital system — municipalities and field teams had no shared, real-time view into infrastructure they were responsible for.</p>
+              </div>
+              <div class="cs-row">
+                <span class="cs-lbl" data-i18n="cs.constraints">Constraints</span>
+                <p data-i18n="exp.talents.cs.constraints">A small full-stack team covering hardware-adjacent messaging (RabbitMQ), a PHP/MySQL backend, an Angular frontend, and a BI layer — for infrastructure that's physically distributed across municipalities and can't be taken offline to fix.</p>
+              </div>
+              <div class="cs-row">
+                <span class="cs-lbl" data-i18n="cs.decision">Decision</span>
+                <p data-i18n="exp.talents.cs.decision">Built Gesluce end-to-end: RabbitMQ as the messaging backbone between streetlight controllers and a PHP/MySQL backend. Alongside it, an Angular portal with an integrated BI layer for hardware test analysis, and a separate Angular/Node.js/Ionic portal for real-time incident monitoring.</p>
+              </div>
+              <div class="cs-row">
+                <span class="cs-lbl" data-i18n="cs.outcome">Outcome</span>
+                <p data-i18n="exp.talents.cs.outcome">Gesluce was adopted by several municipalities; the hardware-testing portal turned raw test data into decisions engineers could act on; the incident portal replaced manual tracking with live visibility. This project is where I stopped thinking in features and started thinking in systems.</p>
+              </div>
+            </div>
+          </details>
         </div>
 
         <div class="entry reveal">
@@ -197,6 +288,27 @@
             <span class="tag" data-i18n="exp.galp.tags.am">Asset Management</span>
             <span class="tag" data-i18n="exp.galp.tags.energy">Energy Sector</span>
           </div>
+          <details class="case-study">
+            <summary><span data-i18n="cs.toggle">Read the case study</span><span class="cs-arrow" aria-hidden="true">→</span></summary>
+            <div class="cs-body">
+              <div class="cs-row">
+                <span class="cs-lbl" data-i18n="cs.problem">Problem</span>
+                <p data-i18n="exp.galp.cs.problem">Portugal's gas distribution market answers to a national regulator. Manual, error-prone reporting to ERSE wasn't just inefficient — for one of the country's largest energy companies, it was regulatory risk.</p>
+              </div>
+              <div class="cs-row">
+                <span class="cs-lbl" data-i18n="cs.constraints">Constraints</span>
+                <p data-i18n="exp.galp.cs.constraints">Critical national infrastructure (SGA for asset management, M&amp;S for messaging) shared across every player in the PT gas market, strict compliance standards, and zero tolerance for reporting errors that could trigger regulatory action.</p>
+              </div>
+              <div class="cs-row">
+                <span class="cs-lbl" data-i18n="cs.decision">Decision</span>
+                <p data-i18n="exp.galp.cs.decision">Ran the BI analysis behind an ERSE compliance-reporting system, worked as analyst on the SGA asset-management platform, developed M&amp;S messaging flows, and authored the technical documentation the Distribution Portal was later built from.</p>
+              </div>
+              <div class="cs-row">
+                <span class="cs-lbl" data-i18n="cs.outcome">Outcome</span>
+                <p data-i18n="exp.galp.cs.outcome">Compliance reporting became accurate and auditable, and the documentation I wrote became the spec for a new system. This is where I learned that a clear technical document is itself an engineering deliverable — not paperwork around the real work.</p>
+              </div>
+            </div>
+          </details>
         </div>
 
       </div>
@@ -375,27 +487,127 @@
               <span class="currently-val" data-i18n="offscreen.rn.tuning.val">Practical woodwork solutions in my free time, like building a treehouse bedroom for my kids.</span>
             </li>
           </ul>
+          <div class="currently-updated"><span data-i18n="offscreen.rn.updated">last updated</span> <b id="rn-updated"></b></div>
         </div>
 
         <div class="icebreakers">
           <div class="interests-label" data-i18n="offscreen.ask">Ask me about...</div>
           <div class="interests-grid">
-            <div class="interest-card" tabindex="0">
-              <h4 data-i18n="offscreen.ask.camino.lbl">Camino de Santiago</h4>
-              <p class="interest-card-desc" data-i18n="offscreen.ask.camino.val">I've walked it three times. It’s a transformative experience of nature, overcoming limits, and connecting with people from all over the world.</p>
+            <div class="interest-card" id="ice-camino" tabindex="0">
+              <h4 data-i18n="offscreen.ask.camino.lbl">Camino Português</h4>
+              <p class="interest-card-desc" data-i18n="offscreen.ask.camino.val">I've walked the Camino Português from Valença to Santiago three times. A transformative experience of nature, overcoming limits, and connecting with people from all over the world.</p>
+              <div class="entry-stats">
+                <span class="entry-stat" data-i18n="offscreen.ask.camino.stat1">3× walked</span>
+                <span class="entry-stat" data-i18n="offscreen.ask.camino.stat2">~120 km</span>
+                <span class="entry-stat" data-i18n="offscreen.ask.camino.stat3">Valença → Santiago</span>
+              </div>
             </div>
-            <div class="interest-card" tabindex="0">
+            <div class="interest-card" id="ice-wine" tabindex="0">
               <h4 data-i18n="offscreen.ask.wine.lbl">Port Wine</h4>
               <p class="interest-card-desc" data-i18n="offscreen.ask.wine.val">I was born in the demarcated region and grew up involved in the entire process—from pruning the vines to producing this unique wine.</p>
+              <div class="entry-stats">
+                <span class="entry-stat" data-i18n="offscreen.ask.wine.stat1">Douro Valley</span>
+                <span class="entry-stat" data-i18n="offscreen.ask.wine.stat2">Vine to bottle</span>
+                <span class="entry-stat" data-i18n="offscreen.ask.wine.stat3">Family trade</span>
+              </div>
             </div>
-            <div class="interest-card" tabindex="0">
+            <div class="interest-card" id="ice-history" tabindex="0">
               <h4 data-i18n="offscreen.ask.history.lbl">20th Century History</h4>
               <p class="interest-card-desc" data-i18n="offscreen.ask.history.val">I’m a passionate reader of 20th-century European and world history, fascinated by the transformations that shaped our modern world.</p>
+              <div class="entry-stats">
+                <span class="entry-stat" data-i18n="offscreen.ask.history.stat1">Interwar Europe</span>
+                <span class="entry-stat" data-i18n="offscreen.ask.history.stat2">Post-mortem mindset</span>
+              </div>
             </div>
-            <div class="interest-card" tabindex="0">
+            <div class="interest-card" id="ice-collecting" tabindex="0">
               <h4 data-i18n="offscreen.ask.collecting.lbl">Collecting</h4>
               <p class="interest-card-desc" data-i18n="offscreen.ask.collecting.val">I’m a natural collector. My collections range from Pokémon cards and Hot Wheels to stamps, sugar packets, and news clippings.</p>
+              <div class="entry-stats">
+                <span class="entry-stat" data-i18n="offscreen.ask.collecting.stat1">Stamps</span>
+                <span class="entry-stat" data-i18n="offscreen.ask.collecting.stat2">Pokémon cards</span>
+                <span class="entry-stat" data-i18n="offscreen.ask.collecting.stat3">Sugar packets</span>
+              </div>
             </div>
+          </div>
+        </div>
+
+      </div>
+
+      <span class="section-label" id="lab">
+        <span class="label-index">08</span>
+        <span class="label-text" data-i18n="lab.title">The Lab</span>
+      </span>
+      <div class="section-body lab-body reveal">
+        <p class="lab-kicker" data-i18n="lab.kicker">One interactive demo — the mental model every front-end interview eventually needs. Pick a scenario, hit Step or Play.</p>
+
+        <div class="lab-card" id="lab-eventloop">
+          <div class="lab-head">
+            <h4 data-i18n="lab.eventloop.title">The JS event loop, visualized</h4>
+            <a class="lab-src" href="https://github.com/joaommagalhaes/joaommagalhaes.github.io/blob/main/lab.js" target="_blank" rel="noopener" data-i18n="lab.src">view source ↗</a>
+          </div>
+          <p class="lab-note" data-i18n="lab.eventloop.note">JavaScript is single-threaded, but never blocks on I/O — this is why. Pick a scenario, then Step through it line by line: watch the call stack, the microtask queue (promises), and the task queue (timers) fight for a turn. The console output at the end is always in the order shown, not the order the code reads.</p>
+
+          <div class="lab-seg el-tabs" role="tablist"></div>
+
+          <div class="el-layout">
+            <pre class="el-code" aria-hidden="true"></pre>
+            <div class="el-panels">
+              <div class="el-panel">
+                <div class="el-panel-lbl" data-i18n="lab.eventloop.stack">call stack</div>
+                <div class="el-chips el-stack"></div>
+              </div>
+              <div class="el-panel">
+                <div class="el-panel-lbl" data-i18n="lab.eventloop.micro">microtask queue</div>
+                <div class="el-chips el-micro"></div>
+              </div>
+              <div class="el-panel">
+                <div class="el-panel-lbl" data-i18n="lab.eventloop.macro">task queue (macrotasks)</div>
+                <div class="el-chips el-macro"></div>
+              </div>
+              <div class="el-panel">
+                <div class="el-panel-lbl" data-i18n="lab.eventloop.console">console</div>
+                <div class="el-console"></div>
+              </div>
+            </div>
+          </div>
+
+          <p class="el-note" aria-live="polite"></p>
+
+          <div class="lab-bar">
+            <button class="lab-btn primary" id="lab-el-step" type="button" data-i18n="lab.eventloop.step">step</button>
+            <button class="lab-btn" id="lab-el-play" type="button" data-i18n="lab.eventloop.play">play</button>
+            <button class="lab-btn" id="lab-el-reset" type="button" data-i18n="lab.eventloop.reset">reset</button>
+          </div>
+        </div>
+
+        <div class="lab-card" id="lab-hood">
+          <div class="lab-head">
+            <h4 data-i18n="lab.hood.title">This website — under the hood</h4>
+            <a class="lab-src" href="https://github.com/joaommagalhaes/joaommagalhaes.github.io/blob/main/scene.js" target="_blank" rel="noopener" data-i18n="lab.src">view source ↗</a>
+          </div>
+          <p class="lab-note" data-i18n="lab.hood.p1">The background is one particle system: 9,000 points in a single buffer, drawn in one call. Every section precomputes a formation — a target position and colour per particle. Scrolling picks the two nearest formations and blends between them with a smoothstep; one lerp loop pulls every particle toward its target each frame. No per-frame allocation, no DOM work, one draw call.</p>
+          <svg class="hood-diagram" viewBox="0 0 660 104" role="img" data-i18n-attr="aria-label|lab.hood.title" aria-label="This website — under the hood">
+            <g fill="none" stroke="currentColor" stroke-opacity="0.45">
+              <rect x="6" y="18" width="168" height="52" rx="6"/>
+              <rect x="238" y="18" width="150" height="52" rx="6"/>
+              <rect x="452" y="18" width="202" height="52" rx="6"/>
+              <path d="M174 44h56m-10 -5 10 5-10 5"/>
+              <path d="M388 44h56m-10 -5 10 5-10 5"/>
+            </g>
+            <g font-family="Geist Mono, monospace" font-size="12" fill="currentColor">
+              <text x="90" y="40" text-anchor="middle">8 formations</text>
+              <text x="90" y="58" text-anchor="middle" fill-opacity="0.6" font-size="10">Float32Array × N</text>
+              <text x="313" y="40" text-anchor="middle">scroll → blend(t)</text>
+              <text x="313" y="58" text-anchor="middle" fill-opacity="0.6" font-size="10">smoothstep</text>
+              <text x="553" y="40" text-anchor="middle">one buffer · 9,000 pts</text>
+              <text x="553" y="58" text-anchor="middle" fill-opacity="0.6" font-size="10">lerp → GPU · 1 draw call</text>
+              <text x="90" y="92" text-anchor="middle" fill-opacity="0.5" font-size="10">name · core · stream · neural…</text>
+            </g>
+          </svg>
+          <p class="lab-note" data-i18n="lab.hood.p2">The name at the top is the same trick: the text is rasterised to an offscreen canvas once, and its opaque pixels become particle targets. Open the HUD to watch it work live — and to detune the morph constant until it feels wrong. Tuning is the difference between motion and noise.</p>
+          <div class="lab-bar">
+            <button class="lab-btn primary" id="lab-hud-toggle" type="button" data-i18n="lab.hood.hud">open dev HUD</button>
+            <span class="lab-hint" data-i18n="lab.hood.hint">live fps, particle count, formation blend — plus two knobs you can break</span>
           </div>
         </div>
 
@@ -407,6 +619,10 @@
       <div class="globe-caption">
         <div class="interests-label" data-i18n="offscreen.travel">Travelled — 19 countries</div>
         <div class="globe-hint" data-i18n="globe.hint">drag to spin · hover a lit country</div>
+        <div class="globe-camino" id="globe-camino">
+          <span class="camino-dot" aria-hidden="true"></span>
+          <span data-i18n="globe.camino">Camino Português, Valença → Santiago (walked ×3) — hover to light the route</span>
+        </div>
       </div>
       <div class="globe-list">
           <div class="flag-grid">
@@ -449,7 +665,10 @@
 
   <script src="locales.js"></script>
   <script src="script.js"></script>
+  <script src="lab.js"></script>
+  <script src="palette.js"></script>
   <script type="module" src="scene.js"></script>
+  <script type="module" src="starship.js"></script>
 </body>
 
 </html>
