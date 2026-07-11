@@ -64,6 +64,19 @@ a {
   z-index: 1;
 }
 
+/* ── Film grain + vignette (only when the 3D scene is live) ── */
+body.has-3d::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at center, transparent 62%, rgba(3, 5, 9, 0.4)),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
+  background-size: cover, 160px 160px;
+}
+
 /* ── Scrollbar & progress ── */
 ::-webkit-scrollbar {
   width: 10px;
@@ -244,7 +257,7 @@ a {
 }
 
 .name {
-  font-size: clamp(2.75rem, 8vw, 5.5rem);
+  font-size: clamp(3rem, 9vw, 7.5rem);
   font-weight: 600;
   letter-spacing: -0.03em;
   line-height: 1.05;
@@ -259,14 +272,41 @@ a {
 .hero-role {
   font-family: var(--mono);
   font-size: clamp(1rem, 2.5vw, 1.25rem);
-  font-weight: 300;
-  color: var(--muted);
-  margin-bottom: 2.5rem;
+  font-weight: 400;
+  color: #c6cede;
+  margin-bottom: 0.75rem;
+}
+
+.hero-tagline {
+  font-size: clamp(1.05rem, 2.2vw, 1.1875rem);
+  line-height: 1.6;
+  color: #aab3c7;
+  max-width: 46ch;
+  margin: 0 auto 2.5rem;
 }
 
 .header-links {
   display: flex;
+  align-items: center;
   gap: 1.75rem;
+}
+
+.btn-cv {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  letter-spacing: 0.06em;
+  color: var(--bg);
+  background: var(--accent);
+  border-radius: 999px;
+  padding: 0.6em 1.2em;
+  transition: filter 0.2s, transform 0.2s var(--ease);
+}
+
+.btn-cv:hover {
+  filter: brightness(1.1);
+  transform: translateY(-1px);
 }
 
 .header-link {
@@ -416,6 +456,19 @@ a {
 .reveal.visible .skills-grid > :nth-child(n+5) { transition-delay: 0.32s; }
 
 /* ── About ── */
+.about-wrap {
+  display: flex;
+  align-items: flex-start;
+  gap: 2rem;
+}
+
+.about-photo {
+  border-radius: 50%;
+  border: 1px solid var(--rule);
+  flex-shrink: 0;
+  display: block;
+}
+
 .about-text {
   max-width: 62ch;
 }
@@ -492,6 +545,23 @@ a {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
+}
+
+.exp-recs {
+  display: block;
+  width: fit-content;
+  margin-top: 2rem;
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+  border-bottom: 1px solid transparent;
+  transition: color 0.2s, border-color 0.2s;
+}
+
+.exp-recs:hover {
+  color: var(--accent);
+  border-color: var(--accent);
 }
 
 /* ── Case studies ── */
@@ -1314,6 +1384,7 @@ footer {
    loop drives window scroll per-frame, so smooth-scroll must be off. */
 html.starship-mode {
   scroll-behavior: auto;
+  touch-action: none; /* the flight loop owns scroll; block touch panning while flying */
 }
 
 /* the ship replaces the pointer as the focus — quiet the hover tooltip */
@@ -1386,6 +1457,46 @@ html.starship-mode {
 
 #ship-hud.on {
   opacity: 1;
+}
+
+.ship-hud-shield {
+  color: #b18cff;
+  text-shadow: 0 0 10px rgba(177, 140, 255, 0.8);
+}
+
+/* floating score/pickup popups (starship.js reuses a small pool of these) */
+.ship-pop {
+  position: fixed;
+  z-index: 300;
+  transform: translate(-50%, 0);
+  font-family: var(--mono);
+  font-size: 0.95rem;
+  letter-spacing: 0.06em;
+  pointer-events: none;
+  opacity: 0;
+  text-shadow: 0 0 14px currentColor;
+}
+
+.ship-pop.on {
+  animation: ship-pop 0.9s ease-out forwards;
+}
+
+@keyframes ship-pop {
+  from { opacity: 1; transform: translate(-50%, 0); }
+  to { opacity: 0; transform: translate(-50%, -52px); }
+}
+
+/* crash / shield-hit screen shake on the overlay canvas */
+#ship-canvas.ship-shake {
+  animation: ship-shake 0.35s;
+}
+
+@keyframes ship-shake {
+  0%, 100% { transform: none; }
+  20% { transform: translate(7px, -5px); }
+  40% { transform: translate(-6px, 4px); }
+  60% { transform: translate(4px, 3px); }
+  80% { transform: translate(-3px, -2px); }
 }
 
 #ship-compass {
@@ -1478,6 +1589,12 @@ html.starship-mode {
     min-height: 10.5rem;
   }
 
+  /* scene draws JOÃO / MAGALHÃES stacked on mobile — match it so the
+     reserved box (used as the particle fit target) is the right shape */
+  .name em {
+    display: block;
+  }
+
   /* legend wraps in two columns — everything visible, no sideways scroll */
   .globe-list .flag-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1524,5 +1641,404 @@ html.starship-mode {
   .cs-row {
     grid-template-columns: 1fr;
     gap: 0.3rem;
+  }
+
+  .header-links {
+    flex-wrap: wrap;
+  }
+
+  .hero-tagline {
+    font-size: 1rem;
+  }
+
+  .about-wrap {
+    flex-direction: column;
+  }
+
+  .about-photo {
+    width: 88px;
+    height: 88px;
+  }
+}
+
+/* ── Starship: time-trial HUD, fuel bar, penalty toast, end overlay ──
+   #ship-fuel is absolutely positioned against #ship-hud's own position:
+   fixed (declared above), which already establishes the containing block. */
+.ship-hud-best {
+  color: var(--muted);
+}
+
+#ship-fuel {
+  position: absolute;
+  left: 1rem;
+  right: 1rem;
+  bottom: -0.5rem;
+  height: 3px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  overflow: hidden;
+}
+
+#ship-fuel i {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+  transition: width 0.15s linear;
+}
+
+#ship-toast {
+  position: fixed;
+  bottom: 4.4rem;
+  left: 50%;
+  transform: translate(-50%, 6px);
+  z-index: 300;
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #ff3b3b;
+  text-shadow: 0 0 10px rgba(255, 59, 59, 0.6);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+#ship-toast.on {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+#ship-end {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, calc(-50% + 8px));
+  z-index: 310;
+  text-align: center;
+  font-family: var(--mono);
+  color: var(--ink);
+  background: rgba(13, 16, 23, 0.92);
+  border: 1px solid var(--accent);
+  border-radius: 10px;
+  padding: 1.4rem 2rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease, transform 0.4s ease;
+  white-space: nowrap;
+}
+
+#ship-end.on {
+  opacity: 1;
+  transform: translate(-50%, -50%);
+}
+
+#ship-end .ship-end-title {
+  font-size: 0.9rem;
+  letter-spacing: 0.04em;
+  color: var(--accent);
+}
+
+#ship-end .ship-end-time {
+  margin-top: 0.6rem;
+  font-size: 1.3rem;
+  font-weight: 600;
+}
+
+#ship-end .ship-end-again {
+  margin-top: 0.8rem;
+  font-size: 0.78rem;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+}
+
+/* ── Print: compact 1-2 page CV ── */
+@media print {
+  :root {
+    --bg: #ffffff;
+    --surface: #ffffff;
+    --ink: #111111;
+    --muted: #444444;
+    --rule: #ccc;
+    --accent: #222222;
+  }
+
+  html {
+    font-size: 9.5pt;
+  }
+
+  html, body {
+    background: #fff !important;
+    color: #111 !important;
+  }
+
+  body {
+    line-height: 1.4;
+  }
+
+  * {
+    transition: none !important;
+    animation: none !important;
+  }
+
+  #bg-canvas,
+  .progress-bar,
+  #progress-bar,
+  .btn-lang,
+  .btn-palette,
+  .palette,
+  #palette,
+  .section-nav,
+  .hero-scroll,
+  .btn-back-to-top,
+  #btn-back-to-top,
+  #scene-tip,
+  .case-study,
+  .btn-cv,
+  .globe-stage,
+  #lab,
+  #lab + .section-body,
+  #offscreen,
+  #offscreen + .section-body,
+  .hood-diagram,
+  .about-photo,
+  #local-time,
+  .exp-recs,
+  .footer-links {
+    display: none !important;
+  }
+
+  body::after {
+    display: none !important;
+  }
+
+  /* on paper the contact labels must carry their addresses */
+  .header-links a[href^="mailto:"]::after { content: " · argento.literal.0j@icloud.com"; }
+  .header-links a[href*="linkedin.com"]::after { content: " · linkedin.com/in/joaommagalhaes"; }
+  .header-links a[href*="github.com"]::after { content: " · github.com/joaommagalhaes"; }
+
+  .reveal,
+  .reveal > *,
+  .reveal .skills-grid > * {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+  }
+
+  /* ── Header: name, then role · tagline on one line, then one contact line ── */
+  .hero {
+    min-height: 0;
+    padding: 0 0 0.2rem;
+  }
+
+  .hero-kicker {
+    font-size: 8pt;
+    margin-bottom: 0.1rem;
+  }
+
+  /* #local-time is hidden on paper — its separator would dangle alone */
+  .hero-kicker-sep {
+    display: none;
+  }
+
+  /* the particle scene doesn't render on paper — the wordmark must carry the name.
+     A4's printable width lands under the 760px mobile breakpoint, so explicitly
+     cancel the mobile two-line stack + its reserved min-height (both meant for
+     the on-screen particle canvas, not this static heading). */
+  .name {
+    opacity: 1 !important;
+    color: #111 !important;
+    font-size: 20pt !important;
+    font-weight: 600 !important;
+    margin-bottom: 0.15rem;
+    min-height: 0 !important;
+  }
+
+  .name em {
+    display: inline !important;
+  }
+
+  .hero-role,
+  .hero-tagline {
+    display: inline;
+    font-family: inherit;
+    font-size: 9.5pt;
+    color: #333;
+    max-width: none;
+    margin: 0;
+  }
+
+  .hero-role::after {
+    content: " · ";
+  }
+
+  .header-links {
+    justify-content: center;
+    flex-wrap: nowrap;
+    font-family: inherit;
+    font-size: 8.5pt;
+    letter-spacing: normal;
+    gap: 0.6rem;
+    margin-top: 0.15rem;
+  }
+
+  .header-link {
+    letter-spacing: normal;
+  }
+
+  /* ── Layout: kill the on-screen scroll-driven whitespace ── */
+  .cv-grid {
+    display: block;
+    max-width: 100%;
+    padding: 0.2rem 0 0;
+  }
+
+  .section-body {
+    max-width: none !important;
+    min-height: 0 !important;
+    margin: 0 0 0.3rem !important;
+  }
+
+  /* ── Section headings: plain bold heading, no numeric index ── */
+  .section-label {
+    display: block;
+    position: static;
+    font-family: inherit;
+    font-size: 10.5pt;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #111;
+    border-top: none;
+    border-bottom: 1px solid #999;
+    padding: 0 0 0.15rem;
+    margin: 10pt 0 4pt;
+    break-after: avoid;
+  }
+
+  .label-index {
+    display: none;
+  }
+
+  /* ── Entries ── */
+  .entry,
+  .edu-entry,
+  .skill-group {
+    break-inside: avoid;
+  }
+
+  .entry,
+  .edu-entry {
+    padding: 0.2rem 0 0.3rem;
+  }
+
+  .entry-header,
+  .edu-header {
+    flex-wrap: nowrap;
+    margin-bottom: 0.15rem;
+  }
+
+  .entry-role {
+    font-size: 11pt;
+    font-weight: 700;
+  }
+
+  .entry-company {
+    font-size: 9.5pt;
+    color: var(--muted);
+  }
+
+  .entry-date {
+    font-size: 9pt;
+  }
+
+  .entry-desc,
+  .edu-desc,
+  .about-text p + p {
+    font-size: 9.5pt;
+    line-height: 1.4;
+    max-width: none !important;
+    margin: 0.2rem 0;
+  }
+
+  /* chips read as plain, dot-separated text instead of bordered pills */
+  .entry-stats,
+  .entry-tags,
+  .tag-list {
+    display: block;
+    margin-bottom: 0.2rem;
+  }
+
+  .entry-stat,
+  .tag {
+    display: inline;
+    background: none;
+    border: none;
+    border-radius: 0;
+    padding: 0;
+    font-size: 8.5pt;
+    color: var(--muted);
+  }
+
+  .entry-stat:not(:last-child)::after,
+  .tag:not(:last-child)::after {
+    content: " · ";
+  }
+
+  /* ── Applied AI / Skills: keep the 2-column grid (paper width otherwise
+     lands under the 760px mobile breakpoint and forces single-column) ── */
+  .skills-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 0.3rem 1.2rem;
+  }
+
+  .col-span-2 {
+    grid-column: span 2;
+  }
+
+  .skill-group h4 {
+    font-size: 9pt;
+    margin-bottom: 0.25rem;
+  }
+
+  .approach-desc {
+    font-size: 9.5pt;
+    line-height: 1.4;
+    max-width: none;
+  }
+
+  /* ── Education: grades stay, everything else compact ── */
+  .edu-degree {
+    font-size: 10.5pt;
+    font-weight: 700;
+  }
+
+  .edu-school,
+  .edu-meta {
+    font-size: 9pt;
+    color: var(--muted);
+    margin: 0.1rem 0;
+  }
+
+  .edu-grade {
+    font-size: 10pt;
+  }
+
+  /* ── Languages ── */
+  .lang-list {
+    gap: 0.15rem;
+  }
+
+  .lang-list li {
+    font-size: 9.5pt;
+    gap: 0.4rem;
+  }
+
+  /* ── Footer: just the "Updated" stamp, right-aligned ── */
+  footer {
+    padding: 0.15rem 0 0;
+    justify-content: flex-end;
+  }
+
+  .footer-note {
+    font-size: 7.5pt;
   }
 }

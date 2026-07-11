@@ -80,6 +80,12 @@
       run: () => { if (window.__scene) window.__scene.party(); }
     },
     {
+      label: () => t('palette.cmd.fly', 'Fly the starship'),
+      search: () => both('palette.cmd.fly', 'fly ship starship konami nave voar'),
+      hint: '🚀',
+      run: () => { if (window.__starship) window.__starship.fly(); }
+    },
+    {
       label: () => t('palette.cmd.top', 'Back to top'),
       search: () => both('palette.cmd.top', 'top topo home'),
       hint: '↑',

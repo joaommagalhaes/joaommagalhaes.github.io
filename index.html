@@ -6,20 +6,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="color-scheme" content="dark" />
 
-  <title data-i18n="site.title">João Magalhães — Front-end Engineer</title>
+  <title data-i18n="site.title">João Magalhães — Senior Front-end Engineer</title>
   <link rel="icon" type="image/png" href="https://github.com/joaommagalhaes.png" />
   <meta name="description" data-i18n-attr="content|site.description"
-    content="Front-end engineer with 10+ years building scalable web and mobile products. Based in Aveiro, Portugal." />
-  <meta property="og:title" data-i18n-attr="content|site.title" content="João Magalhães — Front-end Engineer" />
+    content="Senior front-end engineer with 10+ years building scalable web and mobile products. Based in Aveiro, Portugal." />
+  <meta property="og:title" data-i18n-attr="content|site.title" content="João Magalhães — Senior Front-end Engineer" />
   <meta property="og:description" data-i18n-attr="content|site.description"
-    content="Front-end engineer with 10+ years building scalable web and mobile products. Based in Aveiro, Portugal." />
+    content="Senior front-end engineer with 10+ years building scalable web and mobile products. Based in Aveiro, Portugal." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://joaommagalhaes.github.io" />
   <meta property="og:image" content="https://joaommagalhaes.github.io/og-image.png" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" data-i18n-attr="content|site.title" content="João Magalhães — Front-end Engineer" />
+  <meta name="twitter:title" data-i18n-attr="content|site.title" content="João Magalhães — Senior Front-end Engineer" />
   <meta name="twitter:description" data-i18n-attr="content|site.description"
-    content="Front-end engineer with 10+ years building scalable web and mobile products." />
+    content="Senior front-end engineer with 10+ years building scalable web and mobile products." />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -35,7 +35,11 @@
   </noscript>
 
   <script type="importmap">
-    { "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js" } }
+    { "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/" } }
+  </script>
+
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"Person","name":"João Magalhães","jobTitle":"Senior Front-end Engineer","url":"https://joaommagalhaes.github.io","address":{"@type":"PostalAddress","addressLocality":"Aveiro","addressCountry":"PT"},"sameAs":["https://linkedin.com/in/joaommagalhaes","https://github.com/joaommagalhaes"]}
   </script>
 </head>
 
@@ -69,8 +73,10 @@
           <span id="local-time" aria-live="polite"></span>
         </p>
         <h1 class="name">João <em>Magalhães</em></h1>
-        <p class="hero-role" data-i18n="hero.role">Front-end Engineer</p>
+        <p class="hero-role" data-i18n="hero.role">Senior Front-end Engineer</p>
+        <p class="hero-tagline" data-i18n="hero.tagline">10+ years building real-time products at telco scale — from IoT to cloud communications.</p>
         <div class="header-links">
+          <a href="cv-joao-magalhaes.pdf" class="btn-cv" download data-i18n="hero.cta_cv">Download CV</a>
           <a href="mailto:argento.literal.0j@icloud.com" class="header-link">Email</a>
           <a href="https://linkedin.com/in/joaommagalhaes" target="_blank" rel="noopener" class="header-link">LinkedIn</a>
           <a href="https://github.com/joaommagalhaes" target="_blank" rel="noopener" class="header-link">GitHub</a>
@@ -97,10 +103,13 @@
         <span class="label-text" data-i18n="about.title">About</span>
       </span>
       <div class="section-body reveal">
-        <div class="about-text">
-          <p data-i18n="about.p1">I’m a frontend engineer with over ten years of experience breathing life into products people actually rely on. My journey has taken me through IoT platforms, critical energy infrastructure, mobile apps operating at Telco scale, and real-time cloud communications.</p>
-          <p data-i18n="about.p2">I thrive at the intersection of product vision and engineering craft. For me, it isn't just about making things look good—it's about how those systems hold up under intense pressure in production. Over the years, I've grown from writing individual features to shaping entire architectures, and the small details that make an interface feel intuitive are what keep me going.</p>
-          <p data-i18n="about.p3">Lately, I've been deeply focused on AI—not as a weekend curiosity, but as applied production knowledge. I build systems leveraging LLMs, agent orchestration, RAG, and skill design, shipping real-world applications that solve complex problems at scale.</p>
+        <div class="about-wrap">
+          <img class="about-photo" src="https://github.com/joaommagalhaes.png" alt="João Magalhães" width="112" height="112" loading="lazy" />
+          <div class="about-text">
+            <p data-i18n="about.p1">I’m a frontend engineer with over ten years of experience breathing life into products people actually rely on. My journey has taken me through IoT platforms, critical energy infrastructure, mobile apps operating at Telco scale, and real-time cloud communications.</p>
+            <p data-i18n="about.p2">I thrive at the intersection of product vision and engineering craft. For me, it isn't just about making things look good—it's about how those systems hold up under intense pressure in production. Over the years, I've grown from writing individual features to shaping entire architectures, and the small details that make an interface feel intuitive are what keep me going.</p>
+            <p data-i18n="about.p3">Lately, I've been deeply focused on AI—not as a weekend curiosity, but as applied production knowledge. I build systems leveraging LLMs, agent orchestration, RAG, and skill design, shipping real-world applications that solve complex problems at scale.</p>
+          </div>
         </div>
       </div>
 
@@ -113,7 +122,7 @@
         <div class="entry reveal">
           <div class="entry-header">
             <div>
-              <div class="entry-role" data-i18n="exp.intermedia.role">Software Engineer</div>
+              <div class="entry-role" data-i18n="exp.intermedia.role">Senior Software Engineer</div>
               <div class="entry-company">Intermedia Cloud Communications</div>
             </div>
             <div class="entry-date" data-i18n="exp.intermedia.date">Dec 2024 — present</div>
@@ -122,7 +131,7 @@
             Currently, I'm part of a US-based product company, building the enterprise-grade infrastructure that powers modern cloud communications. I design and deliver high-performance Angular frontends deeply integrated with massive, real-time data pipelines. It’s high-stakes, high-availability work alongside a brilliant international team.
           </p>
           <div class="entry-stats">
-            <span class="entry-stat" data-i18n="exp.intermedia.stat1">99.999% Uptime</span>
+            <span class="entry-stat" data-i18n="exp.intermedia.stat1">Five-nines platform</span>
             <span class="entry-stat" data-i18n="exp.intermedia.stat2">UCaaS Platform</span>
             <span class="entry-stat" data-i18n="exp.intermedia.stat3">Real-time · Cloud</span>
           </div>
@@ -132,7 +141,6 @@
             <span class="tag">Real-time</span>
             <span class="tag">Cloud</span>
           </div>
-          <!-- TODO(joao): confirm the specifics in exp.intermedia.cs.* before claiming numbers -->
           <details class="case-study">
             <summary><span data-i18n="cs.toggle">Read the case study</span><span class="cs-arrow" aria-hidden="true">→</span></summary>
             <div class="cs-body">
@@ -169,7 +177,6 @@
           </p>
           <div class="entry-stats">
             <span class="entry-stat">1.5M+ MAU</span>
-            <span class="entry-stat">10M+ data entries</span>
             <span class="entry-stat">eSIM · Plan Swaps · Campaigns</span>
           </div>
           <div class="entry-tags">
@@ -311,11 +318,13 @@
           </details>
         </div>
 
+        <a class="exp-recs reveal" href="https://www.linkedin.com/in/joaommagalhaes/details/recommendations/" target="_blank" rel="noopener" data-i18n="exp.recs">See recommendations on LinkedIn ↗</a>
+
       </div>
 
       <span class="section-label" id="ai" data-scene="neural">
         <span class="label-index">03</span>
-        <span class="label-text" data-i18n="ai.title">AI Knowledge</span>
+        <span class="label-text" data-i18n="ai.title">Applied AI</span>
       </span>
       <div class="section-body reveal">
         <div class="skills-grid">
@@ -342,6 +351,28 @@
           </div>
 
         </div>
+        <!-- TODO(joao): review the Applied AI case study copy before deploy -->
+        <details class="case-study">
+          <summary><span data-i18n="cs.toggle">Read the case study</span><span class="cs-arrow" aria-hidden="true">→</span></summary>
+          <div class="cs-body">
+            <div class="cs-row">
+              <span class="cs-lbl" data-i18n="cs.problem">Problem</span>
+              <p data-i18n="ai.cs.problem">Family finances lived across spreadsheets, bank exports and paper contracts — no single view, and no easy answers to questions like “what does this contract actually commit us to?”</p>
+            </div>
+            <div class="cs-row">
+              <span class="cs-lbl" data-i18n="cs.constraints">Constraints</span>
+              <p data-i18n="ai.cs.constraints">Self-hosted and privacy-first: family financial data stays under my control. Built and maintained by one person, so every moving part has to earn its complexity.</p>
+            </div>
+            <div class="cs-row">
+              <span class="cs-lbl" data-i18n="cs.decision">Decision</span>
+              <p data-i18n="ai.cs.decision">A self-hosted budget and wealth platform with an LLM layer on top: documents and contracts are ingested and retrievable through RAG, and agent skills automate the recurring work — categorising transactions, tracking loans, flagging contract deadlines.</p>
+            </div>
+            <div class="cs-row">
+              <span class="cs-lbl" data-i18n="cs.outcome">Outcome</span>
+              <p data-i18n="ai.cs.outcome">Running in production for my family’s real finances — the strictest user base I know. It’s where I test how far LLMs, RAG and skill design can be pushed before they break.</p>
+            </div>
+          </div>
+        </details>
       </div>
 
       <span class="section-label" id="skills" data-scene="constellation" data-stage-side="left">
@@ -455,7 +486,7 @@
       <div class="section-body reveal">
         <ul class="lang-list">
           <li><span class="flag">🇵🇹</span><span data-i18n="lang.pt">Portuguese — Native</span></li>
-          <li><span class="flag">🇬🇧</span><span data-i18n="lang.en">English — B2 / Professional working proficiency</span></li>
+          <li><span class="flag">🇬🇧</span><span data-i18n="lang.en">English — Professional working proficiency · daily working language at a US-based company</span></li>
           <li><span class="flag">🇫🇷</span><span data-i18n="lang.fr">French — Basic</span></li>
           <li><span class="flag">🇪🇸</span><span data-i18n="lang.es">Spanish — Basic</span></li>
         </ul>

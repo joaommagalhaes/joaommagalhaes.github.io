@@ -1,12 +1,14 @@
 const locales = {
   en: {
-    "site.title": "João Magalhães — Front-end Engineer",
-    "site.description": "Front-end engineer with 10+ years building scalable web and mobile products. Based in Aveiro, Portugal.",
+    "site.title": "João Magalhães — Senior Front-end Engineer",
+    "site.description": "Senior front-end engineer with 10+ years building scalable web and mobile products. Based in Aveiro, Portugal.",
 
     "toolbar.lang_title": "Toggle language",
     "globe.hint": "drag to spin · pinch or ctrl+scroll to zoom · hover a lit country",
 
-    "hero.role": "Front-end Engineer",
+    "hero.role": "Senior Front-end Engineer",
+    "hero.tagline": "10+ years building real-time products at telco scale — from IoT to cloud communications.",
+    "hero.cta_cv": "Download CV",
     "hero.meta_location": "Aveiro, Portugal",
     "hero.local_time": "Local time",
 
@@ -26,10 +28,10 @@ const locales = {
 
     "exp.title": "Experience",
 
-    "exp.intermedia.role": "Software Engineer",
+    "exp.intermedia.role": "Senior Software Engineer",
     "exp.intermedia.date": "Dec 2024 — present",
     "exp.intermedia.desc": "I’m currently part of a US product company building the enterprise-grade infrastructure behind modern cloud communications. My work focuses on high-performance Angular frontends deeply connected to large-scale real-time data pipelines. It’s high-availability, high-impact work with a strong international team.",
-    "exp.intermedia.stat1": "99.999% Uptime",
+    "exp.intermedia.stat1": "Five-nines platform",
     "exp.intermedia.stat2": "UCaaS Platform",
     "exp.intermedia.stat3": "Real-time · Cloud",
 
@@ -83,7 +85,9 @@ const locales = {
     "exp.galp.cs.decision": "Ran the BI analysis behind an ERSE compliance-reporting system, worked as analyst on the SGA asset-management platform, developed M&S messaging flows, and authored the technical documentation the Distribution Portal was later built from.",
     "exp.galp.cs.outcome": "Compliance reporting became accurate and auditable, and the documentation I wrote became the spec for a new system. This is where I learned that a clear technical document is itself an engineering deliverable — not paperwork around the real work.",
 
-    "ai.title": "AI Knowledge",
+    "exp.recs": "See recommendations on LinkedIn ↗",
+
+    "ai.title": "Applied AI",
     "ai.concepts": "Concepts",
     "ai.tt.llms": "LLMs & prompt engineering",
     "ai.tt.agent": "Agent orchestration",
@@ -95,6 +99,11 @@ const locales = {
     "ai.tt.eval": "Evaluation & output ownership",
     "ai.approach": "My Approach",
     "ai.approach.desc": "I use AI as a production capability, not just an experiment. I understand how context degrades, where models fail, and how to design agent flows that stay coherent across tools and memory boundaries. When I design prompts, skills, and workflows, the goal is always the same: practical systems that remain reliable under real user load.",
+
+    "ai.cs.problem": "Family finances lived across spreadsheets, bank exports and paper contracts — no single view, and no easy answers to questions like “what does this contract actually commit us to?”",
+    "ai.cs.constraints": "Self-hosted and privacy-first: family financial data stays under my control. Built and maintained by one person, so every moving part has to earn its complexity.",
+    "ai.cs.decision": "A self-hosted budget and wealth platform with an LLM layer on top: documents and contracts are ingested and retrievable through RAG, and agent skills automate the recurring work — categorising transactions, tracking loans, flagging contract deadlines.",
+    "ai.cs.outcome": "Running in production for my family’s real finances — the strictest user base I know. It’s where I test how far LLMs, RAG and skill design can be pushed before they break.",
 
     "skills.title": "Skills",
     "skills.frontend": "Frontend",
@@ -125,7 +134,7 @@ const locales = {
 
     "lang.title": "Languages",
     "lang.pt": "Portuguese — Native",
-    "lang.en": "English — B2 / Professional working proficiency",
+    "lang.en": "English — Professional working proficiency · daily working language at a US-based company",
     "lang.fr": "French — Basic",
     "lang.es": "Spanish — Basic",
 
@@ -199,25 +208,37 @@ const locales = {
     "palette.cmd.hire": "Hire me — open email",
     "palette.cmd.party": "Party mode",
     "palette.cmd.top": "Back to top",
+    "palette.cmd.fly": "Fly the starship",
     "palette.hire_subject": "Let's talk",
 
     "footer.updated": "Updated 2026",
     "footer.back_to_top": "Back to top",
 
-    "ship.hint": "arrows to fly · collect the beacons ✦ · Esc to land",
+    "ship.hint": "arrows to fly · space to boost · ✦ score · ◼ fuel · ◈ shield",
+    "ship.hint_touch": "drag to fly · double-tap boost · ✦ score · ◼ fuel · ◈ shield",
+    "ship.fuel": "fuel",
+    "ship.shield": "shield",
+    "ship.shieldlost": "shield down",
     "ship.beacons": "beacons",
     "ship.done": "cosmos explored — thanks for flying ✦",
+    "ship.score": "score",
+    "ship.gameover": "game over",
+    "ship.best": "best",
+    "ship.newbest": "new best!",
+    "ship.again": "R — fly again · Esc — land",
 
   },
 
   pt: {
-    "site.title": "João Magalhães — Front-end Engineer",
-    "site.description": "Front-end engineer com mais de 10 anos de experiência a criar produtos web e mobile à escala. A viver em Aveiro, Portugal.",
+    "site.title": "João Magalhães — Senior Front-end Engineer",
+    "site.description": "Senior front-end engineer com mais de 10 anos a criar produtos web e mobile à escala. A viver em Aveiro, Portugal.",
 
     "toolbar.lang_title": "Alternar idioma",
     "globe.hint": "arrasta para rodar · pinch ou ctrl+scroll para zoom · passa o cursor num país iluminado",
 
-    "hero.role": "Front-end Engineer",
+    "hero.role": "Senior Front-end Engineer",
+    "hero.tagline": "Mais de 10 anos a construir produtos em tempo real à escala de telecomunicações — do IoT às cloud communications.",
+    "hero.cta_cv": "Descarregar CV",
     "hero.meta_location": "Aveiro, Portugal",
     "hero.local_time": "Hora local",
 
@@ -237,10 +258,10 @@ const locales = {
 
     "exp.title": "Experiência",
 
-    "exp.intermedia.role": "Software Engineer",
+    "exp.intermedia.role": "Senior Software Engineer",
     "exp.intermedia.date": "Dez 2024 — presente",
     "exp.intermedia.desc": "Atualmente integro uma empresa de produto orientada para o mercado dos EUA, onde construo infraestrutura enterprise para comunicações cloud modernas. O meu trabalho passa por desenvolver frontends Angular de alto desempenho, profundamente ligados a pipelines de dados massivos e em tempo real. É trabalho de alta disponibilidade e alto impacto, numa equipa internacional muito forte.",
-    "exp.intermedia.stat1": "99.999% Uptime",
+    "exp.intermedia.stat1": "Plataforma five-nines",
     "exp.intermedia.stat2": "Plataforma UCaaS",
     "exp.intermedia.stat3": "Tempo Real · Cloud",
 
@@ -294,7 +315,9 @@ const locales = {
     "exp.galp.cs.decision": "Conduzi a análise de BI por trás de um sistema de reporting de conformidade para a ERSE, trabalhei como analista na plataforma de gestão de ativos SGA, desenvolvi fluxos de mensageria do M&S, e escrevi a documentação técnica a partir da qual o Distribution Portal foi mais tarde construído.",
     "exp.galp.cs.outcome": "O reporting de conformidade tornou-se preciso e auditável, e a documentação que escrevi tornou-se a especificação de um novo sistema. Foi aqui que aprendi que um documento técnico claro é, por si só, um entregável de engenharia — não papelada à volta do trabalho a sério.",
 
-    "ai.title": "Conhecimento em IA",
+    "exp.recs": "Ver recomendações no LinkedIn ↗",
+
+    "ai.title": "IA Aplicada",
     "ai.concepts": "Conceitos",
     "ai.tt.llms": "LLMs e prompt engineering",
     "ai.tt.agent": "Orquestração de agentes",
@@ -306,6 +329,11 @@ const locales = {
     "ai.tt.eval": "Avaliação e controlo de outputs",
     "ai.approach": "A minha abordagem",
     "ai.approach.desc": "Vejo a IA como uma capacidade de produção, não apenas como experimentação. Compreendo onde o contexto se degrada, onde os modelos falham e como desenhar fluxos de agentes que se mantêm coesos entre ferramentas e fronteiras de memória. Quando desenho prompts, skills e workflows, o objetivo é sempre o mesmo: sistemas práticos, fiáveis e preparados para carga real de utilizador.",
+
+    "ai.cs.problem": "As finanças da família viviam espalhadas por folhas de cálculo, exports do banco e contratos em papel — sem visão única, nem respostas fáceis a perguntas como “a que é que este contrato nos obriga?”",
+    "ai.cs.constraints": "Self-hosted e privacidade primeiro: os dados financeiros da família ficam sob o meu controlo. Construído e mantido por uma pessoa, por isso cada peça tem de justificar a sua complexidade.",
+    "ai.cs.decision": "Uma plataforma self-hosted de orçamento e património com uma camada de LLMs por cima: documentos e contratos são ingeridos e pesquisáveis via RAG, e skills de agentes automatizam o trabalho recorrente — categorizar transações, acompanhar empréstimos, sinalizar prazos de contratos.",
+    "ai.cs.outcome": "Em produção com as finanças reais da minha família — a base de utilizadores mais exigente que conheço. É onde testo até onde LLMs, RAG e design de skills aguentam antes de partir.",
 
     "skills.title": "Competências",
     "skills.frontend": "Frontend",
@@ -336,7 +364,7 @@ const locales = {
 
     "lang.title": "Idiomas",
     "lang.pt": "Português — Nativo",
-    "lang.en": "Inglês — B2 / Proficiência profissional",
+    "lang.en": "Inglês — Proficiência profissional · língua de trabalho diária numa empresa dos EUA",
     "lang.fr": "Francês — Básico",
     "lang.es": "Espanhol — Básico",
 
@@ -410,14 +438,24 @@ const locales = {
     "palette.cmd.hire": "Contratar — abrir email",
     "palette.cmd.party": "Modo festa",
     "palette.cmd.top": "Voltar ao topo",
+    "palette.cmd.fly": "Pilotar a nave",
     "palette.hire_subject": "Vamos conversar",
 
     "footer.updated": "Atualizado em 2026",
     "footer.back_to_top": "Voltar ao topo",
 
-    "ship.hint": "setas para voar · apanha os sinais ✦ · Esc para aterrar",
+    "ship.hint": "setas para voar · espaço para boost · ✦ pontos · ◼ fuel · ◈ escudo",
+    "ship.hint_touch": "arrasta para voar · duplo toque para boost · ✦ pontos · ◼ fuel · ◈ escudo",
+    "ship.fuel": "fuel",
+    "ship.shield": "escudo",
+    "ship.shieldlost": "escudo perdido",
     "ship.beacons": "sinais",
     "ship.done": "cosmos explorado — obrigado por voar ✦",
+    "ship.score": "pontuação",
+    "ship.gameover": "fim de jogo",
+    "ship.best": "melhor",
+    "ship.newbest": "novo recorde!",
+    "ship.again": "R — voar de novo · Esc — aterrar",
 
   }
 };

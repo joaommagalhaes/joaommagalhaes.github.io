@@ -61,7 +61,45 @@ const geometry = new THREE.BufferGeometry();
 geometry.setAttribute('position', new THREE.BufferAttribute(pos, 3));
 geometry.setAttribute('color', new THREE.BufferAttribute(col, 3));
 
-const points = new THREE.Points(geometry, new THREE.PointsMaterial({
+/* GPU sparkle: per-particle size (rare oversized "hero" dots) + organic
+   3-axis drift + twinkle, injected into the stock PointsMaterial shader.
+   Replaces the old per-frame CPU sine wobble. uTime stays 0 under reduced
+   motion, so the injected terms are static there. */
+const uTime = { value: 0 };
+function sparkleSizes(n) {
+  const a = new Float32Array(n);
+  for (let i = 0; i < n; i++) {
+    a[i] = Math.random() < 0.03 ? 2 + Math.random() * 0.8 : 0.6 + Math.pow(Math.random(), 2) * 1.1;
+  }
+  return a;
+}
+function injectSparkle(mat, drift) {
+  mat.customProgramCacheKey = () => 'sparkle' + drift; // drift is baked into the source
+  mat.onBeforeCompile = (sh) => {
+    sh.uniforms.uTime = uTime;
+    sh.vertexShader = sh.vertexShader
+      .replace('#include <common>', `#include <common>
+attribute float aSize;
+attribute float aPhase;
+uniform float uTime;
+varying float vTw;`)
+      .replace('#include <begin_vertex>', `#include <begin_vertex>
+transformed += ${drift.toFixed(4)} * vec3(
+  sin(uTime * 0.62 + aPhase * 3.1),
+  cos(uTime * 0.45 + aPhase * 5.3),
+  sin(uTime * 0.71 + aPhase * 4.7));
+vTw = 0.5 + 0.5 * sin(uTime * (0.9 + fract(aPhase * 0.318) * 1.6) + aPhase * 13.0);`)
+      .replace('gl_PointSize = size;', 'gl_PointSize = size * aSize * (0.82 + 0.36 * vTw);');
+    sh.fragmentShader = sh.fragmentShader
+      .replace('#include <common>', '#include <common>\nvarying float vTw;')
+      .replace('vec4 diffuseColor = vec4( diffuse, opacity );',
+        'vec4 diffuseColor = vec4( diffuse, opacity * (0.65 + 0.35 * vTw) );');
+  };
+}
+geometry.setAttribute('aSize', new THREE.BufferAttribute(sparkleSizes(N), 1));
+geometry.setAttribute('aPhase', new THREE.BufferAttribute(phase, 1));
+
+const material = new THREE.PointsMaterial({
   size: isMobile ? 0.055 : 0.045,
   map: new THREE.CanvasTexture(spriteCv),
   vertexColors: true,
@@ -70,7 +108,9 @@ const points = new THREE.Points(geometry, new THREE.PointsMaterial({
   depthWrite: false,
   blending: THREE.AdditiveBlending,
   sizeAttenuation: true
-}));
+});
+injectSparkle(material, 0.022);
+const points = new THREE.Points(geometry, material);
 scene.add(points);
 
 /* Distant static stars for depth */
@@ -83,10 +123,16 @@ scene.add(points);
   }
   const sg = new THREE.BufferGeometry();
   sg.setAttribute('position', new THREE.BufferAttribute(sp, 3));
-  scene.add(new THREE.Points(sg, new THREE.PointsMaterial({
+  sg.setAttribute('aSize', new THREE.BufferAttribute(sparkleSizes(500), 1));
+  const sPhase = new Float32Array(500);
+  for (let i = 0; i < 500; i++) sPhase[i] = Math.random() * Math.PI * 2;
+  sg.setAttribute('aPhase', new THREE.BufferAttribute(sPhase, 1));
+  const sm = new THREE.PointsMaterial({
     size: 0.06, map: new THREE.CanvasTexture(spriteCv), color: 0x2a3348,
     transparent: true, opacity: 0.6, depthWrite: false, blending: THREE.AdditiveBlending
-  })));
+  });
+  injectSparkle(sm, 0.01);
+  scene.add(new THREE.Points(sg, sm));
 }
 
 /* Line layers (neural edges / constellation links) */
@@ -163,17 +209,39 @@ async function buildName(f) {
       if (img[(y * cv.width + x) * 4 + 3] > 128) pts.push([x, y]);
     }
   }
-  // fit into ~82% viewport width (tighter height cap on mobile: two lines
-  // must sit between the kicker and the role text)
-  const targetW = halfW() * 2 * (isMobile ? 0.86 : 0.82);
-  const hCap = isMobile ? 0.3 : 0.5;
-  const scale = Math.min(targetW / cv.width, (halfH * 2 * hCap) / cv.height);
+  /* Fit to the DOM h1's live box (.name) instead of a viewport-proportional
+     guess: whatever space the real heading reserves is exactly the box the
+     particles fit into, so the particle name can never overlap
+     .hero-role/.hero-tagline below it. buildName runs before body gets
+     .has-3d, so the h1 is still laid out (and visible) when we measure it.
+     Particles are allowed to overflow the box by ~8% for an organic,
+     non-clipped-looking edge. Falls back to the old viewport-proportional
+     fit if the element is missing or not yet laid out (zero-size rect). */
+  const nameEl = document.querySelector('.name');
+  const rect = nameEl ? nameEl.getBoundingClientRect() : null;
+  let scale, offX, offY;
+  if (rect && rect.width > 0 && rect.height > 0) {
+    const worldPerPxX = (halfW() * 2) / innerWidth;
+    const worldPerPxY = (halfH * 2) / innerHeight;
+    const boxW = rect.width * worldPerPxX * 1.08;
+    const boxH = rect.height * worldPerPxY * 1.08;
+    scale = Math.min(boxW / cv.width, boxH / cv.height);
+    offX = ((rect.left + rect.right) / 2 - innerWidth / 2) * worldPerPxX;
+    offY = -((rect.top + rect.bottom) / 2 - innerHeight / 2) * worldPerPxY;
+  } else {
+    // fallback: fit into ~82% viewport width (tighter height cap on mobile)
+    const targetW = halfW() * 2 * (isMobile ? 0.86 : 0.82);
+    const hCap = isMobile ? 0.3 : 0.5;
+    scale = Math.min(targetW / cv.width, (halfH * 2 * hCap) / cv.height);
+    offX = 0;
+    offY = halfH * 0.06;
+  }
   const count = Math.min(pts.length, N - 800);
   for (let i = 0; i < count; i++) {
     const p = pts[Math.floor(Math.random() * pts.length)];
     const i3 = i * 3;
-    f.pos[i3] = (p[0] - cv.width / 2) * scale + (Math.random() - 0.5) * 0.015;
-    f.pos[i3 + 1] = -(p[1] - cv.height / 2) * scale + (Math.random() - 0.5) * 0.015 + halfH * 0.06;
+    f.pos[i3] = (p[0] - cv.width / 2) * scale + (Math.random() - 0.5) * 0.015 + offX;
+    f.pos[i3 + 1] = -(p[1] - cv.height / 2) * scale + (Math.random() - 0.5) * 0.015 + offY;
     f.pos[i3 + 2] = (Math.random() - 0.5) * 0.3;
     const isAccent = isMobile ? p[1] > cv.height / 2 : p[0] > boundaryX;
     (isAccent ? ACCENT : INK).toArray(f.col, i3);
@@ -572,6 +640,34 @@ function updateGlobe(out, colOut) {
   colOut.set(src.col.subarray(globe.count * 3), globe.count * 3);
 }
 
+/* ── Cinematic intro: supernova → first formation ──
+   A one-shot source, deliberately NOT pushed into formations[]/order so
+   scroll-driven blending never sees it. Particles start on a distant sphere
+   shell and spiral inward; per-particle stagger reuses the existing phase[]
+   array so no extra randomness/allocation is needed at runtime. */
+const INTRO_DUR = 2.6;
+const nova = reducedMotion ? null : { pos: new Float32Array(N * 3), col: new Float32Array(N * 3) };
+const stagger = reducedMotion ? null : new Float32Array(N);
+if (stagger) {
+  for (let i = 0; i < N; i++) stagger[i] = phase[i] / (Math.PI * 2) * 1.2;
+}
+let introStart = null;
+let introDone = reducedMotion; // reduced motion: skip the effect entirely, zero cost
+function buildNova(src) {
+  if (!nova) return;
+  for (let i = 0; i < N; i++) {
+    const i3 = i * 3;
+    const u = Math.random() * 2 - 1, th = Math.random() * Math.PI * 2, s = Math.sqrt(1 - u * u);
+    const r = 16 + Math.random() * 4;
+    nova.pos[i3] = r * s * Math.cos(th);
+    nova.pos[i3 + 1] = r * u;
+    nova.pos[i3 + 2] = -4 + r * s * Math.sin(th);
+    nova.col[i3] = src.col[i3] * 0.5;
+    nova.col[i3 + 1] = src.col[i3 + 1] * 0.5;
+    nova.col[i3 + 2] = src.col[i3 + 2] * 0.5;
+  }
+}
+
 /* ── Build all formations ── */
 const stageEls = [...document.querySelectorAll('[data-scene]')];
 const sides = {}; // data-scene -> +1 (right) / -1 (left)
@@ -584,7 +680,9 @@ async function build() {
   const res = await fetch('globe-dots.json');
   const globeData = await res.json();
 
-  await buildName(newFormation('name'));
+  const nameF = newFormation('name');
+  await buildName(nameF);
+  buildNova(nameF);
   buildCore(newFormation('core'), sides.core || 1);
   buildStream(newFormation('stream'), sides.stream || -1);
   buildNeural(newFormation('neural'), sides.neural || 1);
@@ -653,6 +751,8 @@ addEventListener('pointerdown', (e) => {
     pointer.lastX = e.clientX;
     pointer.lastY = e.clientY;
     document.body.classList.add('scene-grabbing');
+  } else if (!reducedMotion) {
+    emitWave(e.clientX, e.clientY);
   }
 });
 const endDrag = () => {
@@ -821,6 +921,51 @@ let rafId = null;
 /* live-tunable via the dev HUD (lab.js) */
 const tune = { k: 0.075 };
 
+/* scroll-velocity streaks: smoothed px/frame velocity, sampled from scrollY
+   each frame — no scroll listener needed, and it decays to 0 at rest. */
+let scrollVel = 0, lastScrollY = scrollY;
+
+/* click shockwave: fixed pool of 3 concurrent ripples, no per-click allocation */
+const waves = [{ x: 0, y: 0, t0: -1e9 }, { x: 0, y: 0, t0: -1e9 }, { x: 0, y: 0, t0: -1e9 }];
+let waveIdx = 0;
+function emitWave(clientX, clientY) {
+  const x = (clientX / innerWidth) * 2 - 1;
+  const y = -(clientY / innerHeight) * 2 + 1;
+  const w = waves[waveIdx];
+  w.x = x * halfW(); w.y = y * halfH; w.t0 = clock.getElapsedTime();
+  waveIdx = (waveIdx + 1) % waves.length;
+}
+
+/* bloom (desktop only): dynamically loaded post-processing, fail-soft.
+   window.__scene.bloom reports 'on' | 'off(fps)' | 'unavailable'. */
+let composer = null, bloomPass = null;
+let bloomState = 'unavailable';
+let bloomWinStart = -1, bloomWinFrames = 0;
+function bloomSize() {
+  const w = renderer.domElement.width, h = renderer.domElement.height;
+  return { w: Math.max(1, Math.floor(w / 2)), h: Math.max(1, Math.floor(h / 2)) };
+}
+async function setupBloom() {
+  try {
+    const [{ EffectComposer }, { RenderPass }, { UnrealBloomPass }] = await Promise.all([
+      import('three/addons/postprocessing/EffectComposer.js'),
+      import('three/addons/postprocessing/RenderPass.js'),
+      import('three/addons/postprocessing/UnrealBloomPass.js')
+    ]);
+    const s = bloomSize();
+    const c = new EffectComposer(renderer);
+    c.addPass(new RenderPass(scene, camera));
+    bloomPass = new UnrealBloomPass(new THREE.Vector2(s.w, s.h), 0.55, 0.6, 0.15);
+    c.addPass(bloomPass);
+    scene.background = new THREE.Color(BG);
+    composer = c;
+    bloomState = 'on';
+  } catch (e) {
+    composer = null;
+    bloomState = 'unavailable';
+  }
+}
+
 function computeTargets(time) {
   const p = stageProgress();
   stageF = p;
@@ -878,6 +1023,73 @@ function computeTargets(time) {
     targetCol[j] = aC + (bC - aC) * t;
   }
 
+  // cinematic intro: supernova collapses into the first formation, staggered per-particle
+  if (!introDone && nova) {
+    if (introStart == null) introStart = time;
+    const introT = time - introStart;
+    if (introT >= INTRO_DUR) {
+      introDone = true; // after this, cost is a single boolean check above
+    } else {
+      const theta = 2.2 * Math.pow(1 - introT / INTRO_DUR, 2);
+      const sinT = Math.sin(theta), cosT = Math.cos(theta);
+      for (let i = 0; i < N; i++) {
+        const i3 = i * 3;
+        let w = (introT - stagger[i]) / 1.4;
+        w = w < 0 ? 0 : w > 1 ? 1 : w;
+        w = w * w * (3 - 2 * w); // smoothstep
+        const nx = nova.pos[i3], ny = nova.pos[i3 + 1], nz = nova.pos[i3 + 2];
+        const rx = nx * cosT + nz * sinT; // rotate nova position around Y by the decaying swirl angle
+        const rz = nz * cosT - nx * sinT;
+        target[i3] = rx + (target[i3] - rx) * w;
+        target[i3 + 1] = ny + (target[i3 + 1] - ny) * w;
+        target[i3 + 2] = rz + (target[i3 + 2] - rz) * w;
+        targetCol[i3] = nova.col[i3] + (targetCol[i3] - nova.col[i3]) * w;
+        targetCol[i3 + 1] = nova.col[i3 + 1] + (targetCol[i3 + 1] - nova.col[i3 + 1]) * w;
+        targetCol[i3 + 2] = nova.col[i3 + 2] + (targetCol[i3 + 2] - nova.col[i3 + 2]) * w;
+      }
+    }
+  }
+
+  // scroll-velocity streaks: fast scrolling stretches particles along the scroll direction
+  if (!reducedMotion) {
+    scrollVel += (scrollY - lastScrollY - scrollVel) * 0.2;
+    lastScrollY = scrollY;
+    if (Math.abs(scrollVel) < 0.001) scrollVel = 0; // decay to exactly 0 at rest
+    const streak = Math.max(-1.8, Math.min(1.8, scrollVel * 0.04));
+    if (streak !== 0) {
+      for (let k = 0; k < N; k++) {
+        target[k * 3 + 1] += streak * (0.5 + 0.5 * Math.sin(phase[k]));
+      }
+    }
+  }
+
+  // click shockwave: up to 3 concurrent ripples push nearby particles outward
+  let anyWaveActive = false;
+  for (let wi = 0; wi < waves.length; wi++) if (time - waves[wi].t0 < 1.6) { anyWaveActive = true; break; }
+  if (anyWaveActive) {
+    for (let k = 0; k < N; k++) {
+      const i3 = k * 3;
+      const px = target[i3], py = target[i3 + 1];
+      for (let wi = 0; wi < waves.length; wi++) {
+        const age = time - waves[wi].t0;
+        if (age < 0 || age >= 1.6) continue;
+        const dx = px - waves[wi].x, dy = py - waves[wi].y;
+        const d = Math.sqrt(dx * dx + dy * dy);
+        if (d < 0.0001) continue;
+        const R = age * 9, wth = 1.1;
+        const diff = Math.abs(d - R);
+        if (diff < wth) {
+          const decay = 1 - age / 1.6;
+          const push = (1 - diff / wth) * decay;
+          target[i3] += (dx / d) * push;
+          target[i3 + 1] += (dy / d) * push;
+          const b = 1 + push * 1.6; // the ripple lights what it moves
+          targetCol[i3] *= b; targetCol[i3 + 1] *= b; targetCol[i3 + 2] *= b;
+        }
+      }
+    }
+  }
+
   // text-driven flares: hovering an entry/tag lights its counterpart in the scene
   if (active.has('stream') && streamState.highlight >= 0) {
     boostCol(streamState.wayStart + streamState.highlight * streamState.perWay, streamState.perWay, 2.4);
@@ -911,6 +1123,8 @@ function computeTargets(time) {
         const d = Math.sqrt(d2);
         target[i3] += (dx / d) * push;
         target[i3 + 1] += (dy / d) * push;
+        const b = 1 + push * 1.4; // cursor as a torch: displaced particles glow
+        targetCol[i3] *= b; targetCol[i3 + 1] *= b; targetCol[i3 + 2] *= b;
       }
     }
   }
@@ -976,8 +1190,10 @@ function boostCol(start, count, mult) {
   for (let j = a; j < b; j++) targetCol[j] *= mult;
 }
 
+let roll = 0;
 function frame() {
   const time = clock.getElapsedTime();
+  uTime.value = time; // drives GPU drift + twinkle (replaced the CPU wobble loop)
   computeTargets(time);
 
   const posAttr = geometry.attributes.position.array;
@@ -987,18 +1203,34 @@ function frame() {
     posAttr[j] += (target[j] - posAttr[j]) * k;
     colAttr[j] += (targetCol[j] - colAttr[j]) * 0.06;
   }
-  // ambient wobble
-  for (let i = 0; i < N; i++) {
-    posAttr[i * 3 + 1] += Math.sin(time * 0.8 + phase[i]) * 0.0016;
-  }
   geometry.attributes.position.needsUpdate = true;
   geometry.attributes.color.needsUpdate = true;
 
   camera.position.x += (pointer.worldX * 0.03 - camera.position.x) * 0.04;
   camera.position.y += (pointer.worldY * 0.02 - camera.position.y) * 0.04;
   camera.lookAt(0, 0, 0);
+  // scroll tilt: fast scrolling banks the camera a touch; settles back to 0
+  roll += (Math.max(-60, Math.min(60, scrollVel)) * -0.00022 - roll) * 0.08;
+  camera.rotation.z += roll;
 
-  renderer.render(scene, camera);
+  if (composer) {
+    // stage-aware bloom: the hero blooms hard, later stages settle down
+    bloomPass.strength = 0.45 + 0.3 * Math.max(0, 1 - stageF);
+    // FPS guard: rolling ~3s window; a sustained drop permanently disables bloom
+    if (bloomWinStart < 0) { bloomWinStart = time; bloomWinFrames = 0; }
+    bloomWinFrames++;
+    const winSpan = time - bloomWinStart;
+    if (winSpan >= 3) {
+      if (bloomWinFrames / winSpan < 45) {
+        composer = null;
+        scene.background = null;
+        bloomState = 'off(fps)';
+      } else {
+        bloomWinStart = time; bloomWinFrames = 0;
+      }
+    }
+  }
+  if (composer) composer.render(); else renderer.render(scene, camera);
   if (window.__scene) window.__scene.frames++;
   rafId = requestAnimationFrame(frame);
 }
@@ -1018,6 +1250,11 @@ addEventListener('resize', () => {
   camera.updateProjectionMatrix();
   renderer.setSize(innerWidth, innerHeight);
   computeAnchors();
+  if (composer) {
+    composer.setSize(innerWidth, innerHeight);
+    const s = bloomSize();
+    bloomPass.setSize(s.w, s.h);
+  }
   if (reducedMotion) renderStatic();
 });
 
@@ -1033,6 +1270,7 @@ build().then(() => {
     renderStatic();
     addEventListener('scroll', renderStatic, { passive: true });
   } else {
+    if (!isMobile) setupBloom(); // fire-and-forget; CDN failure or slow load leaves plain render
     frame();
     document.addEventListener('visibilitychange', () => {
       if (document.hidden) { cancelAnimationFrame(rafId); rafId = null; }
@@ -1050,6 +1288,7 @@ window.__scene = {
   constel, streamState, ringsState, nebulaState, neural, globe, frames: 0,
   N, order, tune, points,
   spriteCv,
+  get bloom() { return bloomState; },
   /* starship easter egg (starship.js) sets this while flying; the particle
      repulsion block in computeTargets reads it. Inert while null. */
   shipPos: null,
