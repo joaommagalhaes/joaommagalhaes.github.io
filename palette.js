@@ -59,7 +59,7 @@
       label: () => t('palette.cmd.hud', 'Toggle dev HUD'),
       search: () => both('palette.cmd.hud', 'hud debug fps'),
       hint: '⌘',
-      run: () => { const b = document.getElementById('lab-hud-toggle'); if (b) b.click(); }
+      run: () => dispatchEvent(new CustomEvent('hud-toggle'))
     },
     {
       label: () => t('palette.cmd.email', 'Copy email address'),

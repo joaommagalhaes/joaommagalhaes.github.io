@@ -191,15 +191,13 @@
       .catch((err) => { console.error('event-loop scenarios failed to load:', err); showError(); });
   })();
 
-  /* ══ 02 · Under the hood — dev HUD ══════════════════════════════════════
+  /* ══ 02 · Dev HUD ════════════════════════════════════════════════════════
      Reads the introspection surface the background scene exposes on
-     window.__scene. Zero cost until opened: the panel is built on first
-     toggle and polls only while visible. Labels stay in English on
-     purpose — it's a dev tool. */
+     window.__scene. Opened from the command palette ('hud-toggle' event).
+     Zero cost until opened: the panel is built on first toggle and polls
+     only while visible. Labels stay in English on purpose — it's a dev
+     tool. */
   (function hud() {
-    const btn = $('lab-hud-toggle');
-    if (!btn) return;
-
     let panel = null, spark = null, timer = null, open = false;
     let lastFrames = 0, lastAt = 0;
     const samples = [];
@@ -261,7 +259,6 @@
       open = on;
       if (open && !panel) build();
       if (panel) panel.classList.toggle('on', open);
-      syncBtn();
       clearInterval(timer);
       timer = null;
       if (open) {
@@ -278,15 +275,6 @@
       }
     }
 
-    function syncBtn() {
-      btn.textContent = open
-        ? t('lab.hood.hud_close', 'close HUD')
-        : t('lab.hood.hud', 'open dev HUD');
-    }
-
-    btn.addEventListener('click', () => toggle(!open));
-    /* the language toggle rewrites the button via data-i18n; re-sync after */
-    const langBtn = $('btn-lang');
-    if (langBtn) langBtn.addEventListener('click', () => setTimeout(syncBtn));
+    addEventListener('hud-toggle', () => toggle(!open));
   })();
 })();

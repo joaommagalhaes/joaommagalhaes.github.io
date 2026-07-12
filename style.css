@@ -12,13 +12,76 @@
   --bg: #0a0c10;
   --surface: #10141c;
   --ink: #e8ebf2;
-  --muted: #8b93a7;
+  --muted: #99a2b6;
   --rule: #1e2330;
   --accent: #6c9bff;
   --sans: 'Geist', system-ui, sans-serif;
   --mono: 'Geist Mono', monospace;
   --ease: cubic-bezier(.22, .8, .36, 1);
   --page-pad: clamp(1.25rem, 5vw, 3rem);
+}
+
+/* ── Light theme ──
+   Toggled by script.js (persisted; defaults to the OS preference). Not an
+   inversion of dark: warm paper, navy ink, cobalt accent — and the 3D scene
+   swaps to its own designed ink palette (scene.js THEMES) on the same
+   themechange signal. */
+:root[data-theme="light"] {
+  --bg: #faf9f6;
+  --surface: #ffffff;
+  --ink: #1c2433;
+  --muted: #5c667a;
+  --rule: #e5e2da;
+  --accent: #2c56c4;
+}
+
+[data-theme="light"] .btn-lang {
+  background: rgba(255, 255, 255, 0.7);
+}
+
+[data-theme="light"] .palette {
+  background: rgba(242, 240, 235, 0.6);
+}
+
+[data-theme="light"] .palette-box {
+  background: #ffffff;
+  box-shadow: 0 24px 80px rgba(40, 36, 26, 0.16);
+}
+
+[data-theme="light"] .section-nav {
+  background: rgba(250, 249, 246, 0.85);
+}
+
+[data-theme="light"] .btn-back-to-top {
+  background: rgba(255, 255, 255, 0.85);
+}
+
+[data-theme="light"] #scene-tip {
+  background: rgba(255, 255, 255, 0.95);
+}
+
+/* the starship chrome keeps its dark cockpit pills in light mode — pin the
+   text to the dark-theme palette instead of the flipped variables */
+[data-theme="light"] #ship-hint,
+[data-theme="light"] #ship-end {
+  color: #e8ebf2;
+}
+
+[data-theme="light"] #ship-hud,
+[data-theme="light"] #ship-end .ship-end-again {
+  color: #99a2b6;
+}
+
+[data-theme="light"] #ship-hud b,
+[data-theme="light"] #ship-end .ship-end-title {
+  color: #6c9bff;
+}
+
+[data-theme="light"] body.has-3d::after {
+  background:
+    radial-gradient(ellipse at center, transparent 62%, rgba(46, 40, 28, 0.1)),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  background-size: cover, 160px 160px;
 }
 
 /* ── Base ── */
@@ -136,6 +199,11 @@ body.has-3d::after {
 
 .btn-palette {
   right: 4.9rem;
+}
+
+.btn-theme {
+  right: 8.3rem;
+  min-width: 2.6rem;
 }
 
 /* ── Command palette ── */
@@ -273,14 +341,16 @@ body.has-3d::after {
   font-family: var(--mono);
   font-size: clamp(1rem, 2.5vw, 1.25rem);
   font-weight: 400;
-  color: #c6cede;
+  color: var(--ink);
+  opacity: 0.85;
   margin-bottom: 0.75rem;
 }
 
 .hero-tagline {
   font-size: clamp(1.05rem, 2.2vw, 1.1875rem);
   line-height: 1.6;
-  color: #aab3c7;
+  color: var(--ink);
+  opacity: 0.72;
   max-width: 46ch;
   margin: 0 auto 2.5rem;
 }
@@ -518,7 +588,7 @@ body.has-3d::after {
 
 .entry-desc {
   color: var(--muted);
-  font-size: 0.95rem;
+  font-size: 1rem;
   max-width: 66ch;
   margin-bottom: 1.25rem;
 }
@@ -626,14 +696,17 @@ body.has-3d::after {
 
 .cs-row p {
   color: var(--muted);
-  font-size: 0.88rem;
+  font-size: 0.95rem;
   line-height: 1.65;
 }
 
 /* ── Tags ── */
 .tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45em;
   font-family: var(--mono);
-  font-size: 0.72rem;
+  font-size: 0.78rem;
   letter-spacing: 0.04em;
   color: var(--muted);
   border: 1px solid var(--rule);
@@ -641,6 +714,15 @@ body.has-3d::after {
   padding: 0.25rem 0.7rem;
   list-style: none;
   transition: color 0.2s, border-color 0.2s;
+}
+
+/* inline brand icon injected by script.js (fails soft to text-only) */
+.tag .tag-ico {
+  width: 1em;
+  height: 1em;
+  fill: currentColor;
+  flex: none;
+  opacity: 0.85;
 }
 
 .tag:hover {
@@ -732,7 +814,7 @@ body.has-3d::after {
 
 .edu-desc {
   color: var(--muted);
-  font-size: 0.92rem;
+  font-size: 1rem;
   max-width: 64ch;
 }
 
@@ -1104,6 +1186,7 @@ body.has-3d::after {
   color: #ffc46b;
 }
 
+/* inline architecture diagrams (case studies) */
 .hood-diagram {
   display: block;
   width: 100%;
@@ -1798,7 +1881,6 @@ html.starship-mode {
   #lab + .section-body,
   #offscreen,
   #offscreen + .section-body,
-  .hood-diagram,
   .about-photo,
   #local-time,
   .exp-recs,

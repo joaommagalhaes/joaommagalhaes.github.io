@@ -4,6 +4,7 @@ const locales = {
     "site.description": "Senior front-end engineer with 10+ years building scalable web and mobile products. Based in Aveiro, Portugal.",
 
     "toolbar.lang_title": "Toggle language",
+    "toolbar.theme_title": "Toggle theme",
     "globe.hint": "drag to spin · pinch or ctrl+scroll to zoom · hover a lit country",
 
     "hero.role": "Senior Front-end Engineer",
@@ -192,12 +193,6 @@ const locales = {
     "lab.eventloop.no_output": "(no output yet)",
     "lab.eventloop.load_error": "Could not load the scenarios — try reloading the page.",
 
-    "lab.hood.title": "This website — under the hood",
-    "lab.hood.p1": "The background is one particle system: 9,000 points in a single buffer, drawn in one call. Every section precomputes a formation — a target position and colour per particle. Scrolling picks the two nearest formations and blends between them with a smoothstep; one lerp loop pulls every particle toward its target each frame. No per-frame allocation, no DOM work, one draw call.",
-    "lab.hood.p2": "The name at the top is the same trick: the text is rasterised to an offscreen canvas once, and its opaque pixels become particle targets. Open the HUD to watch it work live — and to detune the morph constant until it feels wrong. Tuning is the difference between motion and noise.",
-    "lab.hood.hud": "open dev HUD",
-    "lab.hood.hud_close": "close HUD",
-    "lab.hood.hint": "live fps, particle count, formation blend — plus two knobs you can break",
 
     "palette.open_title": "Command palette (⌘K)",
     "palette.placeholder": "Type a command or search sections…",
@@ -234,6 +229,7 @@ const locales = {
     "site.description": "Senior front-end engineer com mais de 10 anos a criar produtos web e mobile à escala. A viver em Aveiro, Portugal.",
 
     "toolbar.lang_title": "Alternar idioma",
+    "toolbar.theme_title": "Alternar tema",
     "globe.hint": "arrasta para rodar · pinch ou ctrl+scroll para zoom · passa o cursor num país iluminado",
 
     "hero.role": "Senior Front-end Engineer",
@@ -422,12 +418,6 @@ const locales = {
     "lab.eventloop.no_output": "(sem output ainda)",
     "lab.eventloop.load_error": "Não foi possível carregar os cenários — tenta recarregar a página.",
 
-    "lab.hood.title": "Este website — por dentro",
-    "lab.hood.p1": "O fundo é um único sistema de partículas: 9.000 pontos num só buffer, desenhados numa única chamada. Cada secção pré-calcula uma formação — uma posição e cor alvo por partícula. O scroll escolhe as duas formações mais próximas e mistura-as com um smoothstep; um único ciclo de interpolação puxa cada partícula para o seu alvo em cada frame. Sem alocações por frame, sem DOM, um único draw call.",
-    "lab.hood.p2": "O nome no topo é o mesmo truque: o texto é rasterizado uma vez para um canvas offscreen e os píxeis opacos tornam-se alvos de partículas. Abre o HUD para veres tudo ao vivo — e desafina a constante de interpolação até deixar de parecer natural. A afinação é a diferença entre movimento e ruído.",
-    "lab.hood.hud": "abrir dev HUD",
-    "lab.hood.hud_close": "fechar HUD",
-    "lab.hood.hint": "fps ao vivo, contagem de partículas, mistura de formações — e dois botões que podes estragar",
 
     "palette.open_title": "Paleta de comandos (⌘K)",
     "palette.placeholder": "Escreve um comando ou procura secções…",

@@ -9,9 +9,31 @@ const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const isMobile = matchMedia('(max-width: 760px)').matches;
 
 const BG = 0x0a0c10;
-const ACCENT = new THREE.Color(0x6c9bff);
-const DIM = new THREE.Color(0x39415a);
-const INK = new THREE.Color(0xe8ebf2);
+
+/* Two designed palettes — light is NOT an inversion of dark. Additive glow
+   has no meaning on paper, so light mode switches the particles to normal
+   blending with ink tones: deep navy, cobalt, burnt ochre on warm paper. */
+const THEMES = {
+  dark: {
+    accent: 0x6c9bff, dim: 0x39415a, ink: 0xe8ebf2, ambient: 0x141a26,
+    star: 0x2a3348, line: 0x3b5bd6, camino: 0xffc46b, wine: 0x8a3a52,
+    icon: '#d7e4ff', blending: THREE.AdditiveBlending, opacity: 0.9, size: 1
+  },
+  light: {
+    accent: 0x2c56c4, dim: 0x9aa7c2, ink: 0x1f2837, ambient: 0xd6dbe8,
+    star: 0xccd3e2, line: 0x2c56c4, camino: 0xc07a28, wine: 0x7d2f47,
+    // solid ink dots read heavier than additive glow — draw them finer
+    icon: '#33415e', blending: THREE.NormalBlending, opacity: 0.8, size: 0.85
+  }
+};
+let themeName = document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+let P = THEMES[themeName];
+const isLight = () => themeName === 'light';
+
+const ACCENT = new THREE.Color(P.accent);
+const DIM = new THREE.Color(P.dim);
+const INK = new THREE.Color(P.ink);
+const AMBIENT = new THREE.Color(P.ambient);
 
 let renderer;
 try {
@@ -69,7 +91,8 @@ const uTime = { value: 0 };
 function sparkleSizes(n) {
   const a = new Float32Array(n);
   for (let i = 0; i < n; i++) {
-    a[i] = Math.random() < 0.03 ? 2 + Math.random() * 0.8 : 0.6 + Math.pow(Math.random(), 2) * 1.1;
+    // fine grain: body ≤ 1.25×, rare sparkles capped at 2× — fat dots read as smudge
+    a[i] = Math.random() < 0.02 ? 1.6 + Math.random() * 0.4 : 0.6 + Math.pow(Math.random(), 2) * 0.65;
   }
   return a;
 }
@@ -89,24 +112,25 @@ transformed += ${drift.toFixed(4)} * vec3(
   cos(uTime * 0.45 + aPhase * 5.3),
   sin(uTime * 0.71 + aPhase * 4.7));
 vTw = 0.5 + 0.5 * sin(uTime * (0.9 + fract(aPhase * 0.318) * 1.6) + aPhase * 13.0);`)
-      .replace('gl_PointSize = size;', 'gl_PointSize = size * aSize * (0.82 + 0.36 * vTw);');
+      .replace('gl_PointSize = size;', 'gl_PointSize = size * aSize * (0.94 + 0.12 * vTw);');
     sh.fragmentShader = sh.fragmentShader
       .replace('#include <common>', '#include <common>\nvarying float vTw;')
       .replace('vec4 diffuseColor = vec4( diffuse, opacity );',
-        'vec4 diffuseColor = vec4( diffuse, opacity * (0.65 + 0.35 * vTw) );');
+        'vec4 diffuseColor = vec4( diffuse, opacity * (0.82 + 0.18 * vTw) );');
   };
 }
 geometry.setAttribute('aSize', new THREE.BufferAttribute(sparkleSizes(N), 1));
 geometry.setAttribute('aPhase', new THREE.BufferAttribute(phase, 1));
 
+const BASE_SIZE = isMobile ? 0.055 : 0.045;
 const material = new THREE.PointsMaterial({
-  size: isMobile ? 0.055 : 0.045,
+  size: BASE_SIZE * P.size,
   map: new THREE.CanvasTexture(spriteCv),
   vertexColors: true,
   transparent: true,
-  opacity: 0.9,
+  opacity: P.opacity,
   depthWrite: false,
-  blending: THREE.AdditiveBlending,
+  blending: P.blending,
   sizeAttenuation: true
 });
 injectSparkle(material, 0.022);
@@ -114,6 +138,7 @@ const points = new THREE.Points(geometry, material);
 scene.add(points);
 
 /* Distant static stars for depth */
+let starMat;
 {
   const sp = new Float32Array(500 * 3);
   for (let i = 0; i < 500; i++) {
@@ -128,25 +153,26 @@ scene.add(points);
   for (let i = 0; i < 500; i++) sPhase[i] = Math.random() * Math.PI * 2;
   sg.setAttribute('aPhase', new THREE.BufferAttribute(sPhase, 1));
   const sm = new THREE.PointsMaterial({
-    size: 0.06, map: new THREE.CanvasTexture(spriteCv), color: 0x2a3348,
-    transparent: true, opacity: 0.6, depthWrite: false, blending: THREE.AdditiveBlending
+    size: 0.06, map: new THREE.CanvasTexture(spriteCv), color: P.star,
+    transparent: true, opacity: 0.6, depthWrite: false, blending: P.blending
   });
   injectSparkle(sm, 0.01);
+  starMat = sm;
   scene.add(new THREE.Points(sg, sm));
 }
 
 /* Line layers (neural edges / constellation links) */
-function makeLines(maxSegs, color) {
+function makeLines(maxSegs) {
   const g = new THREE.BufferGeometry();
   g.setAttribute('position', new THREE.BufferAttribute(new Float32Array(maxSegs * 6), 3));
-  const m = new THREE.LineBasicMaterial({ color, transparent: true, opacity: 0, depthWrite: false, blending: THREE.AdditiveBlending });
+  const m = new THREE.LineBasicMaterial({ color: P.line, transparent: true, opacity: 0, depthWrite: false, blending: P.blending });
   const l = new THREE.LineSegments(g, m);
   l.visible = false;
   scene.add(l);
   return l;
 }
-const neuralLines = makeLines(200, 0x3b5bd6);
-const constelLines = makeLines(60, 0x3b5bd6);
+const neuralLines = makeLines(200);
+const constelLines = makeLines(60);
 
 /* ── Helpers ── */
 function scatter(arr, i3, spreadX, spreadY, cx, cy, cz) {
@@ -159,14 +185,17 @@ function mixColor(out, i3, base, accentChance) {
   if (base) base.toArray(out, i3);
 }
 
-/* Every formation: { pos: Float32Array, col: Float32Array } of length N*3 */
+/* Every formation: { pos: Float32Array, col: Float32Array } of length N*3.
+   build() stages into `building` and commits at the end, so the render loop
+   never sees a half-populated formations[] during a theme rebuild. */
 const formations = [];
 const F = {}; // named refs
+let building = null;
 
 function newFormation(name) {
   const f = { name, pos: new Float32Array(N * 3), col: new Float32Array(N * 3) };
-  formations.push(f);
-  F[name] = f;
+  building.list.push(f);
+  building.map[name] = f;
   return f;
 }
 
@@ -174,7 +203,7 @@ function fillAmbient(f, from, density) {
   for (let i = from; i < N; i++) {
     const i3 = i * 3;
     scatter(f.pos, i3, halfW() * 2.4, halfH * 2.4, 0, 0, -3);
-    const c = Math.random() < density ? DIM : new THREE.Color(0x141a26);
+    const c = Math.random() < density ? DIM : AMBIENT;
     c.toArray(f.col, i3);
   }
 }
@@ -445,9 +474,14 @@ function updateConstellation() {
   lp.needsUpdate = true;
 }
 
-/* Brand-logo sprites for the constellation (fails soft: nodes stay dots) */
+/* Brand-logo sprites for the constellation (fails soft: nodes stay dots).
+   Re-runnable: a theme swap rebuilds them with the new ink (SVG fetches hit
+   the HTTP cache the second time). */
+let iconGroup = null;
 async function loadSkillIcons() {
+  if (iconGroup) scene.remove(iconGroup);
   const group = new THREE.Group();
+  iconGroup = group;
   scene.add(group);
   constel.sprites = [];
   await Promise.all(SKILLS.map(async ([, slug], i) => {
@@ -456,7 +490,7 @@ async function loadSkillIcons() {
       if (!r.ok) throw new Error(slug);
       let svg = await r.text();
       // simple-icons SVGs are dimensionless + black; give them size and ink
-      svg = svg.replace('<svg ', '<svg width="128" height="128" fill="#d7e4ff" ');
+      svg = svg.replace('<svg ', `<svg width="128" height="128" fill="${P.icon}" `);
       const img = new Image();
       const url = URL.createObjectURL(new Blob([svg], { type: 'image/svg+xml' }));
       await new Promise((res, rej) => { img.onload = res; img.onerror = rej; img.src = url; });
@@ -500,7 +534,7 @@ function buildRings(f, side) {
 /* 07 — LANGUAGES: proto-globe nebula. Also the resting formation behind
    "Beyond the Screen" (that section has no data-scene of its own) — so it
    doubles as a home for 4 icebreaker topic clusters, hover-lit below. */
-const WINE = new THREE.Color(0x8a3a52);
+const WINE = new THREE.Color(P.wine);
 const nebulaState = { highlight: -1, clusters: [] }; // [{start, count}] per topic
 function buildNebula(f, side) {
   const cx = side * halfW() * 0.45;
@@ -554,7 +588,7 @@ const globe = {
 
 /* Camino Português, Valença → Santiago (walked ×3) — [lon, lat] waypoints,
    drawn as an amber arc slightly above the surface. c = -2 marks a route dot. */
-const CAMINO = new THREE.Color(0xffc46b);
+const CAMINO = new THREE.Color(P.camino);
 const CAMINOS = [
   [[-8.64, 41.90], [-8.64, 42.05], [-8.61, 42.28], [-8.64, 42.43], [-8.66, 42.74], [-8.55, 42.88]]
 ];
@@ -596,7 +630,12 @@ function buildGlobe(f, data) {
     globe.dots[i].v.toArray(f.pos, i3);
     (c >= 0 ? ACCENT : c === -2 ? CAMINO : DIM).toArray(f.col, i3);
     if (c >= 0) {
-      f.col[i3] *= 1.25; f.col[i3 + 1] *= 1.25; f.col[i3 + 2] *= 1.25;
+      // emphasis: brighter on dark, deeper ink on paper
+      for (let k = 0; k < 3; k++) {
+        f.col[i3 + k] = isLight()
+          ? Math.max(0, 1 - (1 - f.col[i3 + k]) * 1.25)
+          : f.col[i3 + k] * 1.25;
+      }
     }
   }
   globe.count = count;
@@ -631,9 +670,16 @@ function updateGlobe(out, colOut) {
     let s = 0.18 + 0.82 * Math.max(0, Math.min(1, (zr / Rz + 1) / 2 * 1.4));
     if (globe.highlight >= 0 && globe.dots[i].c === globe.highlight) s *= 2.4;
     else if (globe.caminoLit && globe.dots[i].c === -2) s *= 2.4;
-    colOut[i3] = src.col[i3] * s;
-    colOut[i3 + 1] = src.col[i3 + 1] * s;
-    colOut[i3 + 2] = src.col[i3 + 2] * s;
+    if (isLight()) {
+      // ink-space: fading pulls toward the paper, highlights deepen the ink
+      colOut[i3] = 1 - Math.min(1, (1 - src.col[i3]) * s);
+      colOut[i3 + 1] = 1 - Math.min(1, (1 - src.col[i3 + 1]) * s);
+      colOut[i3 + 2] = 1 - Math.min(1, (1 - src.col[i3 + 2]) * s);
+    } else {
+      colOut[i3] = src.col[i3] * s;
+      colOut[i3 + 1] = src.col[i3 + 1] * s;
+      colOut[i3 + 2] = src.col[i3 + 2] * s;
+    }
   }
   // ambient tail beyond the rotated dots stays as authored
   out.set(src.pos.subarray(globe.count * 3), globe.count * 3);
@@ -662,9 +708,12 @@ function buildNova(src) {
     nova.pos[i3] = r * s * Math.cos(th);
     nova.pos[i3 + 1] = r * u;
     nova.pos[i3 + 2] = -4 + r * s * Math.sin(th);
-    nova.col[i3] = src.col[i3] * 0.5;
-    nova.col[i3 + 1] = src.col[i3 + 1] * 0.5;
-    nova.col[i3 + 2] = src.col[i3 + 2] * 0.5;
+    for (let k = 0; k < 3; k++) {
+      // faint start: half brightness on dark, half ink on paper
+      nova.col[i3 + k] = isLight()
+        ? 1 - (1 - src.col[i3 + k]) * 0.5
+        : src.col[i3 + k] * 0.5;
+    }
   }
 }
 
@@ -676,10 +725,14 @@ stageEls.forEach(el => {
     el.getAttribute('data-stage-side') === 'left' ? -1 : 1;
 });
 
+let globeData = null;
 async function build() {
-  const res = await fetch('globe-dots.json');
-  const globeData = await res.json();
+  if (!globeData) {
+    const res = await fetch('globe-dots.json');
+    globeData = await res.json();
+  }
 
+  building = { list: [], map: {} };
   const nameF = newFormation('name');
   await buildName(nameF);
   buildNova(nameF);
@@ -690,6 +743,11 @@ async function build() {
   buildRings(newFormation('rings'), sides.rings || 1);
   buildNebula(newFormation('nebula'), sides.nebula || 1);
   buildGlobe(newFormation('globe'), globeData);
+
+  formations.length = 0;
+  formations.push(...building.list);
+  Object.keys(F).forEach((k) => delete F[k]);
+  Object.assign(F, building.map);
   loadSkillIcons().catch(() => {}); // decorative; dots remain if CDN unreachable
 }
 
@@ -952,6 +1010,7 @@ async function setupBloom() {
       import('three/addons/postprocessing/RenderPass.js'),
       import('three/addons/postprocessing/UnrealBloomPass.js')
     ]);
+    if (isLight()) return; // theme flipped while the modules loaded
     const s = bloomSize();
     const c = new EffectComposer(renderer);
     c.addPass(new RenderPass(scene, camera));
@@ -960,6 +1019,7 @@ async function setupBloom() {
     scene.background = new THREE.Color(BG);
     composer = c;
     bloomState = 'on';
+    bloomWinStart = -1; // fresh FPS window (matters when re-enabled after a theme swap)
   } catch (e) {
     composer = null;
     bloomState = 'unavailable';
@@ -1083,8 +1143,7 @@ function computeTargets(time) {
           const push = (1 - diff / wth) * decay;
           target[i3] += (dx / d) * push;
           target[i3 + 1] += (dy / d) * push;
-          const b = 1 + push * 1.6; // the ripple lights what it moves
-          targetCol[i3] *= b; targetCol[i3 + 1] *= b; targetCol[i3 + 2] *= b;
+          boostAt(i3, 1 + push * 1.6); // the ripple lights what it moves
         }
       }
     }
@@ -1123,8 +1182,7 @@ function computeTargets(time) {
         const d = Math.sqrt(d2);
         target[i3] += (dx / d) * push;
         target[i3 + 1] += (dy / d) * push;
-        const b = 1 + push * 1.4; // cursor as a torch: displaced particles glow
-        targetCol[i3] *= b; targetCol[i3 + 1] *= b; targetCol[i3 + 2] *= b;
+        boostAt(i3, 1 + push * 1.4); // cursor as a torch: displaced particles glow
       }
     }
   }
@@ -1187,7 +1245,22 @@ function computeTargets(time) {
 
 function boostCol(start, count, mult) {
   const a = start * 3, b = Math.min((start + count) * 3, targetCol.length);
-  for (let j = a; j < b; j++) targetCol[j] *= mult;
+  if (isLight()) {
+    // on paper, emphasis means more ink, not more light
+    for (let j = a; j < b; j++) targetCol[j] = 1 - Math.min(1, (1 - targetCol[j]) * mult);
+  } else {
+    for (let j = a; j < b; j++) targetCol[j] *= mult;
+  }
+}
+
+function boostAt(i3, b) {
+  if (isLight()) {
+    targetCol[i3] = 1 - Math.min(1, (1 - targetCol[i3]) * b);
+    targetCol[i3 + 1] = 1 - Math.min(1, (1 - targetCol[i3 + 1]) * b);
+    targetCol[i3 + 2] = 1 - Math.min(1, (1 - targetCol[i3 + 2]) * b);
+  } else {
+    targetCol[i3] *= b; targetCol[i3 + 1] *= b; targetCol[i3 + 2] *= b;
+  }
 }
 
 let roll = 0;
@@ -1214,8 +1287,8 @@ function frame() {
   camera.rotation.z += roll;
 
   if (composer) {
-    // stage-aware bloom: the hero blooms hard, later stages settle down
-    bloomPass.strength = 0.45 + 0.3 * Math.max(0, 1 - stageF);
+    // stage-aware bloom: a touch more on the hero, settled elsewhere
+    bloomPass.strength = 0.4 + 0.15 * Math.max(0, 1 - stageF);
     // FPS guard: rolling ~3s window; a sustained drop permanently disables bloom
     if (bloomWinStart < 0) { bloomWinStart = time; bloomWinFrames = 0; }
     bloomWinFrames++;
@@ -1258,7 +1331,43 @@ addEventListener('resize', () => {
   if (reducedMotion) renderStatic();
 });
 
-build().then(() => {
+/* Theme swap: repaint the palette + blending, then rebuild the formations so
+   every precomputed color buffer picks up the new inks. The geometry color
+   lerp in frame() cross-fades the palettes for free. Serialized on
+   buildChain so rapid toggles can't interleave two rebuilds. */
+function applySceneTheme() {
+  themeName = document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+  P = THEMES[themeName];
+  ACCENT.setHex(P.accent); DIM.setHex(P.dim); INK.setHex(P.ink);
+  AMBIENT.setHex(P.ambient); CAMINO.setHex(P.camino); WINE.setHex(P.wine);
+  material.blending = P.blending;
+  material.opacity = P.opacity;
+  material.size = BASE_SIZE * P.size;
+  material.needsUpdate = true;
+  starMat.color.setHex(P.star);
+  starMat.blending = P.blending;
+  starMat.needsUpdate = true;
+  [neuralLines, constelLines].forEach((l) => {
+    l.material.color.setHex(P.line);
+    l.material.blending = P.blending;
+    l.material.needsUpdate = true;
+  });
+  if (isLight() && composer) {
+    composer = null;
+    scene.background = null;
+    bloomState = 'off(light)';
+  } else if (!isLight() && !composer && !isMobile && !reducedMotion && bloomState !== 'off(fps)') {
+    setupBloom();
+  }
+  buildChain = buildChain
+    .then(() => build())
+    .then(() => { if (reducedMotion) renderStatic(); })
+    .catch(() => {});
+}
+addEventListener('themechange', applySceneTheme);
+
+let buildChain = build();
+buildChain.then(() => {
   document.body.classList.add('has-3d');
   bindDom();
   computeAnchors();
@@ -1270,7 +1379,7 @@ build().then(() => {
     renderStatic();
     addEventListener('scroll', renderStatic, { passive: true });
   } else {
-    if (!isMobile) setupBloom(); // fire-and-forget; CDN failure or slow load leaves plain render
+    if (!isMobile && !isLight()) setupBloom(); // fire-and-forget; CDN failure or slow load leaves plain render
     frame();
     document.addEventListener('visibilitychange', () => {
       if (document.hidden) { cancelAnimationFrame(rafId); rafId = null; }

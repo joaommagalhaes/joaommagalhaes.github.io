@@ -32,8 +32,24 @@ if (!reducedMotion) {
     const SEQUENCE = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'KeyB', 'KeyA'];
     let seqAt = 0;
 
-    const ACCENT = 0x6c9bff, AMBER = 0xffc46b, GREEN = 0x5fd39a, RED = 0xff3b3b, VIOLET = 0xb18cff;
+    /* palette — (re)resolved at flight entry. The dark hull works on both
+       themes; the glow colors and blending don't: additive light has no
+       meaning on paper, so light mode flies with normal-blended ink tones.
+       A theme swap tears the whole system down (listener at the bottom) and
+       the next flight rebuilds it with the right palette. */
     const HULL = 0x141a26, HULL_LIGHT = 0x232c40;
+    let ACCENT, AMBER, GREEN, RED, VIOLET, BLEND, LIGHT;
+    function setGamePalette() {
+      LIGHT = document.documentElement.getAttribute('data-theme') === 'light';
+      ACCENT = LIGHT ? 0x2c56c4 : 0x6c9bff;
+      AMBER = LIGHT ? 0xc07a28 : 0xffc46b;
+      GREEN = LIGHT ? 0x2e9e67 : 0x5fd39a;
+      RED = LIGHT ? 0xd23434 : 0xff3b3b;
+      VIOLET = LIGHT ? 0x7a4fd0 : 0xb18cff;
+      BLEND = LIGHT ? THREE.NormalBlending : THREE.AdditiveBlending;
+    }
+    setGamePalette();
+    const cssHex = (n) => '#' + n.toString(16).padStart(6, '0');
 
     /* flight tuning — page-pixel units */
     const ACCEL = 2600, DAMP = 2.2, MAX_SPEED = 620, BOOST_SPEED = 1250;
@@ -85,7 +101,7 @@ if (!reducedMotion) {
     function glowSprite(S, color, size, opacity) {
       const sp = new THREE.Sprite(new THREE.SpriteMaterial({
         map: new THREE.CanvasTexture(S.spriteCv), color,
-        transparent: true, opacity, depthWrite: false, blending: THREE.AdditiveBlending
+        transparent: true, opacity, depthWrite: false, blending: BLEND
       }));
       sp.scale.set(size, size, 1);
       return sp;
@@ -260,7 +276,7 @@ if (!reducedMotion) {
         flameGeo.translate(0, 4.5, 0); // base at local origin, apex at +9
         const flame = new THREE.Mesh(
           flameGeo,
-          new THREE.MeshBasicMaterial({ color: ACCENT, transparent: true, opacity: 0.75, blending: THREE.AdditiveBlending, depthWrite: false })
+          new THREE.MeshBasicMaterial({ color: ACCENT, transparent: true, opacity: 0.75, blending: BLEND, depthWrite: false })
         );
         flame.rotation.z = Math.PI / 2; // apex → -X (trailing)
         add(flame, -23, y, -1.6);
@@ -287,10 +303,6 @@ if (!reducedMotion) {
       const antennaTip = glowSprite(S, AMBER, 5, 0.9);
       antennaTip.position.set(18, 0, 10);
       group.add(antennaTip);
-
-      const aura = glowSprite(S, ACCENT, 120, 0.15);
-      aura.position.z = -8;
-      group.add(aura);
 
       group.scale.setScalar(1.25);
       group.visible = false;
@@ -357,7 +369,7 @@ if (!reducedMotion) {
       trailGeo.setAttribute('color', new THREE.BufferAttribute(trailCol, 3));
       const trail = new THREE.Points(trailGeo, new THREE.PointsMaterial({
         size: 9, sizeAttenuation: false, map: new THREE.CanvasTexture(S.spriteCv),
-        vertexColors: true, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending
+        vertexColors: true, transparent: true, depthWrite: false, blending: BLEND
       }));
       scene.add(trail);
 
@@ -373,7 +385,7 @@ if (!reducedMotion) {
       // crash shockwave ring — one reused mesh, scaled out while it fades
       const crashRing = new THREE.Mesh(
         new THREE.RingGeometry(0.9, 1, 48),
-        new THREE.MeshBasicMaterial({ color: AMBER, transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide })
+        new THREE.MeshBasicMaterial({ color: AMBER, transparent: true, opacity: 0, blending: BLEND, depthWrite: false, side: THREE.DoubleSide })
       );
       crashRing.visible = false;
       scene.add(crashRing);
@@ -389,7 +401,7 @@ if (!reducedMotion) {
       // one-hit shield bubble, riding the ship group
       const shield = new THREE.Mesh(
         new THREE.SphereGeometry(38, 20, 14),
-        new THREE.MeshBasicMaterial({ color: VIOLET, transparent: true, opacity: 0.12, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide })
+        new THREE.MeshBasicMaterial({ color: VIOLET, transparent: true, opacity: 0.12, blending: BLEND, depthWrite: false, side: THREE.DoubleSide })
       );
       shield.visible = false;
       ship.group.add(shield);
@@ -458,11 +470,11 @@ if (!reducedMotion) {
       b.hitAt = now;
       if (b.type === 'fuel') {
         fuel = 1;
-        popup(t('ship.fuel', 'fuel'), b.x, b.y, '#5fd39a');
+        popup(t('ship.fuel', 'fuel'), b.x, b.y, cssHex(GREEN));
       } else if (b.type === 'shield') {
         shieldOn = true;
         sys.shield.visible = true;
-        popup(t('ship.shield', 'shield'), b.x, b.y, '#b18cff');
+        popup(t('ship.shield', 'shield'), b.x, b.y, cssHex(VIOLET));
       } else {
         // chained collects (<4s apart) build a ×combo, capped at ×5
         comboN = now - lastCollectT < 4000 ? Math.min(5, comboN + 1) : 1;
@@ -470,7 +482,7 @@ if (!reducedMotion) {
         const pts = BEACON_PTS * comboN;
         score += pts;
         popup('+' + pts + (comboN > 1 ? ' ×' + comboN : ''), b.x, b.y,
-          b.baseColor === AMBER ? '#ffc46b' : '#6c9bff');
+          cssHex(b.baseColor === AMBER ? AMBER : ACCENT));
       }
       sparkBurst(b.x, b.y, b.core.material.color.getHex(), now);
     }
@@ -495,6 +507,19 @@ if (!reducedMotion) {
       el.classList.remove('on');
       void el.offsetWidth; // restart the animation
       el.classList.add('on');
+    }
+
+    /* trail tint: additive fade to black on dark; ink fade to paper on light */
+    function trailTint(i3, b) {
+      if (LIGHT) {
+        sys.trailCol[i3] = 1 - 0.83 * b;
+        sys.trailCol[i3 + 1] = 1 - 0.66 * b;
+        sys.trailCol[i3 + 2] = 1 - 0.23 * b;
+      } else {
+        sys.trailCol[i3] = 0.42 * b;
+        sys.trailCol[i3 + 1] = 0.61 * b;
+        sys.trailCol[i3 + 2] = 1.0 * b;
+      }
     }
 
     /* crash / shield-hit screen shake on the overlay canvas */
@@ -662,10 +687,11 @@ if (!reducedMotion) {
           const minD = SHIP_R + a.r;
           const d2 = dx * dx + dy * dy;
           if (d2 < minD * minD) die(a, now);
-          else if (d2 < minD * minD * 4.8 && a.flashT <= 0) {
-            a.flashT = 0.35; // near miss: the rock you almost ate glows amber
+          else if (d2 < minD * minD * 4.8 && a.flashT <= 0 && now > (a.nearCool || 0)) {
+            a.flashT = 0.4; // near miss: the rock you almost ate glows amber, once
+            a.nearCool = now + 2500; // cooldown so cruising nearby doesn't strobe
             a.edgeMat.color.setHex(AMBER);
-            a.edgeMat.opacity = 0.85;
+            a.edgeMat.opacity = 0.6;
           }
         }
       }
@@ -680,7 +706,7 @@ if (!reducedMotion) {
         sys.shield.visible = false;
         const sx = state.x - scrollX, sy = state.y - scrollY;
         sparkBurst(sx, sy, VIOLET, now);
-        popup(t('ship.shieldlost', 'shield down'), sx, sy, '#b18cff');
+        popup(t('ship.shieldlost', 'shield down'), sx, sy, cssHex(VIOLET));
         a.x = Math.random() < 0.5 ? -a.r * 1.3 : innerWidth + a.r * 1.3;
         a.y = Math.random() * innerHeight;
         a.flashT = 0.5;
@@ -743,9 +769,7 @@ if (!reducedMotion) {
         updateAsteroids(dt, now);
         for (let i = 0; i < TRAIL_N; i++) {
           sys.trailAge[i] = Math.min(1, sys.trailAge[i] + dt * 0.9);
-          const b = (1 - sys.trailAge[i]) * 0.85;
-          const i3 = i * 3;
-          sys.trailCol[i3] = 0.42 * b; sys.trailCol[i3 + 1] = 0.61 * b; sys.trailCol[i3 + 2] = 1.0 * b;
+          trailTint(i * 3, (1 - sys.trailAge[i]) * 0.85);
         }
         sys.trail.geometry.attributes.color.needsUpdate = true;
         updateHudScore();
@@ -831,7 +855,7 @@ if (!reducedMotion) {
       // engines: flame cones stretch with throttle + boost, with a fast
       // organic flicker; exhaust glows brighten to match
       const throttle = Math.min(1, sp / MAX_SPEED);
-      const flick = 0.9 + Math.sin(now * 0.045) * 0.08 + Math.random() * 0.07;
+      const flick = 0.93 + Math.sin(now * 0.045) * 0.07;
       const flameLen = Math.max(0.35, (0.55 + throttle * 0.75 + (boosting ? 1.4 : 0)) * flick);
       sys.ship.flames.forEach((f) => {
         f.scale.y = flameLen;
@@ -877,9 +901,7 @@ if (!reducedMotion) {
       }
       for (let i = 0; i < TRAIL_N; i++) {
         sys.trailAge[i] = Math.min(1, sys.trailAge[i] + dt * 0.9);
-        const b = (1 - sys.trailAge[i]) * (boosting ? 1.25 : 0.85);
-        const i3 = i * 3;
-        sys.trailCol[i3] = 0.42 * b; sys.trailCol[i3 + 1] = 0.61 * b; sys.trailCol[i3 + 2] = 1.0 * b;
+        trailTint(i * 3, (1 - sys.trailAge[i]) * (boosting ? (LIGHT ? 1 : 1.25) : 0.85));
       }
       sys.trail.geometry.attributes.position.needsUpdate = true;
       sys.trail.geometry.attributes.color.needsUpdate = true;
@@ -1062,6 +1084,18 @@ if (!reducedMotion) {
     const touchEnd = (e) => { if (flying) { touchActive = false; e.preventDefault(); } };
     addEventListener('touchend', touchEnd, { passive: false });
     addEventListener('touchcancel', touchEnd, { passive: false });
+
+    /* theme swap: land if flying, then scrap the whole render system — the
+       next flight rebuilds ship, pickups and trail in the new palette */
+    addEventListener('themechange', () => {
+      if (flying) exitFlight();
+      if (sys) {
+        sys.canvas.remove();
+        sys = null;
+        beacons = [];
+      }
+      setGamePalette();
+    });
 
     /* command-palette entry point ("fly") — same door as the Konami code,
        so it inherits enterFlight's reduced-motion / no-WebGL guards */

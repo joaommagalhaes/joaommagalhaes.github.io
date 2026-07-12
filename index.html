@@ -25,6 +25,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@300;400;500&display=swap" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@300;400;500&display=swap" />
+  <!-- theme before first paint (persisted choice, else OS preference) -->
+  <script>try { document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || (matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark')); } catch (e) { }</script>
   <link rel="stylesheet" href="style.css" />
   <noscript>
     <style>
@@ -55,6 +57,8 @@
   </button>
 
   <button class="btn-lang btn-palette" id="btn-palette" data-i18n-attr="title|palette.open_title" title="Command palette (⌘K)">⌘K</button>
+
+  <button class="btn-lang btn-theme" id="btn-theme" data-i18n-attr="title|toolbar.theme_title" title="Toggle theme" aria-live="polite">☾</button>
 
   <div id="palette" class="palette" role="dialog" aria-modal="true" data-i18n-attr="aria-label|palette.open_title" aria-label="Command palette (⌘K)" hidden>
     <div class="palette-box">
@@ -608,37 +612,6 @@
             <button class="lab-btn primary" id="lab-el-step" type="button" data-i18n="lab.eventloop.step">step</button>
             <button class="lab-btn" id="lab-el-play" type="button" data-i18n="lab.eventloop.play">play</button>
             <button class="lab-btn" id="lab-el-reset" type="button" data-i18n="lab.eventloop.reset">reset</button>
-          </div>
-        </div>
-
-        <div class="lab-card" id="lab-hood">
-          <div class="lab-head">
-            <h4 data-i18n="lab.hood.title">This website — under the hood</h4>
-            <a class="lab-src" href="https://github.com/joaommagalhaes/joaommagalhaes.github.io/blob/main/scene.js" target="_blank" rel="noopener" data-i18n="lab.src">view source ↗</a>
-          </div>
-          <p class="lab-note" data-i18n="lab.hood.p1">The background is one particle system: 9,000 points in a single buffer, drawn in one call. Every section precomputes a formation — a target position and colour per particle. Scrolling picks the two nearest formations and blends between them with a smoothstep; one lerp loop pulls every particle toward its target each frame. No per-frame allocation, no DOM work, one draw call.</p>
-          <svg class="hood-diagram" viewBox="0 0 660 104" role="img" data-i18n-attr="aria-label|lab.hood.title" aria-label="This website — under the hood">
-            <g fill="none" stroke="currentColor" stroke-opacity="0.45">
-              <rect x="6" y="18" width="168" height="52" rx="6"/>
-              <rect x="238" y="18" width="150" height="52" rx="6"/>
-              <rect x="452" y="18" width="202" height="52" rx="6"/>
-              <path d="M174 44h56m-10 -5 10 5-10 5"/>
-              <path d="M388 44h56m-10 -5 10 5-10 5"/>
-            </g>
-            <g font-family="Geist Mono, monospace" font-size="12" fill="currentColor">
-              <text x="90" y="40" text-anchor="middle">8 formations</text>
-              <text x="90" y="58" text-anchor="middle" fill-opacity="0.6" font-size="10">Float32Array × N</text>
-              <text x="313" y="40" text-anchor="middle">scroll → blend(t)</text>
-              <text x="313" y="58" text-anchor="middle" fill-opacity="0.6" font-size="10">smoothstep</text>
-              <text x="553" y="40" text-anchor="middle">one buffer · 9,000 pts</text>
-              <text x="553" y="58" text-anchor="middle" fill-opacity="0.6" font-size="10">lerp → GPU · 1 draw call</text>
-              <text x="90" y="92" text-anchor="middle" fill-opacity="0.5" font-size="10">name · core · stream · neural…</text>
-            </g>
-          </svg>
-          <p class="lab-note" data-i18n="lab.hood.p2">The name at the top is the same trick: the text is rasterised to an offscreen canvas once, and its opaque pixels become particle targets. Open the HUD to watch it work live — and to detune the morph constant until it feels wrong. Tuning is the difference between motion and noise.</p>
-          <div class="lab-bar">
-            <button class="lab-btn primary" id="lab-hud-toggle" type="button" data-i18n="lab.hood.hud">open dev HUD</button>
-            <span class="lab-hint" data-i18n="lab.hood.hint">live fps, particle count, formation blend — plus two knobs you can break</span>
           </div>
         </div>
 

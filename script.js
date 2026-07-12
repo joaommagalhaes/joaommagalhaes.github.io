@@ -86,6 +86,55 @@ document.addEventListener('DOMContentLoaded', function () {
   loadTranslations(currentLocale);
   updateRnStamp();
 
+  /* ── Theme toggle (init happens pre-paint in an inline <head> script) ── */
+  var theme = document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+  var btnTheme = document.getElementById('btn-theme');
+  function applyTheme() {
+    document.documentElement.setAttribute('data-theme', theme);
+    var meta = document.querySelector('meta[name="color-scheme"]');
+    if (meta) meta.setAttribute('content', theme);
+    if (btnTheme) btnTheme.textContent = theme === 'dark' ? '☾' : '☀';
+  }
+  applyTheme();
+  if (btnTheme) {
+    btnTheme.addEventListener('click', function () {
+      theme = theme === 'dark' ? 'light' : 'dark';
+      try { localStorage.setItem('theme', theme); } catch (e) {}
+      applyTheme();
+      // scene.js + starship.js listen and swap their own WebGL palettes
+      dispatchEvent(new CustomEvent('themechange'));
+    });
+  }
+
+  /* ── Brand icons on skill/experience tags ──
+     Inlined simple-icons SVGs (same CDN the 3D constellation uses) so they
+     tint with currentColor in both themes. Tags without a brand mapping —
+     and any tag if the CDN is unreachable — just stay text-only. */
+  var TAG_ICONS = {
+    angular: 'angular', typescript: 'typescript', javascript: 'javascript',
+    php: 'php', python: 'python', mysql: 'mysql', mysqlsql: 'mysql',
+    rabbitmq: 'rabbitmq', git: 'git', docker: 'docker', ionic: 'ionic',
+    react: 'react', reactjs: 'react', reactnative: 'react',
+    reactreactnative: 'react', nodejs: 'nodedotjs', htmlcss: 'html5',
+    cicd: 'githubactions'
+  };
+  var iconCache = {};
+  function fetchIcon(slug) {
+    if (!iconCache[slug]) {
+      iconCache[slug] = fetch('https://cdn.jsdelivr.net/npm/simple-icons@13/icons/' + slug + '.svg')
+        .then(function (r) { if (!r.ok) throw new Error(slug); return r.text(); });
+    }
+    return iconCache[slug];
+  }
+  document.querySelectorAll('.tag').forEach(function (el) {
+    var slug = TAG_ICONS[el.textContent.toLowerCase().replace(/[^a-z0-9]/g, '')];
+    if (!slug) return;
+    fetchIcon(slug).then(function (svg) {
+      el.insertAdjacentHTML('afterbegin',
+        svg.replace('<svg ', '<svg class="tag-ico" fill="currentColor" aria-hidden="true" '));
+    }).catch(function () { /* text-only tag */ });
+  });
+
   /* ── Reveal on Scroll ── */
   var observer = new IntersectionObserver(function (entries) {
     entries.forEach(function (entry) {
